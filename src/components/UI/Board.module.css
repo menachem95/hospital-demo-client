@@ -1,0 +1,15 @@
+.board {
+  text-align: center;
+  margin: 2rem;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+  background-color: #c9c2ff;
+  display: inline-block;
+  max-width: 40%;
+}
+
+.board p {
+  text-align: end;
+  margin: 0px;
+}
