@@ -39,7 +39,7 @@ function App() {
   useEffect(() => {
     let responseData = printers;
     const fetchPrinters = async () => {
-      const response = await fetch(`${process.env.SERVER}/fetch-printers`, {
+      const response = await fetch(`${SERVER}/fetch-printers`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -47,7 +47,7 @@ function App() {
       responseData = await response.json();
 
 
-      const res = await fetch(`${process.env.SERVER}/ping`, {
+      const res = await fetch(`${SERVER}/ping`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
