@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, redirect } from "react-router-dom";
 // import CircularProgress from '@mui/material/CircularProgress';
 // import MainWindow from './component2/MainWindow';
 import SingleDepartment from "./components/Displays/SingleDepartment";
@@ -106,9 +106,11 @@ function App() {
             <main className="content">
               <Topbar />
               <Routes>
-                <Route path="/">
+                <Route path="/" element={<DashboardPrinters />}/>
+                  
+                
                 <Route path="/printers" element={<DashboardPrinters />} />
-                <Route path="/computers" element={<DashboardComputers />} />
+                {/* <Route path="/computers" element={<DashboardComputers />} /> */}
                 <Route
                   path="/:deviceId/departments/:departmentId"
                   element={<SingleDepartment />}
@@ -140,7 +142,7 @@ function App() {
                 {/* <Route
                                     path="/geography"
                                     element={<Geography />} */}
-                                    </Route>
+                                    
               </Routes>
             </main>
           </div>
