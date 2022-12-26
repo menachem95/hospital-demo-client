@@ -121,8 +121,8 @@ const SingleDepartment = () => {
               {printer.online && (
                 <a
                   href={`https:${printer.address}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  // target="_blank"
+                  // rel="noopener noreferrer"
                 >
                   <Printer
                     room={printer.room}
