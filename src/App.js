@@ -47,7 +47,7 @@ function App() {
       responseData = await response.json();
 
 
-      const res = await fetch(process.env.SERVER_PING, {
+      const res = await fetch("https://hospitol-demo-server.onrender.com/ping", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
