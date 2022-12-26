@@ -39,7 +39,10 @@ function App() {
   useEffect(() => {
     let responseData = printers;
     const fetchPrinters = async () => {
-      const response = await fetch(`${"https://hospitol-demo-server.onrender.com"}/fetch-printers`, {
+      const response = await fetch(
+        "https://hospitol-demo-server.onrender.com/fetch-printers"
+        // "http://localhost:8080/fetch-printers"
+      , {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -47,7 +50,10 @@ function App() {
       responseData = await response.json();
 
 
-      const res = await fetch("https://hospitol-demo-server.onrender.com/ping", {
+      const res = await fetch(
+        "https://hospitol-demo-server.onrender.com/ping"
+        // "http://localhost:8080/ping"
+        , {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
@@ -100,6 +106,7 @@ function App() {
             <main className="content">
               <Topbar />
               <Routes>
+                <Route path="/">
                 <Route path="/printers" element={<DashboardPrinters />} />
                 <Route path="/computers" element={<DashboardComputers />} />
                 <Route
@@ -133,6 +140,7 @@ function App() {
                 {/* <Route
                                     path="/geography"
                                     element={<Geography />} */}
+                                    </Route>
               </Routes>
             </main>
           </div>
