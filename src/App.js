@@ -112,7 +112,7 @@ function App() {
                 <Route path="/printers" element={<DashboardPrinters />} />
                 {/* <Route path="/computers" element={<DashboardComputers />} /> */}
                 <Route
-                  path="/:deviceId/departments/:departmentId"
+                  path="/departments/:departmentId"
                   element={<SingleDepartment />}
                 />
                 {/* <Route path='/one-printer'
