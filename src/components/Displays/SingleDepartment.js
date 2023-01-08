@@ -6,10 +6,11 @@ import Header from "../../components/Header";
 import Printer from "../Printer";
 import PrintIcon from "@mui/icons-material/Print";
 import ComputerIcon from"@mui/icons-material/Computer"
+import { Link } from "react-router-dom";
 
 const SingleDepartment = () => {
   const { printers, computers } = useSelector((state) => state.display);
-  const {  departmentId } = useParams();
+  const {  departmentId, deviceId } = useParams();
  
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -120,12 +121,13 @@ const SingleDepartment = () => {
               alignItems="center"
               justifyContent="center"
             >
-              {printer.online && (
-                <a
+            
+                 {/* <a
                   href={`https:${printer.address}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                >
+                > */}
+                {/* <Link to={`/one-printer/${printer._id}`}> */}
                   <Printer
                     room={printer.room}
                     address={printer.address}
@@ -144,30 +146,10 @@ const SingleDepartment = () => {
                       />
                     }
                   />
-                </a>
-              )}
-              {!printer.online && (
-                
-                  <Printer
-                    room={printer.room}
-                    address={printer.address}
-                    online={printer.online}
-                    pag={printer.pag}
-                    line={printer.line}
-                    department={printer.department}
-                    description={printer.description}
-                    model={printer.model}
-                    icon={
-                      <PrintIcon
-                        sx={{
-                          color: colors.greenAccent[600],
-                          fontSize: "90px",
-                        }}
-                      />
-                    }
-                  />
-                
-              )}
+                  {/* </Link> */}
+                {/* </a> */}
+             
+            
             </Box>
           );
         })}

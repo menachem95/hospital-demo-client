@@ -106,9 +106,6 @@ const OnePrinter = () => {
 
   return (
     <>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
-      </Button>
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
@@ -121,7 +118,7 @@ const OnePrinter = () => {
             backgroundColor: colors.primary[400],
           }}
         >
-          <Grid container spacing={2}>
+          <Grid container spacing={2} margin="0px">
             <Grid xs={12} textAlign="center">
               <Grid container spacing={2}>
                 <div xs={3}
@@ -154,10 +151,10 @@ const OnePrinter = () => {
               </Grid>
             </Grid>
             <Grid xs={8}>
-              <Item>
+              
                 {" "}
                 <img src={img} height="150px" style={{ display: "flex" }} />
-              </Item>
+              
             </Grid>
             <Grid xs={4}>
               <Typography
@@ -190,7 +187,22 @@ const OnePrinter = () => {
               >
                 {pag}
               </Typography>
-              <Item>xs=4</Item>
+              <Typography
+                marginTop={"10px"}
+                variant="h5"
+                fontWeight="bold"
+                sx={{ color: colors.greenAccent[300] }}
+              >
+                {":PAG מספר"}
+              </Typography>
+              <Typography
+                variant="h3"
+                fontWeight="bold"
+                sx={{ color: colors.grey[100] }}
+              >
+                {pag}
+              </Typography>
+              
             </Grid>
             <Grid xs={4}>
               <Item>xs=4</Item>

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes, redirect } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 // import CircularProgress from '@mui/material/CircularProgress';
 // import MainWindow from './component2/MainWindow';
 import SingleDepartment from "./components/Displays/SingleDepartment";
@@ -8,7 +8,11 @@ import SingleDepartment from "./components/Displays/SingleDepartment";
 // import DisplayPrinters from './component/Displays/DisplayPrinters';
 // import Header from './component/Header/Header';
 // import AddPrinterForm from './component/AddPrinterForm';
-import { updatePrinters, updateComputers, updateTime } from "./store/displayPrintersSlice";
+import {
+  updatePrinters,
+  updateComputers,
+  updateTime,
+} from "./store/displayPrintersSlice";
 // import DisplayDepartments from './component/Displays/DisplayDepartments';
 // import EnteringPassword from './component/Admin/EnteringPassword';
 
@@ -40,51 +44,56 @@ function App() {
     let responseData = printers;
     const fetchPrinters = async () => {
       const response = await fetch(
-        "https://hospitol-demo-server.onrender.com/fetch-printers"
-        // "http://localhost:8080/fetch-printers"
-      , {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      
+        // "https://hospitol-demo-server.onrender.com/fetch-printers"
+        "http://localhost:8080/fetch-printers",
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
       responseData = await response.json();
+    
+     
 
+      // const res = await fetch(
+      //   // "https://hospitol-demo-server.onrender.com/ping"
+      //   "http://localhost:8080/ping",
+      //   {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify(
+      //       responseData.map((printer) => ({
+      //         address: printer.address,
+      //         department: printer.department,
+      //         type: printer.type,
+      //       }))
+      //     ),
+      //   }
+      // );
+      // const receivedPrinters = await res.json();
 
-      const res = await fetch(
-        "https://hospitol-demo-server.onrender.com/ping"
-        // "http://localhost:8080/ping"
-        , {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          responseData.map((printer) => ({
-            address: printer.address,
-            department: printer.department,
-            type: printer.type
-          }))
-        ),
-      });
-      const receivedPrinters = await res.json();
+      // const newPrinters = responseData
+      //   // .filter(device => device.type === "printer")
+      //   .map((printer) => {
+      //     return {
+      //       ...printer,
+      //       online: receivedPrinters.find((p) => p.address === printer.address)
+      //         .online,
+      //     };
+      //   });
+      // const newComputers = responseData
+      //   .filter((device) => device.type === "computer")
+      //   .map((computer) => {
+      //     return {
+      //       ...computer,
+      //       online: receivedPrinters.find((c) => c.address === computer.address)
+      //         .online,
+      //     };
+      //   });
 
-      const newPrinters = responseData
-      // .filter(device => device.type === "printer")
-      .map((printer) => {
-        return {
-          ...printer,
-          online: receivedPrinters.find((p) => p.address === printer.address)
-            .online,
-        };
-      });
-      const newComputers = responseData.filter(device => device.type === "computer").map((computer) => {
-        return {
-          ...computer,
-          online: receivedPrinters.find((c) => c.address === computer.address)
-            .online,
-        };
-      });
-
-      dispatch(updatePrinters(newPrinters));
-      dispatch(updateComputers(newComputers))
+      dispatch(updatePrinters(responseData));
+      // dispatch(updateComputers(newComputers));
       dispatch(updateTime());
     };
     let timer = setTimeout(function f() {
@@ -94,7 +103,7 @@ function App() {
       timer = setTimeout(f, 6000);
     }, 3000);
     return () => clearTimeout(timer);
-  }, [dispatch, printers]);
+  }, [dispatch]);
 
   return (
     <>
@@ -106,24 +115,24 @@ function App() {
             <main className="content">
               <Topbar />
               <Routes>
-                <Route path="/" element={<DashboardPrinters />}/>
-                  
-                
+                <Route path="/" element={<Navigate to="/printers" replace />} />
                 <Route path="/printers" element={<DashboardPrinters />} />
                 {/* <Route path="/computers" element={<DashboardComputers />} /> */}
                 <Route
-                  path="/departments/:departmentId"
+                  path="/:deviceId/departments/:departmentId"
                   element={<SingleDepartment />}
-                />
-                {/* <Route path='/one-printer'
-                                       element={<OnePrinter />}
-                                /> */}
+                >
+                  <Route
+                  
+                    path="/:deviceId/departments/:departmentId/one-printer"
+                    element={<OnePrinter />}
+                  />
+                </Route>
+
                 {/* <Route path="/deshboadPrinters" element={<DashboardPrinters />} /> */}
                 {/* <Route path="/deshboadComputers" element={<DashboardComputers />} /> */}
 
-                {/* <Route path='/admin/add-printer'
-                                       element={<AddPrinterForm/>}
-                                /> */}
+                <Route path="/admin/add-printer" element={<AddPrinterForm />} />
 
                 {/* <Route path="/team" element={<Team />} />
                                 <Route
@@ -142,7 +151,6 @@ function App() {
                 {/* <Route
                                     path="/geography"
                                     element={<Geography />} */}
-                                    
               </Routes>
             </main>
           </div>

@@ -203,6 +203,7 @@ const AddDeviceForm = () => {
         </Box>
           <Box
             backgroundColor={colors.primary[400]}
+            marginBottom="60px"
             sx={{ borderBottom: 1, borderColor: "divider" }}
           >
             <Tabs

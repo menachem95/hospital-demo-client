@@ -10,11 +10,11 @@ import { useSelector } from "react-redux";
 const filter = createFilterOptions();
 
 const printerInfo = {
-  address: "כתובת",
+  address: "כתובת רשת",
   room: "חדר",
   line: "מספר פורט בקיר",
   pag: "PAG",
-  description: "תיאור",
+  description: "תיאור כללי",
 };
 
 const printerInfoSelect = {
@@ -94,8 +94,9 @@ const AddPrinterForm = () => {
     <form onSubmit={formik.handleSubmit}>
       <Box
         display="grid"
-        gap="30px"
+        gap="20px"
         marginTop="30px"
+        marginBottom="40px"
         // gridTemplateColumns="repeat(4, minmax(0, 1fr))"
         justifyContent="center"
       >

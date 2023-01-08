@@ -1,1 +1,0 @@
-//Shows information and links about the printer in model
