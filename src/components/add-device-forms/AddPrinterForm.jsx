@@ -60,6 +60,7 @@ const AddPrinterForm = () => {
       });
       
       alert("המדפסת נוספה בהצלחה");
+      
 
       
 

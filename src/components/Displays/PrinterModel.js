@@ -79,12 +79,6 @@ const PrinterModel = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  let img;
-  try {
-    img = require(`./images/${printerModel}.png`);
-  } catch {
-    img = require(`./images/generic printer.png`);
-  }
 
   const {
     address,
@@ -96,6 +90,13 @@ const PrinterModel = () => {
     pag,
     online,
   } = printerModelState.printer;
+
+  let img;
+  try {
+    img = require(`./images/${printerModel}.png`);
+  } catch {
+    img = require(`./images/generic printer.png`);
+  }
 
   const handleClose = () => {
     dispatch(updatePrinterModelState({ isOpen: false }));
