@@ -50,7 +50,10 @@ const AddPrinterForm = () => {
       };
       console.log("newPrinter", newPrinter);
 
-      await fetch("http://localhost:8080/add-printer", {
+      await fetch(
+        // "http://localhost:8080/add-printer",
+      "https://hospitol-demo-server.onrender.com/add-printer",
+       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newPrinter),
