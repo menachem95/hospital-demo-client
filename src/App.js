@@ -4,6 +4,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 // import CircularProgress from '@mui/material/CircularProgress';
 // import MainWindow from './component2/MainWindow';
 import SingleDepartment from "./components/Displays/SingleDepartment";
+import ErrorServer from "./components/ErrorServer";
 
 // import DisplayPrinters from './component/Displays/DisplayPrinters';
 // import Header from './component/Header/Header';
@@ -23,7 +24,7 @@ import Sidebar from "./scenes/global/Sidebar";
 import DashboardPrinters from "./scenes/dashboardPrinters";
 import DashboardComputers from "./scenes/dashboardComputers";
 import AddPrinterForm from "./scenes/addPrinterForm";
-import OnePrinter from "./components/Displays/OnePrinter";
+// import OnePrinter from "./components/Displays/OnePrinter";
 // import Invoices from './scenes/invoices';
 // import Team from './scenes/team';
 // import Contacts from './scenes/contacts';
@@ -35,6 +36,8 @@ import OnePrinter from "./components/Displays/OnePrinter";
 // import Geography from './scenes/geography';
 import AddUserForm from "./scenes/form";
 
+let error;
+
 function App() {
   const [theme, colorMode] = useMode();
   const { printers } = useSelector((state) => state.display);
@@ -43,9 +46,10 @@ function App() {
   useEffect(() => {
     let responseData = printers;
     const fetchPrinters = async () => {
-      const response = await fetch(
-        "https://hospitol-demo-server.onrender.com/fetch-printers",
-        // "http://localhost:8080/fetch-printers",
+      try {
+        const response = await fetch(
+        // "https://hospitol-demo-server.onrender.com/fetch-printers",
+        "http://localhost:8080/fetch-printers",
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -53,6 +57,11 @@ function App() {
       );
 
       responseData = await response.json();
+      } catch (err) {
+        console.log(err)
+        error = err
+      }
+      
     
      
 
@@ -114,6 +123,7 @@ function App() {
             <Sidebar />
             <main className="content">
               <Topbar />
+              {!error ?
               <Routes>
                 <Route path="/" element={<Navigate to="/printers" replace />} />
                 <Route path="/printers" element={<DashboardPrinters />} />
@@ -122,11 +132,11 @@ function App() {
                   path="/:deviceId/departments/:departmentId"
                   element={<SingleDepartment />}
                 >
-                  <Route
+                  {/* <Route
                   
                     path="/:deviceId/departments/:departmentId/one-printer"
                     element={<OnePrinter />}
-                  />
+                  /> */}
                 </Route>
 
                 {/* <Route path="/deshboadPrinters" element={<DashboardPrinters />} /> */}
@@ -151,7 +161,9 @@ function App() {
                 {/* <Route
                                     path="/geography"
                                     element={<Geography />} */}
-              </Routes>
+              </Routes> :  <ErrorServer />}
+      
+
             </main>
           </div>
         </ThemeProvider>

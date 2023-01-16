@@ -175,7 +175,7 @@ return (
 
 
 const AddDeviceForm = () => {
-  const [value, setValue] = React.useState("computer");
+  const [value, setValue] = React.useState("printer");
 
   const handleChange = (event, value) => {
     console.log(value);
@@ -228,7 +228,7 @@ const AddDeviceForm = () => {
               />
             </Tabs>
             {value === "printer" && <AddPrinterForm />}
-            {value === "computer" && <PrintIcon/> }
+            {value === "computer" &&<h1>...הטופס בעבודות תחזוקה</h1>}
           </Box>
         </Box>
       </Box>

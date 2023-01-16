@@ -3,7 +3,6 @@ import EnteringPassword from "./EnteringPassword"
 
 const AdminMode = () => {
 return(<>
-kjljl
     <Routes>
         <Route path="/password" element={453} />
     </Routes>

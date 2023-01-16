@@ -55,7 +55,7 @@ const AddPrinterForm = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newPrinter),
       });
-
+      
       alert("המדפסת נוספה בהצלחה");
 
       
@@ -195,6 +195,7 @@ const AddPrinterForm = () => {
             />
           );
         })}
+        <input hidden name="type" value="printer" />
         <Button color="primary" variant="contained" fullWidth type="submit">
           Submit
         </Button>

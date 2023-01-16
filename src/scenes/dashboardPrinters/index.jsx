@@ -5,13 +5,14 @@ import StatBox from "../../components/StatBox";
 import PrintIcon from "@mui/icons-material/Print";
 import ProgressCircle from "../../components/ProgressCircle";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, Navigate, NavLink, useNavigate } from "react-router-dom";
 import { Skeleton } from "@mui/material";
 
 const Dashboard = () => {
-  const { printers } = useSelector((state) => state.display);
+  const { printers, search } = useSelector((state) => state.display);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
 
   const departments = [];
 
@@ -106,12 +107,39 @@ const Dashboard = () => {
             </Box>
           );
         }):
+        // Object.keys(search).map(d => {return <Box  className="link" 
+        //       key={d}
+        //       gridColumn="span 3"
+        //       gridRow="span 2"
+        //       backgroundColor={colors.primary[400]}
+        //       display="flex"
+        //       alignItems="center"
+        //       justifyContent="center"
+        //       onClick={()=> navigate(`/printers/departments/${d}`)}
+            
+        //     >
+            
+        //         <StatBox  width="100%"
+        //           display="flex"
+        //           justifyContent="center"
+        //           title={search[d].address}
+        //           // subtitle={`מדפסות מקוונות: ${onlinePrinters.length}/${allPrinters.length}`}
+        //           // online={allPrinters.length - onlinePrinters.length === 0}
+        //           icon={
+        //             <PrintIcon
+        //               sx={{
+        //                 color: colors.greenAccent[600],
+        //                 fontSize: "90px",
+        //               }}
+        //             />
+        //             }/>
+        //         </Box>})}
       
-        departments.map((d) => {
+       departments.map((d) => {
           const allPrinters = printers.filter((p) => p.department === d);
           const onlinePrinters = allPrinters.filter((p) => p.online);
           return (
-            <Box
+            <Box  className="link" 
               key={d}
               gridColumn="span 3"
               gridRow="span 2"
@@ -119,9 +147,11 @@ const Dashboard = () => {
               display="flex"
               alignItems="center"
               justifyContent="center"
+              onClick={()=> navigate(`/printers/departments/${d}`)}
+            
             >
-              <Link to={`departments/${d}`} className="link">
-                <StatBox
+            
+                 <StatBox  width="100%"
                   display="flex"
                   justifyContent="center"
                   title={d}
@@ -136,50 +166,18 @@ const Dashboard = () => {
                     />
                   }
                 />
-              </Link>
-            </Box>
-          );
-        })}
+           
+             </Box>
+           );
+        
+      }
+        )
+        } 
 
         {/* ROW 2 */}
-        <Box
-          gridColumn="span 10"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-          <Box
-            gridColumn="span 4"
-            gridRow="span 2"
-            backgroundColor={colors.primary[400]}
-            p="30px"
-          >
-            <Typography variant="h5" fontWeight="600">
-              Campaign
-            </Typography>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              mt="25px"
-            >
-              <ProgressCircle size="125" />
-              <Typography
-                variant="h5"
-                color={colors.greenAccent[500]}
-                sx={{ mt: "15px" }}
-              >
-                $48,352 revenue generated
-              </Typography>
-              <Typography>
-                Includes extra misc expenditures and costs
-              </Typography>
-            </Box>
-          </Box>
         </Box>
-      </Box>
-      {/* ROW 3 */}
-    </Box>
-  );
-};
+      </Box>  )
+                    }
+;
 
 export default Dashboard;

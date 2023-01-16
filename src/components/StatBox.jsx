@@ -2,6 +2,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { Skeleton } from "@mui/material";
 import { tokens } from "../theme";
 import { useSelector } from "react-redux";
+import { motion } from 'framer-motion';
 
 const StatBox = ({ title, subtitle, icon, totalPrinters, online }) => {
   const theme = useTheme();
@@ -42,7 +43,23 @@ const StatBox = ({ title, subtitle, icon, totalPrinters, online }) => {
 
       <Box display="flex" justifyContent="center" mt="3px" mb="0" height="50px">
         {/* <Skeleton variant='rectangular' style={{borderRadius: "50%", height: 20, width: 20, alignSelf:"flex-end" }} /> */}
-        <div
+        <motion.div
+                 key={online}
+                initial={{ opacity: 1, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  default: {
+                    duration: 0.3,
+                    ease: [0, 0.71, 0.2, 1.01],
+                  },
+                  scale: {
+                    type: "spring",
+                    damping: 5,
+                    stiffness: 100,
+                    restDelta: 0.001,
+                  },
+                }}
+      
           style={{
             backgroundColor: online ? "#00FF00" : "red",
             borderRadius: "50%",
