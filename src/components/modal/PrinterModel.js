@@ -131,10 +131,13 @@ const PrinterModel = () => {
         >
           <Grid container spacing={2} margin="0px">
             <Grid xs={4} sx={{ display: "flex", alignSelf: "center" }}>
-              <a
+             {online&&
+                
+                <a
                 href={`https://${address}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                
               >
                 <Item
                   className="link"
@@ -146,7 +149,7 @@ const PrinterModel = () => {
                 >
                   מעבר למדפסת
                 </Item>
-              </a>
+              </a>}
             </Grid>
             <Grid
               xs={4}

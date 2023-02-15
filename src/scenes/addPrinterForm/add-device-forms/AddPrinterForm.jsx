@@ -1,5 +1,5 @@
 import TextField from "@mui/material/TextField";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 import { Box, useTheme, Button } from "@mui/material";
 import { useState } from "react";
 import * as yup from "yup";
@@ -35,9 +35,6 @@ const AddPrinterForm = () => {
   const { printers } = useSelector((state) => state.display);
   const [departmentValue, setDepartmentValue] = useState("");
   const [printerModelValue, setPrinterModelValue] = useState("");
-  
-
-  
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -51,48 +48,43 @@ const AddPrinterForm = () => {
       console.log("newPrinter", newPrinter);
 
       await fetch(
-        // "http://localhost:8080/add-printer",
-      "https://hospitol-demo-server.onrender.com/add-printer",
-       {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPrinter),
-      });
-      
+        "http://localhost:8080/add-printer",
+        // "https://hospitol-demo-server.onrender.com/add-printer",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newPrinter),
+        }
+      );
+
       alert("המדפסת נוספה בהצלחה");
-      
-
-      
-
     },
   });
 
   if (!printers || printers.length < 0) {
     return;
   }
-  
-  
-  const departmentsSelect = []
+
+  const departmentsSelect = [];
   for (let printer of printers) {
     if (!departmentsSelect.includes(printer.department)) {
       departmentsSelect.push(printer.department);
     }
   }
 
-  const printerModelsSelect = []
+  const printerModelsSelect = [];
   for (let printer of printers) {
     if (!printerModelsSelect.includes(printer.printerModel)) {
       printerModelsSelect.push(printer.printerModel);
     }
   }
 
-
   const select = {
     department: [setDepartmentValue, departmentsSelect],
     printerModel: [setPrinterModelValue, printerModelsSelect],
   };
 
-  console.log(departmentsSelect)
+  console.log(departmentsSelect);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -135,22 +127,8 @@ const AddPrinterForm = () => {
               handleHomeEndKeys
               options={select[value][1]}
               getOptionLabel={(option) => {
-                // Value selected with enter, right from the input
-                // if (typeof option === 'string') {
-                //   return option;
-                // }
-                // // Add "xxx" option created dynamically
-                // if (option.inputValue) {
-                //   return option.inputValue;
-                // }
-                // // Regular option
                 return option;
               }}
-              // renderOption={(props, option) => (
-              //   <li sx={{ color: "red" }} {...props}>
-              //     {option}
-              //   </li>
-              // )}
               sx={{ width: 300 }}
               freeSolo
               renderInput={(params) => (
@@ -159,13 +137,18 @@ const AddPrinterForm = () => {
                   label={printerInfoSelect[value]}
                   variant="filled"
                   sx={{
-                    // gridColumn: "span 4",
                     width: "300px",
 
                     "& label": {
+                      width: "100%",
+                      textAlign: "end",
+                       transformOrigin: "center",
                       "&.Mui-focused": {
                         color: "secondary.main",
+                        width: "106%",
+                        // marginBlockEnd: "1000px"
                       },
+                      // color: "red",
                     },
                   }}
                 />
@@ -184,8 +167,12 @@ const AddPrinterForm = () => {
 
                 "& label": {
                   // marginLeft: "50%",
+                  width: "100%",
+                  textAlign: "end",
+                   transformOrigin: "center",
                   "&.Mui-focused": {
                     color: "secondary.main",
+                    width: "106%",
                   },
                 },
               }}

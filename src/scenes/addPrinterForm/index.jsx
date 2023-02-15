@@ -13,7 +13,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import Autocomplete from '@mui/material/Autocomplete';
 import { useSelector } from "react-redux";
-import AddPrinterForm from "../../components/add-device-forms/AddPrinterForm";
+import AddPrinterForm from "./add-device-forms/AddPrinterForm";
 
 
 const checkoutSchema = yup.object().shape({

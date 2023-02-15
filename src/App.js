@@ -6,6 +6,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import SingleDepartment from "./components/Displays/SingleDepartment";
 import ErrorServer from "./components/ErrorServer";
 
+
 // import DisplayPrinters from './component/Displays/DisplayPrinters';
 // import Header from './component/Header/Header';
 // import AddPrinterForm from './component/AddPrinterForm';
@@ -35,6 +36,7 @@ import AddPrinterForm from "./scenes/addPrinterForm";
 // import Form from './scenes/form';
 // import Geography from './scenes/geography';
 import AddUserForm from "./scenes/form";
+import DeleteDevice from "./scenes/DeledeDevice";
 
 let error;
 
@@ -48,8 +50,9 @@ function App() {
     const fetchPrinters = async () => {
       try {
         const response = await fetch(
-        "https://hospitol-demo-server.onrender.com/fetch-printers",
-        // "http://localhost:8080/fetch-printers",
+        
+        //  "https://hospitol-demo-server.onrender.com/fetch-printers",
+        "http://localhost:8080/fetch-printers",
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -143,6 +146,7 @@ function App() {
                 {/* <Route path="/deshboadComputers" element={<DashboardComputers />} /> */}
 
                 <Route path="/admin/add-printer" element={<AddPrinterForm />} />
+                <Route path="/admin/delete-printer" element={<DeleteDevice />} />
 
                 {/* <Route path="/team" element={<Team />} />
                                 <Route

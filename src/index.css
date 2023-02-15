@@ -43,10 +43,20 @@ a, a:hover, a:focus, a:active {
     display: flex;
   }
 
-.link:hover, .link:focus, .link:active {
+.link:hover, 
+.link:focus, 
+.link:active
+{
     border: #555 solid 2px;
-    cursor:pointer;
+    cursor: pointer;
 }
+
+.disabled, .disabled:hover, .disabled:focus, .disabled:active {
+    color: #555;
+    cursor: default;
+    pointer-events: none;
+}
+
 
 
 

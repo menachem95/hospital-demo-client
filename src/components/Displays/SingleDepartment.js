@@ -8,7 +8,7 @@ import PrintIcon from "@mui/icons-material/Print";
 import ComputerIcon from "@mui/icons-material/Computer";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import PrinterModel from "./PrinterModel";
+import PrinterModel from "../modal/PrinterModel";
 import { updatePrinterModelState } from "../../store/displayPrintersSlice";
 
 const SingleDepartment = () => {

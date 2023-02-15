@@ -17,13 +17,17 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import PrintIcon from "@mui/icons-material/Print";
 import ComputerIcon from "@mui/icons-material/Computer";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ChangeCircleOutlinedIcon from "@mui/icons-material/ChangeCircleOutlined";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
+const Item = ({ title, to, icon, selected, setSelected, className }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
     <MenuItem
+      className={className}
       active={selected === title}
       style={{
         color: colors.grey[100],
@@ -31,8 +35,8 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       onClick={() => setSelected(title)}
       icon={icon}
     >
-      <Typography>{title}</Typography>
-      <Link to={to} />
+      <Typography className={className}>{title}</Typography>
+      <Link to={to} className={className} />
     </MenuItem>
   );
 };
@@ -121,6 +125,13 @@ const Sidebar = () => {
           )}
 
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Dashboard
+            </Typography>
             <Item
               title="Printers Dashboard"
               to="/printers"
@@ -148,17 +159,33 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              action
+              Action
             </Typography>
             <Item
               title="Add Device"
               to="/admin/add-printer"
-              icon={<AddIcon />}
+              icon={<AddCircleOutlineIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              className="disabled"
+              title="Delete Device"
+              to="/admin/delete-printer"
+              icon={<RemoveCircleOutlineIcon className="disabled" />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              className="disabled"
+              title="Update Device"
+              to="/admin/delete-printer"
+              icon={<ChangeCircleOutlinedIcon className="disabled" />}
               selected={selected}
               setSelected={setSelected}
             />
 
-            <Typography
+            {/* <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
@@ -243,7 +270,7 @@ const Sidebar = () => {
               icon={<TimelineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
           </Box>
         </Menu>
       </ProSidebar>
