@@ -35,7 +35,8 @@ const Dashboard = () => {
         justifyContent="space-between"
         alignItems="center"
         position="sticky"
-        top="80px"
+        // top="80px"
+        top={"5%"}
       >
         <Header
           title={printers.length === 0 ? "...טוען נתונים מהשרת" : "דשבורד מדפסות"}
@@ -50,6 +51,15 @@ const Dashboard = () => {
         gridTemplateColumns="repeat(12, 1fr)"
         gridAutoRows="140px"
         gap="20px"
+        sx={{
+          mb: 2,
+          // display: "flex",
+          flexDirection: "column",
+          height: 700,
+          overflow: "hidden",
+          overflowY: "scroll",
+         // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
+        }}
       >
         {printers.length === 0 ? Array.from(Array(8).keys()).map((d) => {
           return (

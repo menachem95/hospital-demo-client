@@ -51,8 +51,8 @@ function App() {
       try {
         const response = await fetch(
         
-         "https://hospitol-demo-server.onrender.com/fetch-printers",
-        // "http://localhost:8080/fetch-printers",
+        // "https://hospitol-demo-server.onrender.com/fetch-printers",
+         "http://localhost:8080/fetch-printers",
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },

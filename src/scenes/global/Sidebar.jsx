@@ -147,13 +147,13 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             ></Typography>
-            <Item
+            {/* <Item
               title="Computers Dashboard"
               to="/computers"
               icon={<ComputerIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -168,7 +168,7 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
+            {/* <Item
               className="disabled"
               title="Delete Device"
               to="/admin/delete-printer"
@@ -183,7 +183,7 @@ const Sidebar = () => {
               icon={<ChangeCircleOutlinedIcon className="disabled" />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
 
             {/* <Typography
               variant="h6"

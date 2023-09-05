@@ -1,6 +1,7 @@
 import { Box, Typography, useTheme } from '@mui/material';
 import { tokens } from '../theme';
 import { motion } from 'framer-motion';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Printer = ({ room, address, icon, totalPrinters, online }) => {
     const theme = useTheme();
@@ -11,6 +12,7 @@ const Printer = ({ room, address, icon, totalPrinters, online }) => {
         <Box width="100%" m="0 30px">
             {/* {online && <a href={`https:${address}`} target="_blank" rel="noopener noreferrer"></a>} */}
             <Box display="flex" justifyContent="center" textAlign="center">
+              <DeleteIcon onClick={()=>{console.log("dfdf")}} />
                 <Box>
                     {icon}
                     <Typography
