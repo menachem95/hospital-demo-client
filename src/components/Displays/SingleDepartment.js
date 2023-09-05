@@ -137,22 +137,23 @@ const SingleDepartment = () => {
                 > */}
                 {/* <Link to={`/one-printer/${printer._id}`}> */}
                 <Printer
-                  room={printer.room}
-                  address={printer.address}
-                  online={printer.online}
-                  pag={printer.pag}
-                  line={printer.line}
-                  department={printer.department}
-                  description={printer.description}
-                  model={printer.model}
-                  icon={
-                    <PrintIcon
-                      sx={{
-                        color: colors.greenAccent[600],
-                        fontSize: "90px",
-                      }}
-                    />
-                  }
+                printer={printer}
+                  // room={printer.room}
+                  // address={printer.address}
+                  // online={printer.online}
+                  // pag={printer.pag}
+                  // line={printer.line}
+                  // department={printer.department}
+                  // description={printer.description}
+                  // model={printer.model}
+                  // icon={
+                  //   <PrintIcon
+                  //     sx={{
+                  //       color: colors.greenAccent[600],
+                  //       fontSize: "90px",
+                  //     }}
+                  //   />
+                  // }
                 />
                 {/* </Link> */}
                 {/* </a> */}
