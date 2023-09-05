@@ -1,6 +1,8 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
@@ -27,6 +29,23 @@ import {
   updatePrinterModelStateOnline,
 } from "../../store/displayPrintersSlice";
 import { Link } from "react-router-dom";
+
+
+const deletePrinter = async (pag) => {
+  await fetch(
+    `http://localhost:8080/delete-printer/${pag}`,
+    // "https://hospitol-demo-server.onrender.com/add-printer",
+    {
+      method: "DELETE",
+      // headers: { "Content-Type": "application/json" },
+    
+      // body: JSON.stringify(pag),
+    }
+    
+  );
+
+  alert("המדפסת הוסרה בהצלחה");
+}
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -123,6 +142,8 @@ const PrinterModel = () => {
         aria-labelledby="customized-dialog-title"
         open={printerModelState.isOpen}
       >
+         
+         
         <Box
           textAlign="end"
           style={{
@@ -131,6 +152,13 @@ const PrinterModel = () => {
         >
           <Grid container spacing={2} margin="0px">
             <Grid xs={4} sx={{ display: "flex", alignSelf: "center" }}>
+            <IconButton onClick={() => { 
+                      deletePrinter(pag);
+              
+                      handleClose()
+                    }}>
+                    <DeleteIcon  />     
+                         </IconButton>
              {online&&
                 
                 <a
@@ -150,6 +178,7 @@ const PrinterModel = () => {
                   מעבר למדפסת
                 </Item>
               </a>}
+              
             </Grid>
             <Grid
               xs={4}

@@ -1,8 +1,7 @@
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import { tokens } from '../theme';
 import { motion } from 'framer-motion';
 import PrintIcon from "@mui/icons-material/Print";
-import DeleteIcon from '@mui/icons-material/Delete';
 
 const Printer = ( {printer}
     // {room, address, icon, totalPrinters, online }
@@ -12,10 +11,11 @@ const Printer = ( {printer}
 const {room, address, icon, totalPrinters, online } = printer;
     return (
        
-        <Box width="100%" m="0 30px">
+        <Box width="100%" m="0 30px"  >
+          
             {/* {online && <a href={`https:${address}`} target="_blank" rel="noopener noreferrer"></a>} */}
             <Box display="flex" justifyContent="center" textAlign="center">
-              {/* <DeleteIcon onClick={()=>{console.log("dfdf")}} /> */}
+            
                 <Box>
                 <PrintIcon
                       sx={{

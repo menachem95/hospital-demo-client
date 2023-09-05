@@ -136,7 +136,7 @@ const SingleDepartment = () => {
                   rel="noopener noreferrer"
                 > */}
                 {/* <Link to={`/one-printer/${printer._id}`}> */}
-                <Printer
+                <Printer 
                 printer={printer}
                   // room={printer.room}
                   // address={printer.address}
