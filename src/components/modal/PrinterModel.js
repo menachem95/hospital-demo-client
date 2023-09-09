@@ -1,7 +1,13 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { Input } from "@mui/material";
+import { TextField } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
+import ClearIcon from "@mui/icons-material/Clear";
+import PrinterInfoItem from "../UI/PrinterInfoItem";
 
 
 import PropTypes from "prop-types";
@@ -13,6 +19,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save";
 import Typography from "@mui/material/Typography";
 import { Box, useTheme } from "@mui/material";
 import PrintDisabledIcon from "@mui/icons-material/PrintDisabled";
@@ -29,23 +36,19 @@ import {
   updatePrinterModelStateOnline,
 } from "../../store/displayPrintersSlice";
 import { Link } from "react-router-dom";
+import { Formik } from "formik";
 
-
-const deletePrinter = async (pag) => {
+const deletePrinter = async (_id) => {
   await fetch(
-    `http://localhost:8080/delete-printer/${pag}`,
-    // "https://hospitol-demo-server.onrender.com/add-printer",
+    `http://localhost:8080/delete-printer/${_id}`,
+
     {
       method: "DELETE",
-      // headers: { "Content-Type": "application/json" },
-    
-      // body: JSON.stringify(pag),
     }
-    
   );
 
   alert("המדפסת הוסרה בהצלחה");
-}
+};
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -94,12 +97,16 @@ BootstrapDialogTitle.propTypes = {
 };
 
 const PrinterModel = () => {
+  const [editMode, setEditMode] = useState(false);
   const { printerModelState, printers } = useSelector((state) => state.display);
   const dispatch = useDispatch();
+  const [editedPrinter, setEditedPrinter] = useState(printerModelState.printer);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const {
+    _id,
     address,
     department,
     room,
@@ -120,6 +127,42 @@ const PrinterModel = () => {
   const handleClose = () => {
     dispatch(updatePrinterModelState({ isOpen: false }));
   };
+  
+  const onBlurHandler = (input) => {
+    
+    const { name, value } = input;
+    
+    const ll = Object.keys(printerModelState.printer["printerModel"])//[name][0]
+    console.log("ll: ", ll);
+    console.log("input:", input)
+    setEditedPrinter({...editedPrinter, [name] : value})
+    
+  }
+
+  const onSubmit = async (value) => {
+    console.log("editedPrinter:", editedPrinter)
+    await fetch(
+      "http://localhost:8080/edit-printer",
+      // "https://hospitol-demo-server.onrender.com/edit-printer",
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editedPrinter),
+      }
+    );
+
+    // alert("המדפסת נוספה בהצלחה");
+  };
+
+  const editPrinter = async (value) => {
+    if (editMode) {
+      if (window.confirm("האם ברצונך לשמור את השינויים?")) {
+        onSubmit(value);
+        alert("השינויים נשמרו");
+      }
+    }
+    setEditMode(!editMode);
+  };
 
   useEffect(() => {
     dispatch(
@@ -135,15 +178,38 @@ const PrinterModel = () => {
     );
   }, [printers]);
 
+  // const formik = useFormik({
+  //   initialValues: initialValues,
+  //   validationSchema: validationSchema,
+  //   onSubmit: async (value) => {
+  //     const newPrinter = {
+  //       ...value,
+  //       // department: departmentValue,
+  //       // printerModel: printerModelValue,
+  //     };
+  //     console.log("newPrinter", newPrinter);
+
+  //     await fetch(
+  //       // "http://localhost:8080/add-printer",
+  //       "https://hospitol-demo-server.onrender.com/add-printer",
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify(newPrinter),
+  //       }
+  //     );
+
+  //     alert("המדפסת נוספה בהצלחה");
+  //   },
+  // });
+
   return (
-    <>
+    <form>
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={printerModelState.isOpen}
       >
-         
-         
         <Box
           textAlign="end"
           style={{
@@ -152,33 +218,43 @@ const PrinterModel = () => {
         >
           <Grid container spacing={2} margin="0px">
             <Grid xs={4} sx={{ display: "flex", alignSelf: "center" }}>
-            <IconButton onClick={() => { 
-                      deletePrinter(pag);
-              
-                      handleClose()
-                    }}>
-                    <DeleteIcon  />     
-                         </IconButton>
-             {online&&
-                
-                <a
-                href={`https://${address}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                
+              <IconButton
+                title="הסרה"
+                onClick={() => {
+                  deletePrinter(_id);
+
+                  handleClose();
+                }}
               >
-                <Item
-                  className="link"
-                  style={{
-                    color: colors.greenAccent[300],
-                    backgroundColor: colors.primary[600],
-                    width: "100%",
-                  }}
+                <DeleteIcon />
+              </IconButton>
+              <IconButton
+                title="עריכה"
+                type="submit"
+                onClick={() => {
+                  editPrinter();
+                }}
+              >
+                {!editMode ? <EditIcon /> : <SaveIcon />}
+              </IconButton>
+              {online && (
+                <a
+                  href={`https://${address}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  מעבר למדפסת
-                </Item>
-              </a>}
-              
+                  <Item
+                    className="link"
+                    style={{
+                      color: colors.greenAccent[300],
+                      backgroundColor: colors.primary[600],
+                      width: "100%",
+                    }}
+                  >
+                    מעבר למדפסת
+                  </Item>
+                </a>
+              )}
             </Grid>
             <Grid
               xs={4}
@@ -262,7 +338,10 @@ const PrinterModel = () => {
                       marginTop={"10px"}
                       variant="h3"
                       fontWeight="bold"
-                      sx={{ color: colors.greenAccent[300] }}
+                      sx={{
+                        textDecoration: "underline",
+                        color: colors.greenAccent[300],
+                      }}
                     >
                       {":פרטי המדפסת"}
                     </Typography>
@@ -277,56 +356,29 @@ const PrinterModel = () => {
                     />
                   </Grid>
                   <Grid xs={6}>
-                    {" "}
-                    <Typography
-                      marginTop={"10px"}
-                      variant="h5"
-                      fontWeight="bold"
-                      sx={{ color: colors.greenAccent[300] }}
-                    >
-                      {":דגם"}
-                    </Typography>
-                    <Typography
-                      variant="h3"
-                      fontWeight="bold"
-                      sx={{ color: colors.grey[100] }}
-                    >
-                      {printerModel}
-                    </Typography>
-                    <Typography
-                      marginTop={"10px"}
-                      variant="h5"
-                      fontWeight="bold"
-                      sx={{ color: colors.greenAccent[300] }}
-                    >
-                      {":PAG מספר"}
-                    </Typography>
-                    <Typography
-                      variant="h3"
-                      fontWeight="bold"
-                      sx={{ color: colors.grey[100] }}
-                    >
-                      {pag}
-                    </Typography>
+                    <PrinterInfoItem
+                      title={":דגם"}
+                      subTitle={printerModel}
+                      editMode={editMode}
+                      blur={onBlurHandler}
+                    />
+
+                    <PrinterInfoItem
+                      title={":PAG מספר"}
+                      subTitle={pag}
+                      editMode={editMode}
+                    />
                   </Grid>
                   <Grid xs={12}>
-                    <Typography
-                      marginTop={"10px"}
-                      variant="h5"
-                      fontWeight="bold"
-                      sx={{ color: colors.greenAccent[300] }}
-                    >
-                      {":פרטים נוספים"}
-                    </Typography>
-                    <Typography
-                      variant="h3"
-                      fontWeight="bold"
-                      sx={{ color: colors.grey[100] }}
-                    >
-                      {description.trim() !== ""
-                        ? description
-                        : "לא נרשמו פרטים נוספים"}
-                    </Typography>
+                    <PrinterInfoItem
+                      title={":פרטים נוספים"}
+                      subTitle={
+                        description.trim() !== ""
+                          ? description
+                          : "לא נרשמו פרטים נוספים"
+                      }
+                      editMode={editMode}
+                    />
                   </Grid>
                 </Grid>
               </Item>
@@ -356,42 +408,26 @@ const PrinterModel = () => {
                     marginTop={"15px"}
                     variant="h3"
                     fontWeight="bold"
-                    sx={{ color: colors.greenAccent[300] }}
+                    sx={{
+                      textDecoration: "underline",
+                      color: colors.greenAccent[300],
+                    }}
                   >
                     {":נתוני רשת"}
                   </Typography>
                 </Grid>
                 <Grid xs={12}>
-                  <Typography
-                    marginTop={"10px"}
-                    variant="h5"
-                    fontWeight="bold"
-                    sx={{ color: colors.greenAccent[300] }}
-                  >
-                    {":כתובת רשת"}
-                  </Typography>
-                  <Typography
-                    variant="h3"
-                    fontWeight="bold"
-                    sx={{ color: colors.grey[100] }}
-                  >
-                    {address}
-                  </Typography>
-                  <Typography
-                    marginTop={"10px"}
-                    variant="h5"
-                    fontWeight="bold"
-                    sx={{ color: colors.greenAccent[300] }}
-                  >
-                    {":נקודה בקיר"}
-                  </Typography>
-                  <Typography
-                    variant="h3"
-                    fontWeight="bold"
-                    sx={{ color: colors.grey[100] }}
-                  >
-                    {line}
-                  </Typography>
+                  <PrinterInfoItem
+                    title={":כתובת רשת"}
+                    subTitle={address}
+                    editMode={editMode}
+                  />
+
+                  <PrinterInfoItem
+                    title={":נקודה בקיר"}
+                    subTitle={line}
+                    editMode={editMode}
+                  />
                 </Grid>
                 <Grid xs={12}>
                   {" "}
@@ -399,124 +435,35 @@ const PrinterModel = () => {
                     marginTop={"15px"}
                     variant="h3"
                     fontWeight="bold"
-                    sx={{ color: colors.greenAccent[300] }}
+                    sx={{
+                      textDecoration: "underline",
+                      color: colors.greenAccent[300],
+                    }}
                   >
                     {":מיקום"}
                   </Typography>
                 </Grid>
                 <Grid xs={12}>
-                  <Typography
-                    marginTop={"10px"}
-                    variant="h5"
-                    fontWeight="bold"
-                    sx={{ color: colors.greenAccent[300] }}
-                  >
-                    {":מחלקה"}
-                  </Typography>
-                  <Typography
-                    variant="h3"
-                    fontWeight="bold"
-                    sx={{ color: colors.grey[100] }}
-                  >
-                    {department}
-                  </Typography>
-                  <Typography
-                    marginTop={"10px"}
-                    variant="h5"
-                    fontWeight="bold"
-                    sx={{ color: colors.greenAccent[300] }}
-                  >
-                    {":חדר"}
-                  </Typography>
-                  <Typography
-                    variant="h3"
-                    fontWeight="bold"
-                    sx={{ color: colors.grey[100] }}
-                  >
-                    {room}
-                  </Typography>
+                  <PrinterInfoItem
+                    title={":מחלקה"}
+                    subTitle={department}
+                    editMode={editMode}
+                  />
+
+                  <PrinterInfoItem
+                    title={":חדר"}
+                    subTitle={room}
+                    editMode={editMode}
+                  />
                 </Grid>
               </Item>
             </Grid>
           </Grid>
-          {/* <div
-                  xs={3}
-                  style={{
-                    backgroundColor: true ? "#00FF00" : "red",
-                    borderRadius: "50%",
-                    height: 30,
-                    width: 30,
-                    alignSelf: "flex-end",
-                    display: "inline-block",
-                    margin: 40,
-                    marginBottom: 0,
-                  }}
-                ></div> */}
-
-          {/* <Grid xs={4}>
-              <img
-                alt={printerModel}
-                src={require(`./images/${printerModel}.png`)}
-                max-height="250px"
-                width="200px"
-                style={{ display: "flex" }}
-              />
-            </Grid>
-            <Grid xs={4}>
-              <Typography
-                marginTop={"10px"}
-                variant="h5"
-                fontWeight="bold"
-                sx={{ color: colors.greenAccent[300] }}
-              >
-                {":כתובת רשת"}
-              </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                sx={{ color: colors.grey[100] }}
-              >
-                {address}
-              </Typography>
-              <Typography
-                marginTop={"10px"}
-                variant="h5"
-                fontWeight="bold"
-                sx={{ color: colors.greenAccent[300] }}
-              >
-                {":מספר נקודה בקיר"}
-              </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                sx={{ color: colors.grey[100] }}
-              >
-                {line}
-              </Typography>
-              <Typography
-                marginTop={"10px"}
-                variant="h5"
-                fontWeight="bold"
-                sx={{ color: colors.greenAccent[300] }}
-              >
-                {":PAG מספר"}
-              </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                sx={{ color: colors.grey[100] }}
-              >
-                {pag}
-              </Typography>
-            </Grid> */}
-
-          {/* <Grid xs={8}>
-              <Item>xs=8</Item>
-            </Grid> */}
-          {/* </Grid> */}
+          {/* <CheckIcon />
+          <ClearIcon /> */}
         </Box>
       </BootstrapDialog>
-    </>
+    </form>
   );
 };
 
