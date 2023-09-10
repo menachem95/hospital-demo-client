@@ -112,7 +112,7 @@ function App() {
       console.log("sending printers");
 
       fetchPrinters();
-      timer = setTimeout(f, 60000);
+      timer = setTimeout(f, 45000);
     }, 1000);
     return () => clearTimeout(timer);
   }, [dispatch]);

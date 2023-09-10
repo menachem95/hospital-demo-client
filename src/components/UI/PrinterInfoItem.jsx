@@ -21,7 +21,7 @@ const PrinterInfoItem = ({ title, subTitle, editMode, blur }) => {
         fontWeight="bold"
         sx={{ color: colors.greenAccent[300] }}
       >
-        {title}
+        {`:${title}`}
       </Typography>
       <Typography
         variant="h3"
@@ -33,7 +33,7 @@ const PrinterInfoItem = ({ title, subTitle, editMode, blur }) => {
         ) : (
           <Input
         
-          onBlur={(e) => blur({name: "printerModel", value: e.target.value})}
+          onBlur={(e) => blur({name: title, value: e.target.value})}
             inputProps={{
               sx: {
                 "&::placeholder": {

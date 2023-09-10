@@ -9,7 +9,6 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import PrinterInfoItem from "../UI/PrinterInfoItem";
 
-
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
@@ -37,6 +36,16 @@ import {
 } from "../../store/displayPrintersSlice";
 import { Link } from "react-router-dom";
 import { Formik } from "formik";
+
+const printerKey = {
+  address: "כתובת רשת",
+  department: "מחלקה",
+  room: "חדר",
+  description: "פרטים נוספים",
+  printerModel: "דגם",
+  line: "נקודה בקיר",
+  pag: "PAG מספר",
+};
 
 const deletePrinter = async (_id) => {
   await fetch(
@@ -124,23 +133,29 @@ const PrinterModel = () => {
     img = require(`./images/generic printer.png`);
   }
 
+  const findKeyByValue = (obj, value) => {
+    for (let key in obj) {
+      if (obj[key] === value) {
+        return key;
+      }
+    }
+    return null;
+  };
+
   const handleClose = () => {
     dispatch(updatePrinterModelState({ isOpen: false }));
   };
-  
+
   const onBlurHandler = (input) => {
-    
     const { name, value } = input;
-    
-    const ll = Object.keys(printerModelState.printer["printerModel"])//[name][0]
-    console.log("ll: ", ll);
-    console.log("input:", input)
-    setEditedPrinter({...editedPrinter, [name] : value})
-    
-  }
+    const key = findKeyByValue(printerKey, name);
+    // console.log("input:", input);
+    // console.log("key:", key);
+    setEditedPrinter({ ...editedPrinter, [key]: value });
+  };
 
   const onSubmit = async (value) => {
-    console.log("editedPrinter:", editedPrinter)
+    console.log("editedPrinter:", editedPrinter);
     await fetch(
       "http://localhost:8080/edit-printer",
       // "https://hospitol-demo-server.onrender.com/edit-printer",
@@ -150,8 +165,6 @@ const PrinterModel = () => {
         body: JSON.stringify(editedPrinter),
       }
     );
-
-    // alert("המדפסת נוספה בהצלחה");
   };
 
   const editPrinter = async (value) => {
@@ -229,7 +242,7 @@ const PrinterModel = () => {
                 <DeleteIcon />
               </IconButton>
               <IconButton
-                title="עריכה"
+                title={!editMode ? "עריכה" : "שמירה"}
                 type="submit"
                 onClick={() => {
                   editPrinter();
@@ -357,27 +370,32 @@ const PrinterModel = () => {
                   </Grid>
                   <Grid xs={6}>
                     <PrinterInfoItem
-                      title={":דגם"}
+                      // title={":דגם"}
+                      title={printerKey.printerModel}
                       subTitle={printerModel}
                       editMode={editMode}
                       blur={onBlurHandler}
                     />
 
                     <PrinterInfoItem
-                      title={":PAG מספר"}
+                      // title={":PAG מספר"}
+                      title={printerKey.pag}
                       subTitle={pag}
                       editMode={editMode}
+                      blur={onBlurHandler}
                     />
                   </Grid>
                   <Grid xs={12}>
                     <PrinterInfoItem
-                      title={":פרטים נוספים"}
+                      // title={":פרטים נוספים"}
+                      title={printerKey.description}
                       subTitle={
                         description.trim() !== ""
                           ? description
                           : "לא נרשמו פרטים נוספים"
                       }
                       editMode={editMode}
+                      blur={onBlurHandler}
                     />
                   </Grid>
                 </Grid>
@@ -418,15 +436,19 @@ const PrinterModel = () => {
                 </Grid>
                 <Grid xs={12}>
                   <PrinterInfoItem
-                    title={":כתובת רשת"}
+                    // title={":כתובת רשת"}
+                    title={printerKey.address}
                     subTitle={address}
                     editMode={editMode}
+                    blur={onBlurHandler}
                   />
 
                   <PrinterInfoItem
-                    title={":נקודה בקיר"}
+                    // title={":נקודה בקיר"}
+                    title={printerKey.line}
                     subTitle={line}
                     editMode={editMode}
+                    blur={onBlurHandler}
                   />
                 </Grid>
                 <Grid xs={12}>
@@ -445,15 +467,19 @@ const PrinterModel = () => {
                 </Grid>
                 <Grid xs={12}>
                   <PrinterInfoItem
-                    title={":מחלקה"}
+                    // title={":מחלקה"}
+                    title={printerKey.department}
                     subTitle={department}
                     editMode={editMode}
+                    blur={onBlurHandler}
                   />
 
                   <PrinterInfoItem
-                    title={":חדר"}
+                    // title={":חדר"}
+                    title={printerKey.room}
                     subTitle={room}
                     editMode={editMode}
+                    blur={onBlurHandler}
                   />
                 </Grid>
               </Item>
