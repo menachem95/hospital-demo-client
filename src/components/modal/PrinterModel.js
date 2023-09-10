@@ -8,6 +8,7 @@ import { TextField } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import PrinterInfoItem from "../UI/PrinterInfoItem";
+import { updatePrinters, updatePrinterModelStatePrinter } from "../../store/displayPrintersSlice";
 
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
@@ -47,17 +48,7 @@ const printerKey = {
   pag: "PAG מספר",
 };
 
-const deletePrinter = async (_id) => {
-  await fetch(
-    `http://localhost:8080/delete-printer/${_id}`,
 
-    {
-      method: "DELETE",
-    }
-  );
-
-  alert("המדפסת הוסרה בהצלחה");
-};
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -157,7 +148,8 @@ const PrinterModel = () => {
   const onSubmit = async (value) => {
     console.log("editedPrinter:", editedPrinter);
     await fetch(
-      "http://localhost:8080/edit-printer",
+      `${process.env.REACT_APP_BACKEND_URL}/edit-printer`,
+      // "http://localhost:8080/edit-printer",
       // "https://hospitol-demo-server.onrender.com/edit-printer",
       {
         method: "PUT",
@@ -165,6 +157,30 @@ const PrinterModel = () => {
         body: JSON.stringify(editedPrinter),
       }
     );
+    const newPrinters = [...printers]
+    for (let i = 0; i < newPrinters.length; i++) {
+     if(newPrinters[i]._id === editedPrinter._id){
+      newPrinters[i] = {...editedPrinter}
+      console.log("newPrinters[i]:", newPrinters[i])
+      break;
+     }
+      
+    }
+    dispatch(updatePrinters(newPrinters));
+    dispatch(updatePrinterModelStatePrinter(editedPrinter))
+  };
+
+  const deletePrinter = async (_id) => {
+    await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/delete-printer/${_id}`,
+  
+      {
+        method: "DELETE",
+      }
+    );
+  
+    alert("המדפסת הוסרה בהצלחה");
+    dispatch(updatePrinters(printers.filter(p => p._id !== _id)))
   };
 
   const editPrinter = async (value) => {
@@ -175,6 +191,8 @@ const PrinterModel = () => {
       }
     }
     setEditMode(!editMode);
+    
+  
   };
 
   useEffect(() => {

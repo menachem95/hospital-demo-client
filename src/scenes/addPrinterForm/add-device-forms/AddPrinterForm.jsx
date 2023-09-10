@@ -5,7 +5,8 @@ import { useState } from "react";
 import * as yup from "yup";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { useFormik } from "formik";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updatePrinters } from "../../../store/displayPrintersSlice";
 
 const filter = createFilterOptions();
 
@@ -33,6 +34,7 @@ const AddPrinterForm = () => {
   // const theme = useTheme();
   // const colors = tokens(theme.palette.mode);
   const { printers } = useSelector((state) => state.display);
+ const dispatch =  useDispatch()
   const [departmentValue, setDepartmentValue] = useState("");
   const [printerModelValue, setPrinterModelValue] = useState("");
 
@@ -48,7 +50,8 @@ const AddPrinterForm = () => {
       console.log("newPrinter", newPrinter);
 
       await fetch(
-        "http://localhost:8080/add-printer",
+        `${process.env.REACT_APP_BACKEND_URL}/add-printer`,
+        // "http://localhost:8080/add-printer",
         // "https://hospitol-demo-server.onrender.com/add-printer",
         {
           method: "POST",
@@ -58,6 +61,7 @@ const AddPrinterForm = () => {
       );
 
       alert("המדפסת נוספה בהצלחה");
+      dispatch(updatePrinters([...printers, newPrinter]))
     },
   });
 

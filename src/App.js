@@ -7,6 +7,7 @@ import SingleDepartment from "./components/Displays/SingleDepartment";
 import ErrorServer from "./components/ErrorServer";
 
 
+
 // import DisplayPrinters from './component/Displays/DisplayPrinters';
 // import Header from './component/Header/Header';
 // import AddPrinterForm from './component/AddPrinterForm';
@@ -38,6 +39,8 @@ import AddPrinterForm from "./scenes/addPrinterForm";
 import AddUserForm from "./scenes/form";
 import DeleteDevice from "./scenes/DeledeDevice";
 
+
+
 let error;
 
 function App() {
@@ -45,14 +48,19 @@ function App() {
   const { printers } = useSelector((state) => state.display);
   const dispatch = useDispatch();
 
+  const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL
+  console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL)
+
   useEffect(() => {
     let responseData = printers;
     const fetchPrinters = async () => {
       try {
-        const response = await fetch(
         
+        const response = await fetch(
+          
+        `${process.env.REACT_APP_BACKEND_URL}/fetch-printers`,
         // "https://hospitol-demo-server.onrender.com/fetch-printers",
-         "http://localhost:8080/fetch-printers",
+        //  "http://localhost:8080/fetch-printers",
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },

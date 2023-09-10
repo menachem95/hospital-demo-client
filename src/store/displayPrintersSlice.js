@@ -44,6 +44,10 @@ const displayPrintersSlice = createSlice({
       console.log(action.payload);
       state.printerModelState = action.payload;
     },
+    updatePrinterModelStatePrinter(state, action) {
+      state.printerModelState.printer = action.payload;
+    },
+    
     updatePrinterModelStateOnline(state, action) {
       state.printerModelState.printer.online = action
     },
@@ -67,6 +71,7 @@ export const {
   updatePrinters,
   updateComputers,
   updatePrinterModelState,
+  updatePrinterModelStatePrinter,
   updatePrinterModelStateOnline,
   updateSearch
 } = displayPrintersSlice.actions;
