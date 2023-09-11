@@ -114,6 +114,15 @@ const SingleDepartment = () => {
           gridTemplateColumns="repeat(12, 1fr)"
           gridAutoRows="140px"
           gap="20px"
+          sx={{
+            mb: 2,
+            // display: "flex",
+            flexDirection: "column",
+            height: 700,
+            overflow: "hidden",
+            overflowY: "scroll",
+           // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
+          }}
         >
           {department.map((printer) => {
             return (
