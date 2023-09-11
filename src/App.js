@@ -130,7 +130,7 @@ function App() {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <div className="app">
+          <div className="app" style={{overflow:"hidden"}}>
             <Sidebar />
             <main className="content">
               <Topbar />
