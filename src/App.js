@@ -5,6 +5,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 // import MainWindow from './component2/MainWindow';
 import SingleDepartment from "./components/Displays/SingleDepartment";
 import ErrorServer from "./components/ErrorServer";
+import SearchResult from "./components/Displays/SearchResult";
 
 
 
@@ -137,6 +138,7 @@ function App() {
               {!error ?
               <Routes>
                 <Route path="/" element={<Navigate to="/printers" replace />} />
+                <Route path="/search" element={<SearchResult />}/>
                 <Route path="/printers" element={<DashboardPrinters />} />
                 {/* <Route path="/computers" element={<DashboardComputers />} /> */}
                 <Route

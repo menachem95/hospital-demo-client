@@ -11,11 +11,15 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useDispatch } from "react-redux";
 import { updateSearch } from "../../store/displayPrintersSlice";
 
+import { useNavigate } from "react-router-dom";
+
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
 
   return (
     <Box
@@ -31,16 +35,18 @@ const Topbar = () => {
         display="flex"
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
+        onClick={() => navigate("/search")}
       >
         <InputBase
           sx={{ ml: 2, flex: 1 }}
           placeholder="Search"
+          
           onChange={(ev) => {
             console.log(ev.target.value);
             dispatch(updateSearch(ev.target.value));
           }}
         />
-        <IconButton type="button" sx={{ p: 1 }}>
+        <IconButton type="button" sx={{ p: 1 }} >
           <SearchIcon />
         </IconButton>
       </Box>

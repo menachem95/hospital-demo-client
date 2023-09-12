@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import Header from "../../components/Header";
+import Header from "../Header";
 import Printer from "../Printer";
 import PrintIcon from "@mui/icons-material/Print";
 import ComputerIcon from "@mui/icons-material/Computer";
@@ -10,16 +10,21 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import PrinterModel from "../modal/PrinterModel";
 import { updatePrinterModelState } from "../../store/displayPrintersSlice";
+import Dashboard from "../../scenes/dashboardPrinters";
 
-const SingleDepartment = () => {
-  const { printers, printerModelState } = useSelector(
-    (state) => state.display
-  );
+const SearchResult = () => {
+  const {
+    printers,
+    printerModelState,
+    searchKey,
+  } = useSelector((state) => state.display);
   const { departmentId, deviceId } = useParams();
   const dispatch = useDispatch();
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  if (searchKey.trim() === "") return <Dashboard />
 
   let department = printers.filter(
     (printer) => printer.department === departmentId
@@ -94,6 +99,21 @@ const SingleDepartment = () => {
   // </Box>
   //  ) }
 
+  const keys = ["address", "pag", "printerModel", "department", "description", "room"];
+
+  const filtersPrinters = printers
+    // .map(printer => {
+    //   return {...printer, _id: ""}
+    // })
+    .filter((printer) => {
+      return keys
+      .some((key) => {
+        // if (key === "printer.address" || key === "printer.pag") {
+          return String(printer[key]).includes(searchKey);
+        // }
+      });
+    });
+
   return (
     <>
       <Box m="20px">
@@ -121,10 +141,10 @@ const SingleDepartment = () => {
             height: 700,
             overflow: "hidden",
             overflowY: "scroll",
-           // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
+            // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
           }}
         >
-          {department.map((printer) => {
+          {filtersPrinters.map((printer) => {
             return (
               <Box
                 className="link"
@@ -145,8 +165,8 @@ const SingleDepartment = () => {
                   rel="noopener noreferrer"
                 > */}
                 {/* <Link to={`/one-printer/${printer._id}`}> */}
-                <Printer 
-                printer={printer}
+                <Printer
+                  printer={printer}
                   // room={printer.room}
                   // address={printer.address}
                   // online={printer.online}
@@ -176,4 +196,4 @@ const SingleDepartment = () => {
   );
 };
 
-export default SingleDepartment;
+export default SearchResult;

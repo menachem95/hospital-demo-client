@@ -9,7 +9,7 @@ import { Link, Navigate, NavLink, useNavigate } from "react-router-dom";
 import { Skeleton } from "@mui/material";
 
 const Dashboard = () => {
-  const { printers, search } = useSelector((state) => state.display);
+  const { printers } = useSelector((state) => state.display);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
@@ -21,6 +21,8 @@ const Dashboard = () => {
       departments.push(printer.department);
     }
   }
+
+ 
 
   // if(printers.length === 0){
   //   return <h1>Loading...</h1>
