@@ -7,6 +7,8 @@ import ProgressCircle from "../../components/ProgressCircle";
 import { useSelector } from "react-redux";
 import { Link, Navigate, NavLink, useNavigate } from "react-router-dom";
 import { Skeleton } from "@mui/material";
+import departmentIcon from "../../images/Picture1.png";
+
 
 const Dashboard = () => {
   const { printers } = useSelector((state) => state.display);
@@ -170,12 +172,17 @@ const Dashboard = () => {
                   subtitle={`מדפסות מקוונות: ${onlinePrinters.length}/${allPrinters.length}`}
                   online={allPrinters.length - onlinePrinters.length === 0}
                   icon={
-                    <PrintIcon
-                      sx={{
-                        color: colors.greenAccent[600],
-                        fontSize: "90px",
-                      }}
-                    />
+                    // <PrintIcon
+                    //   sx={{
+                    //     color: colors.greenAccent[600],
+                    //     fontSize: "90px",
+                    //   }}
+                    // />
+                    <img src={departmentIcon} style={{
+                          color: colors.greenAccent[600],
+                          width: "45%",
+                          // filter: "invert(8%) sepia(97%) saturate(7488%) hue-rotate(12deg) brightness(92%) contrast(114%)",
+                        }} />
                   }
                 />
            
