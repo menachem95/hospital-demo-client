@@ -15,7 +15,6 @@ const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-
   const departments = [];
 
   for (let printer of printers) {
