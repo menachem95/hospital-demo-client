@@ -7,7 +7,7 @@ import ProgressCircle from "../../components/ProgressCircle";
 import { useSelector } from "react-redux";
 import { Link, Navigate, NavLink, useNavigate } from "react-router-dom";
 import { Skeleton } from "@mui/material";
-import departmentIcon from "../../images/Picture1.png";
+import departmentIcon from "../../images/department.png";
 
 
 const Dashboard = () => {
@@ -180,7 +180,7 @@ const Dashboard = () => {
                     // />
                     <img src={departmentIcon} style={{
                           color: colors.greenAccent[600],
-                          width: "45%",
+                          width: "110px",
                           // filter: "invert(8%) sepia(97%) saturate(7488%) hue-rotate(12deg) brightness(92%) contrast(114%)",
                         }} />
                   }
