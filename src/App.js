@@ -8,6 +8,7 @@ import ErrorServer from "./components/ErrorServer";
 import SearchResult from "./components/Displays/SearchResult";
 
 
+import { io } from "socket.io-client";
 
 // import DisplayPrinters from './component/Displays/DisplayPrinters';
 // import Header from './component/Header/Header';
@@ -53,26 +54,34 @@ function App() {
   console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL)
 
   useEffect(() => {
-    let responseData = printers;
-    const fetchPrinters = async () => {
-      try {
-        
-        const response = await fetch(
-          
-        `${process.env.REACT_APP_BACKEND_URL}/fetch-printers`,
-        // "https://hospitol-demo-server.onrender.com/fetch-printers",
-        //  "http://localhost:8080/fetch-printers",
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+    const socket = io.connect(REACT_APP_BACKEND_URL)
+    socket.on("send-printers", printers => {
 
-      responseData = await response.json();
-      } catch (err) {
-        console.log(err)
-        error = err
-      }
+      console.log([...printers])
+      dispatch(updatePrinters([...printers]));
+      dispatch(updateTime());
+
+    })
+    // let responseData = printers;
+    // const fetchPrinters = async () => {
+    //   try {
+        
+    //     const response = await fetch(
+          
+    //     `${process.env.REACT_APP_BACKEND_URL}/fetch-printers`,
+    //     // "https://hospitol-demo-server.onrender.com/fetch-printers",
+    //     //  "http://localhost:8080/fetch-printers",
+    //     {
+    //       method: "GET",
+    //       headers: { "Content-Type": "application/json" },
+    //     }
+    //   );
+
+    //   responseData = await response.json();
+    //   } catch (err) {
+    //     console.log(err)
+    //     error = err
+    //   }
       
     
      
@@ -113,17 +122,17 @@ function App() {
       //     };
       //   });
 
-      dispatch(updatePrinters(responseData));
+      // dispatch(updatePrinters(printers));
       // dispatch(updateComputers(newComputers));
-      dispatch(updateTime());
-    };
-    let timer = setTimeout(function f() {
-      console.log("sending printers");
+      // dispatch(updateTime());
+    // };
+    // let timer = setTimeout(function f() {
+    //   console.log("sending printers");
 
-      fetchPrinters();
-      timer = setTimeout(f, 45000);
-    }, 1000);
-    return () => clearTimeout(timer);
+    //   fetchPrinters();
+    //   timer = setTimeout(f, 45000);
+    // }, 1000);
+    // return () => clearTimeout(timer);
   }, [dispatch]);
 
   return (
