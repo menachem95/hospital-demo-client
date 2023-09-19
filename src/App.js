@@ -66,9 +66,9 @@ function App() {
 
     })
 
-    socket.emit("refresh", (printers, time) => {
+    socket.emit("refresh", (printers) => {
       dispatch(updatePrinters([...printers]));
-      dispatch(updateTime(time));
+      dispatch(updateTime());
     } )
 
     // let responseData = printers;
