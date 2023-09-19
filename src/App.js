@@ -41,7 +41,9 @@ import AddPrinterForm from "./scenes/addPrinterForm";
 import AddUserForm from "./scenes/form";
 import DeleteDevice from "./scenes/DeledeDevice";
 
-
+const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL
+  console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL)
+const socket = io.connect(REACT_APP_BACKEND_URL)
 
 let error;
 
@@ -50,11 +52,12 @@ function App() {
   const { printers } = useSelector((state) => state.display);
   const dispatch = useDispatch();
 
-  const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL
-  console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL)
+  
+
+   
 
   useEffect(() => {
-    const socket = io.connect(REACT_APP_BACKEND_URL)
+   
     socket.on("send-printers", printers => {
 
       console.log([...printers])
@@ -62,6 +65,12 @@ function App() {
       dispatch(updateTime());
 
     })
+
+    socket.emit("refresh", (printers, time) => {
+      dispatch(updatePrinters([...printers]));
+      dispatch(updateTime(time));
+    } )
+
     // let responseData = printers;
     // const fetchPrinters = async () => {
     //   try {
@@ -143,7 +152,7 @@ function App() {
           <div className="app" style={{overflow:"hidden"}}>
             <Sidebar />
             <main className="content">
-              <Topbar />
+              <Topbar socket={socket} />
               {!error ?
               <Routes>
                 <Route path="/" element={<Navigate to="/printers" replace />} />

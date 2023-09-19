@@ -10,10 +10,16 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { useDispatch } from "react-redux";
 import { updateSearch } from "../../store/displayPrintersSlice";
+import RefreshIcon from '@mui/icons-material/Refresh';
+import {
+  updatePrinters,
+  
+  updateTime,
+} from "../../store/displayPrintersSlice"
 
 import { useNavigate } from "react-router-dom";
 
-const Topbar = () => {
+const Topbar = ({socket}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
@@ -53,6 +59,14 @@ const Topbar = () => {
 
       {/* ICONS */}
       <Box display="flex">
+         <IconButton onClick={() => {
+          socket.emit("refresh", (printers, time) => {
+            dispatch(updatePrinters([...printers]));
+            dispatch(updateTime(time));
+          } )
+         }}>
+          <RefreshIcon />
+        </IconButton>
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <DarkModeOutlinedIcon />
@@ -60,6 +74,7 @@ const Topbar = () => {
             <LightModeOutlinedIcon />
           )}
         </IconButton>
+       
         {/* <IconButton>
           <NotificationsOutlinedIcon />
         </IconButton>
