@@ -5,9 +5,13 @@ const displayPrintersSlice = createSlice({
   initialState: {
     printers: [],
     computers: [],
-   searchKey: "",
+    searchKey: "",
     time: "",
-    printerModelState: { isOpen: false, printer: {address: ""}, online: null },
+    printerModelState: {
+      isOpen: false,
+      printer: { address: "" },
+      online: null,
+    },
   },
   reducers: {
     updatePrinters(state, action) {
@@ -16,8 +20,9 @@ const displayPrintersSlice = createSlice({
     updateComputers(state, action) {
       state.computers = action.payload;
     },
-    updateTime(state) {
-      state.time = new Date().toLocaleString().split(" ")[1];
+    updateTime(state, action) {
+      // state.time = new Date().toLocaleString().split(" ")[1];
+      state.time = action.payload;
     },
     updatePrinterModelState(state, action) {
       console.log(action.payload);
@@ -26,14 +31,13 @@ const displayPrintersSlice = createSlice({
     updatePrinterModelStatePrinter(state, action) {
       state.printerModelState.printer = action.payload;
     },
-    
+
     updatePrinterModelStateOnline(state, action) {
-      state.printerModelState.printer.online = action
+      state.printerModelState.printer.online = action;
     },
     updateSearch(state, action) {
-      
-      state.searchKey = action.payload
-    }
+      state.searchKey = action.payload;
+    },
   },
 });
 
@@ -44,7 +48,7 @@ export const {
   updatePrinterModelState,
   updatePrinterModelStatePrinter,
   updatePrinterModelStateOnline,
-  updateSearch
+  updateSearch,
 } = displayPrintersSlice.actions;
 
 export default displayPrintersSlice.reducer;

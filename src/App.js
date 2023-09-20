@@ -7,7 +7,6 @@ import SingleDepartment from "./components/Displays/SingleDepartment";
 import ErrorServer from "./components/ErrorServer";
 import SearchResult from "./components/Displays/SearchResult";
 
-
 import { io } from "socket.io-client";
 
 // import DisplayPrinters from './component/Displays/DisplayPrinters';
@@ -41,9 +40,9 @@ import AddPrinterForm from "./scenes/addPrinterForm";
 import AddUserForm from "./scenes/form";
 import DeleteDevice from "./scenes/DeledeDevice";
 
-const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL
-  console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL)
-const socket = io.connect(REACT_APP_BACKEND_URL)
+const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL);
+const socket = io.connect(REACT_APP_BACKEND_URL);
 
 let error;
 
@@ -52,31 +51,23 @@ function App() {
   const { printers } = useSelector((state) => state.display);
   const dispatch = useDispatch();
 
-  
-
-   
-
   useEffect(() => {
-   
-    socket.on("send-printers", printers => {
+    socket.on("send-printers", (printers, time) => {
+      dispatch(updatePrinters(printers));
+      dispatch(updateTime(time));
+    });
 
-      console.log([...printers])
-      dispatch(updatePrinters([...printers]));
-      dispatch(updateTime());
-
-    })
-
-    socket.emit("refresh", (printers) => {
-      dispatch(updatePrinters([...printers]));
-      dispatch(updateTime());
-    } )
+    socket.emit("refresh", (printers, time) => {
+      dispatch(updatePrinters(printers));
+      dispatch(updateTime(time));
+    });
 
     // let responseData = printers;
     // const fetchPrinters = async () => {
     //   try {
-        
+
     //     const response = await fetch(
-          
+
     //     `${process.env.REACT_APP_BACKEND_URL}/fetch-printers`,
     //     // "https://hospitol-demo-server.onrender.com/fetch-printers",
     //     //  "http://localhost:8080/fetch-printers",
@@ -91,49 +82,46 @@ function App() {
     //     console.log(err)
     //     error = err
     //   }
-      
-    
-     
 
-      // const res = await fetch(
-      //   // "https://hospitol-demo-server.onrender.com/ping"
-      //   "http://localhost:8080/ping",
-      //   {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify(
-      //       responseData.map((printer) => ({
-      //         address: printer.address,
-      //         department: printer.department,
-      //         type: printer.type,
-      //       }))
-      //     ),
-      //   }
-      // );
-      // const receivedPrinters = await res.json();
+    // const res = await fetch(
+    //   // "https://hospitol-demo-server.onrender.com/ping"
+    //   "http://localhost:8080/ping",
+    //   {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(
+    //       responseData.map((printer) => ({
+    //         address: printer.address,
+    //         department: printer.department,
+    //         type: printer.type,
+    //       }))
+    //     ),
+    //   }
+    // );
+    // const receivedPrinters = await res.json();
 
-      // const newPrinters = responseData
-      //   // .filter(device => device.type === "printer")
-      //   .map((printer) => {
-      //     return {
-      //       ...printer,
-      //       online: receivedPrinters.find((p) => p.address === printer.address)
-      //         .online,
-      //     };
-      //   });
-      // const newComputers = responseData
-      //   .filter((device) => device.type === "computer")
-      //   .map((computer) => {
-      //     return {
-      //       ...computer,
-      //       online: receivedPrinters.find((c) => c.address === computer.address)
-      //         .online,
-      //     };
-      //   });
+    // const newPrinters = responseData
+    //   // .filter(device => device.type === "printer")
+    //   .map((printer) => {
+    //     return {
+    //       ...printer,
+    //       online: receivedPrinters.find((p) => p.address === printer.address)
+    //         .online,
+    //     };
+    //   });
+    // const newComputers = responseData
+    //   .filter((device) => device.type === "computer")
+    //   .map((computer) => {
+    //     return {
+    //       ...computer,
+    //       online: receivedPrinters.find((c) => c.address === computer.address)
+    //         .online,
+    //     };
+    //   });
 
-      // dispatch(updatePrinters(printers));
-      // dispatch(updateComputers(newComputers));
-      // dispatch(updateTime());
+    // dispatch(updatePrinters(printers));
+    // dispatch(updateComputers(newComputers));
+    // dispatch(updateTime());
     // };
     // let timer = setTimeout(function f() {
     //   console.log("sending printers");
@@ -149,34 +137,43 @@ function App() {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <div className="app" style={{overflow:"hidden"}}>
+          <div className="app" style={{ overflow: "hidden" }}>
             <Sidebar />
             <main className="content">
               <Topbar socket={socket} />
-              {!error ?
-              <Routes>
-                <Route path="/" element={<Navigate to="/printers" replace />} />
-                <Route path="/search" element={<SearchResult />}/>
-                <Route path="/printers" element={<DashboardPrinters />} />
-                {/* <Route path="/computers" element={<DashboardComputers />} /> */}
-                <Route
-                  path="/:deviceId/departments/:departmentId"
-                  element={<SingleDepartment />}
-                >
-                  {/* <Route
+              {!error ? (
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<Navigate to="/printers" replace />}
+                  />
+                  <Route path="/search" element={<SearchResult />} />
+                  <Route path="/printers" element={<DashboardPrinters />} />
+                  {/* <Route path="/computers" element={<DashboardComputers />} /> */}
+                  <Route
+                    path="/:deviceId/departments/:departmentId"
+                    element={<SingleDepartment />}
+                  >
+                    {/* <Route
                   
                     path="/:deviceId/departments/:departmentId/one-printer"
                     element={<OnePrinter />}
                   /> */}
-                </Route>
+                  </Route>
 
-                {/* <Route path="/deshboadPrinters" element={<DashboardPrinters />} /> */}
-                {/* <Route path="/deshboadComputers" element={<DashboardComputers />} /> */}
+                  {/* <Route path="/deshboadPrinters" element={<DashboardPrinters />} /> */}
+                  {/* <Route path="/deshboadComputers" element={<DashboardComputers />} /> */}
 
-                <Route path="/admin/add-printer" element={<AddPrinterForm />} />
-                <Route path="/admin/delete-printer" element={<DeleteDevice />} />
+                  <Route
+                    path="/admin/add-printer"
+                    element={<AddPrinterForm />}
+                  />
+                  <Route
+                    path="/admin/delete-printer"
+                    element={<DeleteDevice />}
+                  />
 
-                {/* <Route path="/team" element={<Team />} />
+                  {/* <Route path="/team" element={<Team />} />
                                 <Route
                                     path="/invoices"
                                     element={<Invoices />}
@@ -190,12 +187,13 @@ function App() {
                                 <Route path="/faq" element={<FAQ />} />
                                 <Route path="/line" element={<Line />} />
                                 <Route path="/form" element={<Form />} /> */}
-                {/* <Route
+                  {/* <Route
                                     path="/geography"
                                     element={<Geography />} */}
-              </Routes> :  <ErrorServer />}
-      
-
+                </Routes>
+              ) : (
+                <ErrorServer />
+              )}
             </main>
           </div>
         </ThemeProvider>
