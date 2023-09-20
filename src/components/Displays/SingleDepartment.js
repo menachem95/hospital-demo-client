@@ -11,7 +11,7 @@ import { useState } from "react";
 import PrinterModel from "../modal/PrinterModel";
 import { updatePrinterModelState } from "../../store/displayPrintersSlice";
 
-const SingleDepartment = () => {
+const SingleDepartment = ({socket}) => {
   const { printers, printerModelState } = useSelector(
     (state) => state.display
   );
@@ -171,7 +171,7 @@ const SingleDepartment = () => {
           })}
         </Box>
       </Box>
-      {printerModelState.isOpen && <PrinterModel />}
+      {printerModelState.isOpen && <PrinterModel socket={socket} />}
     </>
   );
 };

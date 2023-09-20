@@ -97,7 +97,7 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const PrinterModel = () => {
+const PrinterModel = ({socket}) => {
   const [editMode, setEditMode] = useState(false);
   const { printerModelState, printers } = useSelector((state) => state.display);
   const dispatch = useDispatch();
@@ -147,26 +147,28 @@ const PrinterModel = () => {
   };
 
   const onSubmit = async (value) => {
+    // console.log("editedPrinter:", editedPrinter);
+    // await fetch(
+    //   `${process.env.REACT_APP_BACKEND_URL}/edit-printer`,
+    //   // "http://localhost:8080/edit-printer",
+    //   // "https://hospitol-demo-server.onrender.com/edit-printer",
+    //   {
+    //     method: "PUT",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(editedPrinter),
+    //   }
+    // );
+    // const newPrinters = [...printers];
+    // for (let i = 0; i < newPrinters.length; i++) {
+    //   if (newPrinters[i]._id === editedPrinter._id) {
+    //     newPrinters[i] = { ...editedPrinter };
+    //     console.log("newPrinters[i]:", newPrinters[i]);
+    //     break;
+    //   }
+    // }
+    // dispatch(updatePrinters(newPrinters));
     console.log("editedPrinter:", editedPrinter);
-    await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/edit-printer`,
-      // "http://localhost:8080/edit-printer",
-      // "https://hospitol-demo-server.onrender.com/edit-printer",
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editedPrinter),
-      }
-    );
-    const newPrinters = [...printers];
-    for (let i = 0; i < newPrinters.length; i++) {
-      if (newPrinters[i]._id === editedPrinter._id) {
-        newPrinters[i] = { ...editedPrinter };
-        console.log("newPrinters[i]:", newPrinters[i]);
-        break;
-      }
-    }
-    dispatch(updatePrinters(newPrinters));
+    socket.emit("update-printres",editedPrinter, "update")
     dispatch(updatePrinterModelStatePrinter(editedPrinter));
   };
 

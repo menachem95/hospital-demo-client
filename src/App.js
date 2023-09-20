@@ -62,6 +62,30 @@ function App() {
       dispatch(updateTime(time));
     });
 
+    socket.on("update-printres", (printer, event) => {
+      console.log("1 printer:", printer)
+      console.log("event: " + event);
+      let newPrinters = [...printers];
+      if (event === "update") {
+        newPrinters.map(p => {
+          if (p._id === printer._id) {
+            console.log("2 printer:", p)
+            return printer;
+          }
+        })
+        newPrinters.map(p => {
+          if (p._id === printer._id) {
+            console.log("3 printer:", p)
+          }
+        })
+      } else if (event === "delete") {
+      } else if (event === "add") {
+      }
+      
+      dispatch(updatePrinters(newPrinters))
+    });
+
+
     // let responseData = printers;
     // const fetchPrinters = async () => {
     //   try {
@@ -152,7 +176,7 @@ function App() {
                   {/* <Route path="/computers" element={<DashboardComputers />} /> */}
                   <Route
                     path="/:deviceId/departments/:departmentId"
-                    element={<SingleDepartment />}
+                    element={<SingleDepartment socket={socket}/>}
                   >
                     {/* <Route
                   
