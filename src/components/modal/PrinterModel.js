@@ -8,8 +8,11 @@ import { TextField } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import PrinterInfoItem from "../UI/PrinterInfoItem";
-import { updatePrinters, updatePrinterModelStatePrinter } from "../../store/displayPrintersSlice";
-
+import {
+  updatePrinters,
+  updatePrinterModelStatePrinter,
+} from "../../store/displayPrintersSlice";
+import OpenInBrowserIcon from "@mui/icons-material/OpenInBrowser";
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
@@ -47,8 +50,6 @@ const printerKey = {
   line: "נקודה בקיר",
   pag: "PAG מספר",
 };
-
-
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -157,30 +158,29 @@ const PrinterModel = () => {
         body: JSON.stringify(editedPrinter),
       }
     );
-    const newPrinters = [...printers]
+    const newPrinters = [...printers];
     for (let i = 0; i < newPrinters.length; i++) {
-     if(newPrinters[i]._id === editedPrinter._id){
-      newPrinters[i] = {...editedPrinter}
-      console.log("newPrinters[i]:", newPrinters[i])
-      break;
-     }
-      
+      if (newPrinters[i]._id === editedPrinter._id) {
+        newPrinters[i] = { ...editedPrinter };
+        console.log("newPrinters[i]:", newPrinters[i]);
+        break;
+      }
     }
     dispatch(updatePrinters(newPrinters));
-    dispatch(updatePrinterModelStatePrinter(editedPrinter))
+    dispatch(updatePrinterModelStatePrinter(editedPrinter));
   };
 
   const deletePrinter = async (_id) => {
     await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/delete-printer/${_id}`,
-  
+
       {
         method: "DELETE",
       }
     );
-  
+
     alert("המדפסת הוסרה בהצלחה");
-    dispatch(updatePrinters(printers.filter(p => p._id !== _id)))
+    dispatch(updatePrinters(printers.filter((p) => p._id !== _id)));
   };
 
   const editPrinter = async (value) => {
@@ -191,8 +191,6 @@ const PrinterModel = () => {
       }
     }
     setEditMode(!editMode);
-    
-  
   };
 
   useEffect(() => {
@@ -268,7 +266,17 @@ const PrinterModel = () => {
               >
                 {!editMode ? <EditIcon /> : <SaveIcon />}
               </IconButton>
-              {online && (
+              <IconButton title="מעבר לדפדפן" disabled={!online}>
+                <a
+                  href={`https://${address}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <OpenInBrowserIcon />
+                </a>
+              </IconButton>
+
+              {/* {online && (
                 <a
                   href={`https://${address}`}
                   target="_blank"
@@ -285,7 +293,7 @@ const PrinterModel = () => {
                     מעבר למדפסת
                   </Item>
                 </a>
-              )}
+               )}  */}
             </Grid>
             <Grid
               xs={4}
