@@ -39,6 +39,7 @@ import AddPrinterForm from "./scenes/addPrinterForm";
 // import Geography from './scenes/geography';
 import AddUserForm from "./scenes/form";
 import DeleteDevice from "./scenes/DeledeDevice";
+import AddPrinter from "./components/Action/AddPrinter";
 
 const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL);
@@ -56,20 +57,19 @@ function App() {
     let newPrinters = [...printers];
     console.log("newPrinters: ", newPrinters);
     if (event === "update") {
-      newPrinters = printers.map((printer) => 
+      newPrinters = printers.map((printer) =>
         printer._id === newPrinter._id ? newPrinter : printer
-     
-        );
-         
-    } else if (event === "delete") {
+      );
     } else if (event === "add") {
+      dispatch(updatePrinters([...printers, newPrinter]));
+    } else if (event === "delete") {
     }
     console.log("newPrinters: ", newPrinters);
     dispatch(updatePrinters(newPrinters));
   });
 
   useEffect(() => {
-    console.log("printers: ", printers)
+    console.log("printers: ", printers);
     socket.on("send-printers", (printers, time) => {
       dispatch(updatePrinters(printers));
       dispatch(updateTime(time));
@@ -85,9 +85,9 @@ function App() {
     //   let newPrinters = [...printers];
     //   console.log("newPrinters: ", newPrinters);
     //   if (event === "update") {
-    //     newPrinters = printers.map((printer) => 
+    //     newPrinters = printers.map((printer) =>
     //       printer._id === newPrinter._id ? newPrinter : printer
-       
+
     //       );
     //        debugger;
     //   } else if (event === "delete") {
@@ -172,22 +172,22 @@ function App() {
   }, []);
 
   // useEffect(() => {
-    // socket.on("update-printres", (newPrinter, event) => {
-    //   console.log("event: " + event);
-    //   let newPrinters = [...printers];
-    //   console.log("newPrinters: ", newPrinters);
-    //   if (event === "update") {
-    //     newPrinters = printers.map((printer) => 
-    //       printer._id === newPrinter._id ? newPrinter : printer
-       
-    //       );
-    //        debugger;
-    //   } else if (event === "delete") {
-    //   } else if (event === "add") {
-    //   }
-    //   console.log("newPrinters: ", newPrinters);
-    //   dispatch(updatePrinters(newPrinters));
-    // });
+  // socket.on("update-printres", (newPrinter, event) => {
+  //   console.log("event: " + event);
+  //   let newPrinters = [...printers];
+  //   console.log("newPrinters: ", newPrinters);
+  //   if (event === "update") {
+  //     newPrinters = printers.map((printer) =>
+  //       printer._id === newPrinter._id ? newPrinter : printer
+
+  //       );
+  //        debugger;
+  //   } else if (event === "delete") {
+  //   } else if (event === "add") {
+  //   }
+  //   console.log("newPrinters: ", newPrinters);
+  //   dispatch(updatePrinters(newPrinters));
+  // });
   // }, [])
 
   return (
@@ -224,7 +224,8 @@ function App() {
 
                   <Route
                     path="/admin/add-printer"
-                    element={<AddPrinterForm />}
+                    element={<AddPrinter socket={socket} />}
+                    // element={<AddPrinterForm />}
                   />
                   <Route
                     path="/admin/delete-printer"
