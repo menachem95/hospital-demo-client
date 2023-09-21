@@ -169,7 +169,8 @@ const PrinterModel = ({socket}) => {
     // dispatch(updatePrinters(newPrinters));
     console.log("editedPrinter:", editedPrinter);
     socket.emit("update-printres",editedPrinter, "update")
-    dispatch(updatePrinterModelStatePrinter(editedPrinter));
+    dispatch(updatePrinterModelState({ isOpen: false }));
+    // dispatch(updatePrinterModelStatePrinter(editedPrinter));
   };
 
   const deletePrinter = async (_id) => {

@@ -51,40 +51,51 @@ function App() {
   const { printers } = useSelector((state) => state.display);
   const dispatch = useDispatch();
 
+  socket.on("update-printres", (newPrinter, event) => {
+    console.log("event: " + event);
+    let newPrinters = [...printers];
+    console.log("newPrinters: ", newPrinters);
+    if (event === "update") {
+      newPrinters = printers.map((printer) => 
+        printer._id === newPrinter._id ? newPrinter : printer
+     
+        );
+         
+    } else if (event === "delete") {
+    } else if (event === "add") {
+    }
+    console.log("newPrinters: ", newPrinters);
+    dispatch(updatePrinters(newPrinters));
+  });
+
   useEffect(() => {
+    console.log("printers: ", printers)
     socket.on("send-printers", (printers, time) => {
       dispatch(updatePrinters(printers));
       dispatch(updateTime(time));
     });
 
-    socket.emit("refresh", (printers, time) => {
-      dispatch(updatePrinters(printers));
-      dispatch(updateTime(time));
-    });
+    // socket.emit("refresh", (printers, time) => {
+    //   dispatch(updatePrinters(printers));
+    //   dispatch(updateTime(time));
+    // });
 
-    socket.on("update-printres", (printer, event) => {
-      console.log("1 printer:", printer)
-      console.log("event: " + event);
-      let newPrinters = [...printers];
-      if (event === "update") {
-        newPrinters.map(p => {
-          if (p._id === printer._id) {
-            console.log("2 printer:", p)
-            return printer;
-          }
-        })
-        newPrinters.map(p => {
-          if (p._id === printer._id) {
-            console.log("3 printer:", p)
-          }
-        })
-      } else if (event === "delete") {
-      } else if (event === "add") {
-      }
-      
-      dispatch(updatePrinters(newPrinters))
-    });
-
+    // socket.on("update-printres", (newPrinter, event) => {
+    //   console.log("event: " + event);
+    //   let newPrinters = [...printers];
+    //   console.log("newPrinters: ", newPrinters);
+    //   if (event === "update") {
+    //     newPrinters = printers.map((printer) => 
+    //       printer._id === newPrinter._id ? newPrinter : printer
+       
+    //       );
+    //        debugger;
+    //   } else if (event === "delete") {
+    //   } else if (event === "add") {
+    //   }
+    //   console.log("newPrinters: ", newPrinters);
+    //   dispatch(updatePrinters(newPrinters));
+    // });
 
     // let responseData = printers;
     // const fetchPrinters = async () => {
@@ -154,7 +165,30 @@ function App() {
     //   timer = setTimeout(f, 45000);
     // }, 1000);
     // return () => clearTimeout(timer);
-  }, [dispatch]);
+    // return () => {
+    //   // socket.disconnect();
+    //   // socket.off("")
+    // };
+  }, []);
+
+  // useEffect(() => {
+    // socket.on("update-printres", (newPrinter, event) => {
+    //   console.log("event: " + event);
+    //   let newPrinters = [...printers];
+    //   console.log("newPrinters: ", newPrinters);
+    //   if (event === "update") {
+    //     newPrinters = printers.map((printer) => 
+    //       printer._id === newPrinter._id ? newPrinter : printer
+       
+    //       );
+    //        debugger;
+    //   } else if (event === "delete") {
+    //   } else if (event === "add") {
+    //   }
+    //   console.log("newPrinters: ", newPrinters);
+    //   dispatch(updatePrinters(newPrinters));
+    // });
+  // }, [])
 
   return (
     <>
@@ -176,7 +210,7 @@ function App() {
                   {/* <Route path="/computers" element={<DashboardComputers />} /> */}
                   <Route
                     path="/:deviceId/departments/:departmentId"
-                    element={<SingleDepartment socket={socket}/>}
+                    element={<SingleDepartment socket={socket} />}
                   >
                     {/* <Route
                   
