@@ -11,12 +11,25 @@ import { updatePrinters } from "../../../store/displayPrintersSlice";
 const filter = createFilterOptions();
 
 const printerInfo = {
+//   address: "כתובת רשת",
+//   room: "חדר",
+//   line: "מספר פורט בקיר",
+//   pag: "PAG",
+//   description: "תיאור כללי",
+// };
+
+//**************הגיע מPRINTERMODULE */
+// const printerKey = {
   address: "כתובת רשת",
+  department: "מחלקה",
   room: "חדר",
-  line: "מספר פורט בקיר",
-  pag: "PAG",
-  description: "תיאור כללי",
+  description: "פרטים נוספים",
+  printerModel: "דגם",
+  line: "נקודה בקיר",
+  pag: "PAG מספר",
 };
+
+
 
 const printerInfoSelect = {
   department: "מחלקה",

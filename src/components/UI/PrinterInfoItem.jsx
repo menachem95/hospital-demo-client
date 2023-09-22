@@ -4,7 +4,7 @@ import { tokens } from "../../theme";
 import { useTheme } from "@mui/material";
 import { Input } from "@mui/material";
 
-const PrinterInfoItem = ({ title, subTitle, editMode, blur }) => {
+const PrinterInfoItem = ({ title, subTitle, editMode=true, blur }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
