@@ -419,7 +419,7 @@ const PrinterModel = ({socket}) => {
                       // title={":פרטים נוספים"}
                       title={printerKey.description}
                       subTitle={
-                        description.trim() !== ""
+                        description?.trim() !== ""
                           ? description
                           : "לא נרשמו פרטים נוספים"
                       }

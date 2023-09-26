@@ -61,8 +61,10 @@ function App() {
         printer._id === newPrinter._id ? newPrinter : printer
       );
     } else if (event === "add") {
-      dispatch(updatePrinters([...printers, newPrinter]));
+      newPrinters.push(newPrinter);
     } else if (event === "delete") {
+      debugger
+      newPrinters = newPrinters.filter((printer) => printer._id !== newPrinter._id)
     }
     console.log("newPrinters: ", newPrinters);
     dispatch(updatePrinters(newPrinters));
@@ -75,10 +77,10 @@ function App() {
       dispatch(updateTime(time));
     });
 
-    // socket.emit("refresh", (printers, time) => {
-    //   dispatch(updatePrinters(printers));
-    //   dispatch(updateTime(time));
-    // });
+    socket.emit("refresh", (printers, time) => {
+      dispatch(updatePrinters(printers));
+      dispatch(updateTime(time));
+    });
 
     // socket.on("update-printres", (newPrinter, event) => {
     //   console.log("event: " + event);

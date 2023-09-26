@@ -8,6 +8,7 @@ import { TextField } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import PrinterInfoItem from "../UI/PrinterInfoItem";
+import DoneIcon from '@mui/icons-material/Done';
 import {
   updatePrinters,
   updatePrinterModelStatePrinter,
@@ -408,9 +409,28 @@ const AddPrinterA = ({ socket }) => {
 
 // export default AddPrinterA;
 
-const AddPrinter = () => {
-  const handleChange = () => {};
-  let value = "נתוני מדפסת";
+const AddPrinter = ({socket}) => {
+  const [value, setValue] = useState("נתוני מדפסת");
+
+  const [newPrinter, setNewPrinter] = useState({});
+
+  const findKeyByValue = (obj, value) => {
+    for (let key in obj) {
+      if (obj[key] === value) {
+        return key;
+      }
+    }
+    return null;
+  };
+
+  const onBlurHandler = (input) => {
+    const { name, value } = input;
+    const key = findKeyByValue(printerKey, name);
+
+    setNewPrinter({ ...newPrinter, [key]: value });
+    console.log(newPrinter);
+  };
+
   return (
     <Box display="grid" margin={"auto"} marginTop={"80px"} width={500}>
       <Box sx={{ width: "100%" }}>
@@ -433,12 +453,12 @@ const AddPrinter = () => {
         <Box
           // backgroundColor={colors.primary[400]}
           marginBottom="60px"
-          sx={{ borderBottom: 1, borderColor: "divider" }}
+          sx={{ borderBottom: 0, borderColor: "divider" }}
         >
           <Tabs
             centered
             value={value}
-            onChange={handleChange}
+            onChange={(e, value) => setValue(value)}
             textColor="secondary"
             indicatorColor="secondary"
             aria-label="secondary tabs example"
@@ -447,41 +467,88 @@ const AddPrinter = () => {
               label="נתוני רשת"
               value="נתוני רשת"
               icon={<LanIcon fontSize="large" />}
-              sx={{ width: "33%" }}
+              sx={{ width: "33.3%" }}
             />
             <Tab
               label="מיקום"
               value="מיקום"
               icon={<PlaceIcon fontSize="large" />}
-              sx={{ width: "33%" }}
+              sx={{ width: "33.3%" }}
             />
             <Tab
               label="נתוני מדפסת"
               value="נתוני מדפסת"
               icon={<PrintIcon fontSize="large" />}
-              sx={{ width: "33%" }}
+              sx={{ width: "33.3%" }}
             />
           </Tabs>
           {/* {value === "printer" && <AddPrinterForm />}
         {value === "computer" &&<h1>...הטופס בעבודות תחזוקה</h1>} */}
+          {value === "נתוני מדפסת" && (
+            <Box>
+              <Grid xs={6} style={{ textAlign: "end", width: "100%" }}>
+                <PrinterInfoItem
+                  title={printerKey.printerModel}
+                  blur={onBlurHandler}
+                />
 
-          <Grid xs={6}>
-            <PrinterInfoItem
-              title={printerKey.printerModel}
-              // blur={onBlurHandler}
-            />
+                <PrinterInfoItem title={printerKey.pag} blur={onBlurHandler} />
 
-            <PrinterInfoItem
-              title={printerKey.pag}
-              // blur={onBlurHandler}
-            />
-          </Grid>
-          <Grid xs={12}>
-            <PrinterInfoItem
-              title={printerKey.description}
-              // blur={onBlurHandler}
-            />
-          </Grid>
+                <PrinterInfoItem
+                  title={printerKey.description}
+                  blur={onBlurHandler}
+                />
+              </Grid>
+              <IconButton
+                onClick={() => {
+                  setValue("מיקום");
+                }}
+                style={{ textAlign: "start", marginBottom: "100px" }}
+              >
+                <ArrowBackIosNewIcon />
+              </IconButton>
+            </Box>
+          )}
+          {value === "מיקום" && (
+            <Box>
+              <Grid xs={6} style={{ textAlign: "end", width: "100%" }}>
+                <PrinterInfoItem
+                  title={printerKey.department}
+                  blur={onBlurHandler}
+                />
+
+                <PrinterInfoItem title={printerKey.room} blur={onBlurHandler} />
+              </Grid>
+              <IconButton
+                onClick={() => {
+                  setValue("נתוני רשת");
+                }}
+                style={{ textAlign: "start", marginBottom: "100px" }}
+              >
+                <ArrowBackIosNewIcon />
+              </IconButton>
+            </Box>
+          )}
+           {value === "נתוני רשת" && (
+            <Box>
+              <Grid xs={6} style={{ textAlign: "end", width: "100%" }}>
+                <PrinterInfoItem
+                  title={printerKey.address}
+                  blur={onBlurHandler}
+                />
+
+                <PrinterInfoItem title={printerKey.line} blur={onBlurHandler} />
+              </Grid>
+              <IconButton
+                onClick={() => {
+                  socket.emit("update-printres", newPrinter, "add")
+                }}
+                style={{ textAlign: "start", marginBottom: "100px" }}
+              >
+                <DoneIcon />
+              </IconButton>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>
