@@ -280,7 +280,7 @@ const PrinterModel = ({socket}) => {
                   <OpenInBrowserIcon />
                 </a>
               </IconButton>
-              <IconButton onClick={() => socket.emit("onePing", printerModelState.printer )}>
+              <IconButton title="פינג" onClick={() => socket.emit("onePing", printerModelState.printer )}>
                 <NetworkPingIcon />
               </IconButton>
 
