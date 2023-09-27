@@ -9,6 +9,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import PrinterInfoItem from "../UI/PrinterInfoItem";
 import DoneIcon from '@mui/icons-material/Done';
+import { useNavigate } from "react-router-dom";
 import {
   updatePrinters,
   updatePrinterModelStatePrinter,
@@ -413,6 +414,7 @@ const AddPrinter = ({socket}) => {
   const [value, setValue] = useState("נתוני מדפסת");
 
   const [newPrinter, setNewPrinter] = useState({});
+  const navigate = useNavigate();
 
   const findKeyByValue = (obj, value) => {
     for (let key in obj) {
@@ -541,7 +543,8 @@ const AddPrinter = ({socket}) => {
               </Grid>
               <IconButton
                 onClick={() => {
-                  socket.emit("update-printres", newPrinter, "add")
+                  socket.emit("update-printres", "add", newPrinter);
+                  navigate(`/printers/departments/${newPrinter.department}`)
                 }}
                 style={{ textAlign: "start", marginBottom: "100px" }}
               >

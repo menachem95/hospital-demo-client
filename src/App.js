@@ -52,7 +52,7 @@ function App() {
   const { printers } = useSelector((state) => state.display);
   const dispatch = useDispatch();
 
-  socket.on("update-printres", (newPrinter, event) => {
+  socket.on("update-printres", (event, newPrinter) => {
     console.log("event: " + event);
     let newPrinters = [...printers];
     console.log("newPrinters: ", newPrinters);
@@ -63,7 +63,6 @@ function App() {
     } else if (event === "add") {
       newPrinters.push(newPrinter);
     } else if (event === "delete") {
-      debugger
       newPrinters = newPrinters.filter((printer) => printer._id !== newPrinter._id)
     }
     console.log("newPrinters: ", newPrinters);

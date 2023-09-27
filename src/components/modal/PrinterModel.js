@@ -168,22 +168,23 @@ const PrinterModel = ({socket}) => {
     // }
     // dispatch(updatePrinters(newPrinters));
     console.log("editedPrinter:", editedPrinter);
-    socket.emit("update-printres",editedPrinter, "update")
+    socket.emit("update-printres", "update",editedPrinter)
     dispatch(updatePrinterModelState({ isOpen: false }));
     // dispatch(updatePrinterModelStatePrinter(editedPrinter));
   };
 
   const deletePrinter = async (_id) => {
-    await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/delete-printer/${_id}`,
+    socket.emit("update-printres", "delete",{_id})
+    // await fetch(
+    //   `${process.env.REACT_APP_BACKEND_URL}/delete-printer/${_id}`,
 
-      {
-        method: "DELETE",
-      }
-    );
+    //   {
+    //     method: "DELETE",
+    //   }
+    // );
 
     alert("המדפסת הוסרה בהצלחה");
-    dispatch(updatePrinters(printers.filter((p) => p._id !== _id)));
+    // dispatch(updatePrinters(printers.filter((p) => p._id !== _id)));
   };
 
   const editPrinter = async (value) => {
