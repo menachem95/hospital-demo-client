@@ -57,13 +57,18 @@ function App() {
     let newPrinters = [...printers];
     console.log("newPrinters: ", newPrinters);
     if (event === "update") {
-      newPrinters = printers.map((printer) =>
-        printer._id === newPrinter._id ? newPrinter : printer
-      );
     } else if (event === "add") {
-      newPrinters.push(newPrinter);
+      // if (newPrinters.some((printer) => printer._id === newPrinter._id)) {
+      //   newPrinters = printers.map((printer) =>
+      //     printer._id === newPrinter._id ? newPrinter : printer
+      //   );
+      // } else {
+        newPrinters.push(newPrinter);
+      // }
     } else if (event === "delete") {
-      newPrinters = newPrinters.filter((printer) => printer._id !== newPrinter._id)
+      newPrinters = newPrinters.filter(
+        (printer) => printer._id !== newPrinter._id
+      );
     }
     console.log("newPrinters: ", newPrinters);
     dispatch(updatePrinters(newPrinters));

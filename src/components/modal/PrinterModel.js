@@ -33,6 +33,7 @@ import { tokens } from "../../theme";
 import { display } from "@mui/system";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
+import NetworkPingIcon from '@mui/icons-material/NetworkPing';
 import { useDispatch, useSelector } from "react-redux";
 import {
   updatePrinterModelState,
@@ -278,6 +279,9 @@ const PrinterModel = ({socket}) => {
                 >
                   <OpenInBrowserIcon />
                 </a>
+              </IconButton>
+              <IconButton onClick={() => socket.emit("onePing", printerModelState.printer )}>
+                <NetworkPingIcon />
               </IconButton>
 
               {/* {online && (
