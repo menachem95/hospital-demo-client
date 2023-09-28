@@ -212,6 +212,7 @@ function App() {
                     element={<Navigate to="/printers" replace />}
                   />
                   <Route path="/search" element={<SearchResult />} />
+                  <Route path="/favoritePrinters" element={<SearchResult favorite={true} />} />
                   <Route path="/printers" element={<DashboardPrinters />} />
                   {/* <Route path="/computers" element={<DashboardComputers />} /> */}
                   <Route

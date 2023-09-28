@@ -21,7 +21,7 @@ import AddIcon from "@mui/icons-material/Add";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ChangeCircleOutlinedIcon from "@mui/icons-material/ChangeCircleOutlined";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 
 
@@ -168,6 +168,20 @@ const Sidebar = () => {
               title="Add Device"
               to="/admin/add-printer"
               icon={<AddCircleOutlineIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+             <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Favorite
+            </Typography>
+            <Item
+              title="Favorite printers"
+              to="/favoritePrinters"
+              icon={<BookmarkIcon />}
               selected={selected}
               setSelected={setSelected}
             />

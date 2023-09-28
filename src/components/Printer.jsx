@@ -28,7 +28,8 @@ const {room, address, icon, totalPrinters, online } = printer;
                         fontWeight="bold"
                         sx={{ color: colors.grey[100] }}
                     >
-                       {`חדר ${room}` }
+                       {/* {`חדר ${room}` } */}
+                       {room}
                     </Typography>
                 </Box>
             </Box>

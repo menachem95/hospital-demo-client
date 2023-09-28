@@ -8,8 +8,8 @@ import PrinterModel from "../modal/PrinterModel";
 import { updatePrinterModelState } from "../../store/displayPrintersSlice";
 import Dashboard from "../../scenes/dashboardPrinters";
 
-const SearchResult = () => {
-  const { printers, printerModelState, searchKey } = useSelector(
+const SearchResult = ({favorite=false}) => {
+    const { printers, printerModelState, searchKey } = useSelector(
     (state) => state.display
   );
   const { departmentId, deviceId } = useParams();
@@ -18,7 +18,9 @@ const SearchResult = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  if (searchKey.trim() === "") return <Dashboard />;
+  if (searchKey.trim() === "" && !favorite) return <Dashboard />;
+
+  let filtersPrinters;
 
   const keys = [
     "address",
@@ -28,12 +30,22 @@ const SearchResult = () => {
     "description",
     "room",
   ];
-
-  const filtersPrinters = printers.filter((printer) => {
+  
+  if (favorite) {
+    
+    filtersPrinters = printers.filter(printer => printer.favorite)
+    
+    console.log("filtersPrinters:", filtersPrinters)
+    
+  } else {
+    filtersPrinters = printers.filter((printer) => {
     return keys.some((key) => {
       return String(printer[key]).includes(searchKey);
     });
   });
+  }
+
+  
 
   return (
     <>

@@ -33,7 +33,7 @@ import { tokens } from "../../theme";
 import { display } from "@mui/system";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import NetworkPingIcon from '@mui/icons-material/NetworkPing';
+import NetworkPingIcon from "@mui/icons-material/NetworkPing";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updatePrinterModelState,
@@ -98,7 +98,7 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-const PrinterModel = ({socket}) => {
+const PrinterModel = ({ socket }) => {
   const [editMode, setEditMode] = useState(false);
   const { printerModelState, printers } = useSelector((state) => state.display);
   const dispatch = useDispatch();
@@ -169,13 +169,13 @@ const PrinterModel = ({socket}) => {
     // }
     // dispatch(updatePrinters(newPrinters));
     console.log("editedPrinter:", editedPrinter);
-    socket.emit("update-printres", "update",editedPrinter)
+    socket.emit("update-printres", "update", editedPrinter);
     dispatch(updatePrinterModelState({ isOpen: false }));
     // dispatch(updatePrinterModelStatePrinter(editedPrinter));
   };
 
   const deletePrinter = async (_id) => {
-    socket.emit("update-printres", "delete",{_id})
+    socket.emit("update-printres", "delete", { _id });
     // await fetch(
     //   `${process.env.REACT_APP_BACKEND_URL}/delete-printer/${_id}`,
 
@@ -280,7 +280,12 @@ const PrinterModel = ({socket}) => {
                   <OpenInBrowserIcon />
                 </a>
               </IconButton>
-              <IconButton title="פינג" onClick={() => socket.emit("onePing", printerModelState.printer )}>
+              <IconButton
+                title="פינג"
+                onClick={() =>
+                  socket.emit("onePing", printerModelState.printer)
+                }
+              >
                 <NetworkPingIcon />
               </IconButton>
 
