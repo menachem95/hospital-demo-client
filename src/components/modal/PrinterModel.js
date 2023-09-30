@@ -28,6 +28,8 @@ import { Box, useTheme } from "@mui/material";
 import PrintDisabledIcon from "@mui/icons-material/PrintDisabled";
 import Divider from "@mui/material/Divider";
 import { tokens } from "../../theme";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+
 // import img from "./images/minolta.jpg";
 // import imga from "./images/5750.png";
 import { display } from "@mui/system";
@@ -117,6 +119,7 @@ const PrinterModel = ({ socket }) => {
     line,
     pag,
     online,
+    isFavorite,
   } = printerModelState.printer;
 
   let img;
@@ -198,19 +201,26 @@ const PrinterModel = ({ socket }) => {
     setEditMode(!editMode);
   };
 
-  useEffect(() => {
-    dispatch(
-      updatePrinterModelState({
-        isOpen: true,
-        printer: {
-          ...printerModelState.printer,
-          online: printers.filter(
-            (p) => p._id === printerModelState.printer._id
-          )[0].online,
-        },
-      })
-    );
-  }, [printers]);
+
+  // ********************************
+  // useEffect(() => {
+  //   dispatch(
+  //     updatePrinterModelState({
+  //       isOpen: true,
+  //       printer: {
+  //         ...printerModelState.printer,
+  //         online: printers.find(
+  //           (p) => p._id === _id
+  //         ).online,
+  //         isFavorite: printers.find(
+  //           (p) => p._id === _id
+  //         ).isFavorite,
+  //       },
+  //     })
+  //   );
+  // }, [printers]);
+
+  // ********************************
 
   // const formik = useFormik({
   //   initialValues: initialValues,
@@ -287,6 +297,28 @@ const PrinterModel = ({ socket }) => {
                 }
               >
                 <NetworkPingIcon />
+              </IconButton>
+              <IconButton
+                style={{ color: isFavorite ? "red" : "inherit" }}
+                onClick={() => {
+                  const newPrinter = {...printerModelState.printer, isFavorite: !printerModelState.printer.isFavorite}
+                 console.log("newPrinter:", newPrinter)
+                  socket.emit("update-printres", "update", newPrinter)
+                  // const updatedPrinters = printers.map((printer) => {
+                  //   if (printer._id === _id) {
+                  //     console.log("isFavorite:", isFavorite)
+                  //     return {
+                  //       ...printer,
+                  //       isFavorite: !printer.isFavorite,
+                  //     };
+                  //   }
+                  //   return printer;
+                  // });
+                  // console.log("updatedPrinters:", updatedPrinters)
+                  // dispatch(updatePrinters(updatedPrinters));
+                }}
+              >
+                <BookmarkIcon />
               </IconButton>
 
               {/* {online && (

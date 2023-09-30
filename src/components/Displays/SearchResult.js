@@ -33,7 +33,7 @@ const SearchResult = ({favorite=false}) => {
   
   if (favorite) {
     
-    filtersPrinters = printers.filter(printer => printer.favorite)
+    filtersPrinters = printers.filter(printer => printer.isFavorite)
     
     console.log("filtersPrinters:", filtersPrinters)
     
