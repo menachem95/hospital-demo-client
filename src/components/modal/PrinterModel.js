@@ -203,22 +203,22 @@ const PrinterModel = ({ socket }) => {
 
 
   // ********************************
-  // useEffect(() => {
-  //   dispatch(
-  //     updatePrinterModelState({
-  //       isOpen: true,
-  //       printer: {
-  //         ...printerModelState.printer,
-  //         online: printers.find(
-  //           (p) => p._id === _id
-  //         ).online,
-  //         isFavorite: printers.find(
-  //           (p) => p._id === _id
-  //         ).isFavorite,
-  //       },
-  //     })
-  //   );
-  // }, [printers]);
+  useEffect(() => {
+    dispatch(
+      updatePrinterModelState({
+        isOpen: true,
+        printer: {
+          ...printerModelState.printer,
+          online: printers.filter(
+            (p) => p._id === _id
+          )[0].online,
+          isFavorite: printers.filter(
+            (p) => p._id === _id
+          )[0].isFavorite,
+        },
+      })
+    );
+  }, [printers]);
 
   // ********************************
 
@@ -299,11 +299,12 @@ const PrinterModel = ({ socket }) => {
                 <NetworkPingIcon />
               </IconButton>
               <IconButton
+              title="הוספה למועדפים"
                 style={{ color: isFavorite ? "red" : "inherit" }}
                 onClick={() => {
                   const newPrinter = {...printerModelState.printer, isFavorite: !printerModelState.printer.isFavorite}
                  console.log("newPrinter:", newPrinter)
-                  socket.emit("update-printres", "update", newPrinter)
+                  socket.emit("update-printres", "update", newPrinter, false)
                   // const updatedPrinters = printers.map((printer) => {
                   //   if (printer._id === _id) {
                   //     console.log("isFavorite:", isFavorite)

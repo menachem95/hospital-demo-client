@@ -8,7 +8,7 @@ import PrinterModel from "../modal/PrinterModel";
 import { updatePrinterModelState } from "../../store/displayPrintersSlice";
 import Dashboard from "../../scenes/dashboardPrinters";
 
-const SearchResult = ({favorite=false}) => {
+const SearchResult = ({favorite=false, socket}) => {
     const { printers, printerModelState, searchKey } = useSelector(
     (state) => state.display
   );
@@ -93,7 +93,7 @@ const SearchResult = ({favorite=false}) => {
           })}
         </Box>
       </Box>
-      {printerModelState.isOpen && <PrinterModel />}
+      {printerModelState.isOpen && <PrinterModel socket={socket} />}
     </>
   );
 };

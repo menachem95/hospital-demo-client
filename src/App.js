@@ -55,27 +55,32 @@ function App() {
   socket.on("update-printres", (event, newPrinter) => {
     console.log("event: " + event);
     let newPrinters = [...printers];
-    console.log("newPrinters: ", newPrinters);
+
     if (event === "update") {
+      newPrinters = newPrinters.map((printer) => {
+        if (printer._id === newPrinter._id) {
+          return newPrinter;
+        }
+        return printer;
+      });
     } else if (event === "add") {
       // if (newPrinters.some((printer) => printer._id === newPrinter._id)) {
       //   newPrinters = printers.map((printer) =>
       //     printer._id === newPrinter._id ? newPrinter : printer
       //   );
       // } else {
-        newPrinters.push(newPrinter);
+      newPrinters.push(newPrinter);
       // }
     } else if (event === "delete") {
       newPrinters = newPrinters.filter(
         (printer) => printer._id !== newPrinter._id
       );
     }
-    console.log("newPrinters: ", newPrinters);
+
     dispatch(updatePrinters(newPrinters));
   });
 
   useEffect(() => {
-    console.log("printers: ", printers);
     socket.on("send-printers", (printers, time) => {
       dispatch(updatePrinters(printers));
       dispatch(updateTime(time));
@@ -211,8 +216,11 @@ function App() {
                     path="/"
                     element={<Navigate to="/printers" replace />}
                   />
-                  <Route path="/search" element={<SearchResult />} />
-                  <Route path="/favoritePrinters" element={<SearchResult favorite={true} />} />
+                  <Route path="/search" element={<SearchResult socket={socket} />} />
+                  <Route
+                    path="/favoritePrinters"
+                    element={<SearchResult favorite={true} socket={socket} />}
+                  />
                   <Route path="/printers" element={<DashboardPrinters />} />
                   {/* <Route path="/computers" element={<DashboardComputers />} /> */}
                   <Route
