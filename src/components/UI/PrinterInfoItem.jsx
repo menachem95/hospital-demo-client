@@ -32,16 +32,17 @@ const PrinterInfoItem = ({ title, subTitle, editMode=true, blur }) => {
           subTitle
         ) : (
           <Input
+          defaultValue={subTitle}
         
           onBlur={(e) => blur({name: title, value: e.target.value})}
             inputProps={{
               sx: {
                 "&::placeholder": {
-                  textAlign: "end",
+                  textAlign: "right",
                 },
               },
             }}
-            style={{ textAlign: "end", padding: "0" }}
+            style={{ textAlign: "right", padding: "0" }}
             placeholder={subTitle}
             // defaultValue={subTitle}
           />
