@@ -118,8 +118,7 @@ const SingleDepartment = ({socket}) => {
             mb: 2,
             // display: "flex",
             flexDirection: "column",
-            height: 700,
-            overflow: "hidden",
+            height: "70vh",            overflow: "hidden",
             overflowY: "scroll",
            // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
           }}

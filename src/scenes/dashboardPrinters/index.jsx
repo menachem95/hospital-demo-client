@@ -30,7 +30,7 @@ const Dashboard = () => {
   // }
 
   return (
-    <Box m="20px">
+    <Box m="20px" >
       {/* HEADER */}
       <Box
         sx={{ width: 1 }}
@@ -58,7 +58,7 @@ const Dashboard = () => {
           mb: 2,
           // display: "flex",
           flexDirection: "column",
-          height: 700,
+          height: "70vh",
           overflow: "hidden",
           overflowY: "scroll",
          // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'

@@ -67,8 +67,7 @@ const SearchResult = ({favorite=false, socket}) => {
           sx={{
             mb: 2,
             flexDirection: "column",
-            height: 700,
-            overflow: "hidden",
+            height: "70vh",            overflow: "hidden",
             overflowY: "scroll",
           }}
         >

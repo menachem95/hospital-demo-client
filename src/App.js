@@ -221,7 +221,7 @@ function App() {
                     path="/favoritePrinters"
                     element={<SearchResult favorite={true} socket={socket} />}
                   />
-                  <Route path="/printers" element={<DashboardPrinters />} />
+                  <Route path="/printers" element={<DashboardPrinters className="test" />} />
                   {/* <Route path="/computers" element={<DashboardComputers />} /> */}
                   <Route
                     path="/:deviceId/departments/:departmentId"
