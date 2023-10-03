@@ -201,7 +201,6 @@ const PrinterModel = ({ socket }) => {
     setEditMode(!editMode);
   };
 
-
   // ********************************
   useEffect(() => {
     dispatch(
@@ -209,12 +208,8 @@ const PrinterModel = ({ socket }) => {
         isOpen: true,
         printer: {
           ...printerModelState.printer,
-          online: printers.filter(
-            (p) => p._id === _id
-          )[0].online,
-          isFavorite: printers.filter(
-            (p) => p._id === _id
-          )[0].isFavorite,
+          online: printers.filter((p) => p._id === _id)[0].online,
+          isFavorite: printers.filter((p) => p._id === _id)[0].isFavorite,
         },
       })
     );
@@ -262,6 +257,20 @@ const PrinterModel = ({ socket }) => {
         >
           <Grid container spacing={2} margin="0px">
             <Grid xs={4} sx={{ display: "flex", alignSelf: "center" }}>
+            <IconButton
+                title={isFavorite ? "הסרה ממועדפים" : "הוספה למועדפים"}
+                style={{ color: isFavorite ? "gold" : "inherit", }}
+                onClick={() => {
+                  const newPrinter = {
+                    ...printerModelState.printer,
+                    isFavorite: !printerModelState.printer.isFavorite,
+                  };
+                  console.log("newPrinter:", newPrinter);
+                  socket.emit("update-printres", "update", newPrinter, false);
+                }}
+              >
+                <BookmarkIcon style={{fontSize: "larger"}} />
+              </IconButton>
               <IconButton
                 title="הסרה"
                 onClick={() => {
@@ -298,29 +307,7 @@ const PrinterModel = ({ socket }) => {
               >
                 <NetworkPingIcon />
               </IconButton>
-              <IconButton
-              title="הוספה למועדפים"
-                style={{ color: isFavorite ? "red" : "inherit" }}
-                onClick={() => {
-                  const newPrinter = {...printerModelState.printer, isFavorite: !printerModelState.printer.isFavorite}
-                 console.log("newPrinter:", newPrinter)
-                  socket.emit("update-printres", "update", newPrinter, false)
-                  // const updatedPrinters = printers.map((printer) => {
-                  //   if (printer._id === _id) {
-                  //     console.log("isFavorite:", isFavorite)
-                  //     return {
-                  //       ...printer,
-                  //       isFavorite: !printer.isFavorite,
-                  //     };
-                  //   }
-                  //   return printer;
-                  // });
-                  // console.log("updatedPrinters:", updatedPrinters)
-                  // dispatch(updatePrinters(updatedPrinters));
-                }}
-              >
-                <BookmarkIcon />
-              </IconButton>
+              
 
               {/* {online && (
                 <a

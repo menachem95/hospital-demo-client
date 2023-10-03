@@ -148,7 +148,9 @@ const Dashboard = () => {
         //             }/>
         //         </Box>})}
       
-       departments.map((d) => {
+       departments
+       .sort((a, b) => a.localeCompare(b, 'he', { sensitivity: 'base' }))
+       .map((d) => {
           const allPrinters = printers.filter((p) => p.department === d);
           const onlinePrinters = allPrinters.filter((p) => p.online);
           return (
