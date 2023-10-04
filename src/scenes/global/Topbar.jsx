@@ -11,6 +11,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useDispatch } from "react-redux";
 import { updateSearch } from "../../store/displayPrintersSlice";
 import RefreshIcon from '@mui/icons-material/Refresh';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {
   updatePrinters,
   
@@ -59,6 +60,7 @@ const Topbar = ({socket}) => {
 
       {/* ICONS */}
       <Box display="flex">
+        
          <IconButton onClick={() => {
           socket.emit("refresh", (printers, time) => {
             dispatch(updatePrinters([...printers]));
@@ -73,6 +75,9 @@ const Topbar = ({socket}) => {
           ) : (
             <LightModeOutlinedIcon />
           )}
+        </IconButton>
+        <IconButton  onClick={() => navigate("/server-setting")}>
+          <SettingsIcon />
         </IconButton>
        
         {/* <IconButton>

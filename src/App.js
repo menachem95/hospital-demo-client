@@ -8,6 +8,7 @@ import ErrorServer from "./components/ErrorServer";
 import SearchResult from "./components/Displays/SearchResult";
 
 import { io } from "socket.io-client";
+import ServerSeting from "./components/ServerSetting";
 
 // import DisplayPrinters from './component/Displays/DisplayPrinters';
 // import Header from './component/Header/Header';
@@ -216,6 +217,8 @@ function App() {
                     path="/"
                     element={<Navigate to="/printers" replace />}
                   />
+                  
+                  <Route path="/server-setting" element={<ServerSeting />} />
                   <Route path="/search" element={<SearchResult socket={socket} />} />
                   <Route
                     path="/favoritePrinters"
