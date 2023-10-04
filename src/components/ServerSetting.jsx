@@ -9,6 +9,7 @@ import { Link, Navigate, NavLink, useNavigate } from "react-router-dom";
 import { Skeleton } from "@mui/material";
 import { Select, selectClasses } from "@mui/base/Select";
 import { Option, optionClasses } from "@mui/base/Option";
+import { useEffect } from "react";
 
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
@@ -17,13 +18,31 @@ import { useState } from "react";
 
 const ServerSeting = () => {
   const theme = useTheme();
-  const [intervalMinutes, setIntervalMinutes] = useState(5);
+  const [intervalMinutes, setIntervalMinutes] = useState();
   const [msgFromSrv, setMsgFromSrv] = useState("***");
 
   const colors = tokens(theme.palette.mode);
 
+  const getServerConfiguration = async () => {
+    const serverConfing = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/server-confing`,
+
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const res = await serverConfing.json();
+    console.log(res.intervalMinutes);
+    setIntervalMinutes(res.intervalMinutes);
+  };
+
+  useEffect(() => {
+   
+    getServerConfiguration();
+  }, []);
   return (
-    <Box m="20px">
+    <Box m="20px" >
       {/* HEADER */}
       <Box
         sx={{ width: 1 }}
@@ -51,7 +70,7 @@ const ServerSeting = () => {
           // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
         }}
       >
-        <form>
+        <form style={{width: 500, display: "flex"}}>
           {/* <InputLabel variant="standard" htmlFor="uncontrolled-native">
           {"בדיקת מדפסות כל"}
         </InputLabel> */}
@@ -72,15 +91,20 @@ const ServerSeting = () => {
             {"הגדר כל כמה זמן השרת יבצע בדיקות רשת למדפסות (מוגדר בדקות)"}
           </Typography>
           <NativeSelect
-          onChange={(e) => setIntervalMinutes(e.target.value)}
+            onChange={(e) => {
+              const selectedValue = e.target.value;
+              console.log(selectedValue);
+              setIntervalMinutes(selectedValue);
+            }}
             sx={{ color: colors.grey[200] }}
-            defaultValue={intervalMinutes}
-            inputProps={
-              {
-                // name: 'age',
-                // id: 'uncontrolled-native',
-              }
-            }
+            // defaultValue={isServerDataLoaded ? intervalMinutes : ""}
+            value={intervalMinutes}
+            // inputProps={
+            //   {
+            //     // name: 'age',
+            //     // id: 'uncontrolled-native',
+            //   }
+            // }
           >
             <option value={0.5}>0.5</option>
             <option value={1}>1</option>
@@ -89,19 +113,20 @@ const ServerSeting = () => {
           </NativeSelect>
           <button
             onClick={async (e) => {
-             e.preventDefault();
-            const setServerInterval =  await fetch(
+              console.log(intervalMinutes);
+              e.preventDefault();
+              const setServerInterval = await fetch(
                 `${process.env.REACT_APP_BACKEND_URL}/setinterval`,
                 // "http://localhost:8080/add-printer",
                 // "https://hospitol-demo-server.onrender.com/add-printer",
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({intervalMinutes}),
+                  body: JSON.stringify({ intervalMinutes: +intervalMinutes }),
                 }
               );
-                const res = await setServerInterval.json();
-                setMsgFromSrv(res.message)
+              const res = await setServerInterval.json();
+              setMsgFromSrv(res.message);
             }}
           >
             אישור
