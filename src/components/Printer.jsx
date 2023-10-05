@@ -19,8 +19,8 @@ const Printer = ({ printer }) =>
             fontWeight="bold"
             sx={{ color: colors.grey[300] }}
           >
-            {`מחלקת ${department}` }
-            {/* {department} */}
+            {/* {`מחלקת ${department}` } */}
+            {department}
           </Typography>
             <PrintIcon
               sx={{

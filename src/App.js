@@ -22,6 +22,7 @@ import {
 // import EnteringPassword from './component/Admin/EnteringPassword';
 
 import { ColorModeContext, useMode } from "./theme";
+import Stats from "./components/Stats";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
@@ -217,7 +218,7 @@ function App() {
                     path="/"
                     element={<Navigate to="/printers" replace />}
                   />
-                  
+                   <Route path="/stats" element={<Stats />} />
                   <Route path="/server-setting" element={<ServerSeting />} />
                   <Route path="/search" element={<SearchResult socket={socket} />} />
                   <Route
