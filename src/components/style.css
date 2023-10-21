@@ -1,0 +1,5 @@
+.apexcharts-data-labels > *::after {
+    content: '"X"';
+    height: 10px;
+    width: 10px;
+  }

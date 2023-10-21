@@ -6,6 +6,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import SingleDepartment from "./components/Displays/SingleDepartment";
 import ErrorServer from "./components/ErrorServer";
 import SearchResult from "./components/Displays/SearchResult";
+import OnlineStatusChart from "./components/Stats2";
 
 import { io } from "socket.io-client";
 import ServerSeting from "./components/ServerSetting";
@@ -20,7 +21,7 @@ import {
 } from "./store/displayPrintersSlice";
 // import DisplayDepartments from './component/Displays/DisplayDepartments';
 // import EnteringPassword from './component/Admin/EnteringPassword';
-
+import Test from "./components/Test";
 import { ColorModeContext, useMode } from "./theme";
 import Stats from "./components/Stats";
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -42,6 +43,7 @@ import AddPrinterForm from "./scenes/addPrinterForm";
 import AddUserForm from "./scenes/form";
 import DeleteDevice from "./scenes/DeledeDevice";
 import AddPrinter from "./components/Action/AddPrinter";
+import Test2 from "./components/Test2/Test2";
 
 const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL);
@@ -217,15 +219,25 @@ function App() {
                   <Route
                     path="/"
                     element={<Navigate to="/printers" replace />}
-                  />
-                   <Route path="/stats" element={<Stats />} />
+                  />{" "}
+
+                  <Route path="/test" element={<Test />} />
+                  <Route path="/stats" element={<Stats />} />
+                  <Route path="/stats2" element={<OnlineStatusChart />} />
+                  <Route path="/test2" element={<Test2 />} />
                   <Route path="/server-setting" element={<ServerSeting />} />
-                  <Route path="/search" element={<SearchResult socket={socket} />} />
+                  <Route
+                    path="/search"
+                    element={<SearchResult socket={socket} />}
+                  />
                   <Route
                     path="/favoritePrinters"
                     element={<SearchResult favorite={true} socket={socket} />}
                   />
-                  <Route path="/printers" element={<DashboardPrinters className="test" />} />
+                  <Route
+                    path="/printers"
+                    element={<DashboardPrinters className="test" />}
+                  />
                   {/* <Route path="/computers" element={<DashboardComputers />} /> */}
                   <Route
                     path="/:deviceId/departments/:departmentId"
@@ -237,10 +249,8 @@ function App() {
                     element={<OnePrinter />}
                   /> */}
                   </Route>
-
                   {/* <Route path="/deshboadPrinters" element={<DashboardPrinters />} /> */}
                   {/* <Route path="/deshboadComputers" element={<DashboardComputers />} /> */}
-
                   <Route
                     path="/admin/add-printer"
                     element={<AddPrinter socket={socket} />}
@@ -250,7 +260,6 @@ function App() {
                     path="/admin/delete-printer"
                     element={<DeleteDevice />}
                   />
-
                   {/* <Route path="/team" element={<Team />} />
                                 <Route
                                     path="/invoices"
