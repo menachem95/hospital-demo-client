@@ -22,7 +22,7 @@ let data = data1.map((d) => {
   };
 });
 
-let data2 = [...data, ...data, ...data];
+let data2 = [...data, ...data, ...data, ...data, ...data, ...data];
 
 // data = data.map(d => {
 //   return {online: d.online, time: d.time.substring(11, 16)}
@@ -54,13 +54,11 @@ let data2 = [...data, ...data, ...data];
 const intervalByLength = (len) => {
   if (len < 2000) return 20;
   else if (len < 4000) return 40;
-  else if (len < 5000) return 60;
+  // else if (len < 5000) return 60;
+  // else if (len < 7000) return 80;
+  // else if (len < 9000) return 80;
+  else if (len < 10000) return 60;
 };
-
-let d = data2.map(d => {
-  return {online: d.online === 1 ? "יש רשת":"אין רשת", time: `${d.days} ${d.hours}`}
-})
-
 
 //////////////////////////////////////////////////////////////////////////////////////
 const RepositoryCoverageTimelineGraphTooltip = (props) => {
@@ -75,6 +73,7 @@ const RepositoryCoverageTimelineGraphTooltip = (props) => {
 const classes={}
     return (
       <div
+      style={{color: online === 1 ? "green" : "red", backgroundColor: "#DBDFE4", borderRadius: "10%", padding: "10%"}}
         className={classes?.box}
         data-testid="coverage-timeline-graph-tooltip"
       >
@@ -104,10 +103,10 @@ const classes={}
 };
 //////////////////////////////////////////////////////////////////////////////////////
 
-const Test = () => {
+const SinglePrinterGraph = () => {
   return (
     <>
-    <div
+    {/* <div
       style={{
         // backgroundColor: "red",
         // paddingBlockEnd: "150px",
@@ -136,7 +135,7 @@ const Test = () => {
         </ResponsiveContainer>
       </div>
     </div>
-    *************************************************
+    ************************************************* */}
     <div
       style={{
         // backgroundColor: "red",
@@ -151,7 +150,7 @@ const Test = () => {
       <div
         style={{
           height: "200px",
-          width: "7000px", // כאן אתה מגדיר את הרוחב שאתה רוצה
+          width: "16000px", // כאן אתה מגדיר את הרוחב שאתה רוצה
           // overflow: "auto",
           // overflowX: "scroll", // זה מאפשר לגלול בציר X
           // backgroundColor: "green",
@@ -161,7 +160,9 @@ const Test = () => {
           <LineChart
            data={data2}
            >
-            <XAxis dataKey="hours" interval={intervalByLength(data2.length)} />
+            <XAxis dataKey="hours" interval=
+            {intervalByLength(data2.length)} 
+            />
             <XAxis 
             
             xAxisId="1" 
@@ -172,6 +173,7 @@ const Test = () => {
               type="step" dataKey="online" />
               <Tooltip
               content={<RepositoryCoverageTimelineGraphTooltip />}
+             
               //  payload={[{ name: '05-01', value: 12, unit: 'kg' }]} 
              
               //  labelStyle={{ color: "green" }} itemStyle={{ color: "cyan" }} 
@@ -184,4 +186,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default SinglePrinterGraph;

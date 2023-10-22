@@ -30,6 +30,7 @@ import Sidebar from "./scenes/global/Sidebar";
 import DashboardPrinters from "./scenes/dashboardPrinters";
 import DashboardComputers from "./scenes/dashboardComputers";
 import AddPrinterForm from "./scenes/addPrinterForm";
+import SinglePrinterStats from "./components/graphs/SinglePrinterStats";
 // import OnePrinter from "./components/Displays/OnePrinter";
 // import Invoices from './scenes/invoices';
 // import Team from './scenes/team';
@@ -222,10 +223,11 @@ function App() {
                   />{" "}
 
                   <Route path="/test" element={<Test />} />
-                  <Route path="/stats" element={<Stats />} />
+                  {/* <Route path="/stats" element={<Stats />} /> */}
                   <Route path="/stats2" element={<OnlineStatusChart />} />
                   <Route path="/test2" element={<Test2 />} />
                   <Route path="/server-setting" element={<ServerSeting />} />
+                  <Route path="/stats" element={<SinglePrinterStats />} />
                   <Route
                     path="/search"
                     element={<SearchResult socket={socket} />}
