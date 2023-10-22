@@ -13,13 +13,16 @@ import {
 
 import { data1 } from "../data/data1.js";
 
+
 let data = data1.map((d) => {
   return {
     online: d.online ? 1 : 0,
     hours: d.date.substring(11, 16),
-    days: d.date.substring(5, 10),
+    days: `${d.date.substring(8, 10)}/${d.date.substring(5, 7)}`,
   };
 });
+
+let data2 = [...data, ...data, ...data];
 
 // data = data.map(d => {
 //   return {online: d.online, time: d.time.substring(11, 16)}
@@ -34,9 +37,9 @@ let data = data1.map((d) => {
 //   };
 // });
 
-const sortedData = data?.sort((a, b) => new Date(a.time) - new Date(b.time));
+// const sortedData = data?.sort((a, b) => new Date(a.time) - new Date(b.time));
 
-const changeDates = [{ online: 2 }];
+// const changeDates = [{ online: 2 }];
 
 // for (let i = 1; i < sortedData.length; i++) {
 //   if (sortedData[i].online !== sortedData[i - 1].online) {
@@ -48,76 +51,73 @@ const changeDates = [{ online: 2 }];
 //   }
 // }
 
+const intervalByLength = (len) => {
+  if (len < 2000) return 20;
+  else if (len < 4000) return 40;
+  else if (len < 5000) return 60;
+};
+
+let d = data2.map(d => {
+  return {online: d.online === 1 ? "יש רשת":"אין רשת", time: `${d.days} ${d.hours}`}
+})
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+const RepositoryCoverageTimelineGraphTooltip = (props) => {
+  // const classes? = useStyles({});
+
+  if (props.payload && props.payload.length >= 1) {
+    const {
+      days,
+      hours,
+      online,
+    } = props.payload[0].payload;
+const classes={}
+    return (
+      <div
+        className={classes?.box}
+        data-testid="coverage-timeline-graph-tooltip"
+      >
+        <div className={classes?.line}>
+          {/* <span className={classes?.label}>date:</span> */}
+          <span data-testid="tooltip-line-coverage-percentage">
+            {`${days} ${hours}`}
+          </span>
+        </div>
+        <div className={classes?.line}>
+          {/* <span className={classes?.label}>online</span> */}
+          <span data-testid="tooltip-branch-coverage-percentage">
+           {online === 1 ? "יש רשת":"אין רשת"}
+          </span>
+        </div>
+        {/* <div className={classes?.line}>
+          <span className={classes?.label}>Run date</span>
+          <span data-testid="tooltip-run-date"> */}
+            {/* {moment(createdTimestamp).format("MMM Do YYYY h:mm a")} */}
+          {/* </span>
+        </div> */}
+      </div>
+    );
+  } else {
+    return <span data-testid="empty-tooltip" />;
+  }
+};
+//////////////////////////////////////////////////////////////////////////////////////
+
 const Test = () => {
-  // return (
-  //   <Box
-  //     // style={{ padding: "10px" }}
-  //     gap="10px"
-  //     style={{
-  //       backgroundColor: "red",
-  //       mb: 2,
-  //       height: "500px",
-  //       width: "5000px",
-  //       overflow: "auto",
-  //       // overflowX: "scroll",
-  //       // overflowY: "hidden",
-  //       "::-webkit-scrollbar-thumb": {
-  //         background: " #888",
-  //       },
-  //     }}
-  //   >
-  //     <div
-  //       style={{
-  //         height: "100%",
-  //         width: "100%",
-  //         overflowX: "scroll",
-  //         backgroundColor: "green",
-         
-  //       }}
-  //     >
-  //       <ResponsiveContainer
-  //       // width={"100%"}
-
-  //       //  aspect={10} height={400}
-  //       // width="100%" height="100%"
-  //       >
-  //         <LineChart
-  //           data={data}
-  //           // data={changeDates}
-  //         >
-  //           <XAxis
-  //             xAxisId="0"
-  //             //   dataKey="hours"
-  //             dataKey={"hours"}
-  //             interval={50}
-  //             // ticks={500}
-  //             // tick={50}
-
-  //             // allowDataOverflow="false"
-  //           />
-  //           <XAxis
-  //             xAxisId="1"
-  //             dataKey="days"
-  //             interval={50}
-  //             // tickCount={300}
-  //           />
-  //           <Line dot={false} type="step" dataKey="online" />
-  //         </LineChart>
-  //       </ResponsiveContainer>
-  //     </div>
-  //   </Box>
-  // );
   return (
+    <>
     <div
       style={{
         // backgroundColor: "red",
         // paddingBlockEnd: "150px",
-        
+
         height: "250px",
         width: "80%", // אני ממליץ לשים את הרוחב כאן
         overflow: "auto",
       }}
     >
+      {data.length}
       <div
         style={{
           height: "200px",
@@ -129,15 +129,59 @@ const Test = () => {
       >
         <ResponsiveContainer width="100%">
           <LineChart data={data}>
-            <XAxis dataKey="hours" interval={50} />
-            <XAxis xAxisId="1" dataKey="days" interval={50} />
+            <XAxis dataKey="hours" interval={intervalByLength(data.length)} />
+            <XAxis xAxisId="1" dataKey="days" interval={intervalByLength(data.length) * 1.5} />
             <Line dot={false} type="step" dataKey="online" />
           </LineChart>
         </ResponsiveContainer>
       </div>
-     </div>
+    </div>
+    *************************************************
+    <div
+      style={{
+        // backgroundColor: "red",
+        // paddingBlockEnd: "150px",
+
+        height: "250px",
+        width: "80%", // אני ממליץ לשים את הרוחב כאן
+        overflow: "auto",
+      }}
+    >
+      {data2.length}
+      <div
+        style={{
+          height: "200px",
+          width: "7000px", // כאן אתה מגדיר את הרוחב שאתה רוצה
+          // overflow: "auto",
+          // overflowX: "scroll", // זה מאפשר לגלול בציר X
+          // backgroundColor: "green",
+        }}
+      >
+        <ResponsiveContainer width="100%">
+          <LineChart
+           data={data2}
+           >
+            <XAxis dataKey="hours" interval={intervalByLength(data2.length)} />
+            <XAxis 
+            
+            xAxisId="1" 
+            dataKey="days" interval={intervalByLength(data2.length) * 1.5} />
+            <Line
+            
+             dot={false}
+              type="step" dataKey="online" />
+              <Tooltip
+              content={<RepositoryCoverageTimelineGraphTooltip />}
+              //  payload={[{ name: '05-01', value: 12, unit: 'kg' }]} 
+             
+              //  labelStyle={{ color: "green" }} itemStyle={{ color: "cyan" }} 
+               />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  </>
   );
-  
 };
 
 export default Test;
