@@ -227,7 +227,7 @@ function App() {
                   <Route path="/stats2" element={<OnlineStatusChart />} />
                   <Route path="/test2" element={<Test2 />} />
                   <Route path="/server-setting" element={<ServerSeting />} />
-                  <Route path="/stats" element={<SinglePrinterStats />} />
+                  <Route path="/printer-history/:printerId" element={<SinglePrinterStats />} />
                   <Route
                     path="/search"
                     element={<SearchResult socket={socket} />}

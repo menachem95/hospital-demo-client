@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import * as React from "react";
+import useMousePosition from "../hooks/useMousePosition.js";
 // import { LineChart } from "@mui/x-charts/LineChart";
 import {
   ResponsiveContainer,
@@ -104,6 +105,30 @@ const classes={}
 //////////////////////////////////////////////////////////////////////////////////////
 
 const SinglePrinterGraph = () => {
+  const [scrollPosition, setScrollPosition] = useState(0);
+  // const mousePosition = useMousePosition();
+
+  const handleMouseMove = (e) => {
+    const mouseX = e.nativeEvent.clientX;
+    const componentWidth = 200
+    // e.target.offsetWidth;
+    const contentWidth = 200
+    // e.target.firstChild.offsetWidth ;
+
+    const scrollableWidth = contentWidth - componentWidth;
+
+    if (mouseX > window.innerWidth - 20) {
+      // הזז ימינה אם העכבר בסמוך לצד הימני של החלון
+      if (scrollPosition < scrollableWidth) {
+        setScrollPosition(scrollPosition + 10);
+      }
+    } else if (mouseX < 20) {
+      // הזז שמאלה אם העכבר בסמוך לצד השמאלי של החלון
+      if (scrollPosition > 0) {
+        setScrollPosition(scrollPosition - 10);
+      }
+    }
+  };
   return (
     <>
     {/* <div
@@ -145,12 +170,14 @@ const SinglePrinterGraph = () => {
         width: "80%", // אני ממליץ לשים את הרוחב כאן
         overflow: "auto",
       }}
+      // onMouseMove={handleMouseMove}
     >
       {data2.length}
       <div
         style={{
           height: "200px",
           width: "16000px", // כאן אתה מגדיר את הרוחב שאתה רוצה
+          // transform: `translateX(-${JSON.stringify(mousePosition.x + 10) }px)`,
           // overflow: "auto",
           // overflowX: "scroll", // זה מאפשר לגלול בציר X
           // backgroundColor: "green",
