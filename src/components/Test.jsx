@@ -167,7 +167,7 @@ const SinglePrinterGraph = () => {
         // paddingBlockEnd: "150px",
 
         height: "250px",
-        width: "80%", // אני ממליץ לשים את הרוחב כאן
+        width: "95%", // אני ממליץ לשים את הרוחב כאן
         overflow: "auto",
       }}
       // onMouseMove={handleMouseMove}
@@ -175,6 +175,7 @@ const SinglePrinterGraph = () => {
       {data2.length}
       <div
         style={{
+        
           height: "200px",
           width: "16000px", // כאן אתה מגדיר את הרוחב שאתה רוצה
           // transform: `translateX(-${JSON.stringify(mousePosition.x + 10) }px)`,
