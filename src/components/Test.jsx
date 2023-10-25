@@ -15,15 +15,15 @@ import {
 import { data1 } from "../data/data1.js";
 
 
-let data = data1.map((d) => {
-  return {
-    online: d.online ? 1 : 0,
-    hours: d.date.substring(11, 16),
-    days: `${d.date.substring(8, 10)}/${d.date.substring(5, 7)}`,
-  };
-});
+// let data = data1.map((d) => {
+//   return {
+//     online: d.online ? 1 : 0,
+//     hours: d.date.substring(11, 16),
+//     days: `${d.date.substring(8, 10)}/${d.date.substring(5, 7)}`,
+//   };
+// });
 
-let data2 = [...data, ...data, ...data, ...data, ...data, ...data];
+// let data2 = [...data, ...data, ...data, ...data, ...data, ...data];
 
 // data = data.map(d => {
 //   return {online: d.online, time: d.time.substring(11, 16)}
@@ -104,9 +104,16 @@ const classes={}
 };
 //////////////////////////////////////////////////////////////////////////////////////
 
-const SinglePrinterGraph = () => {
+const SinglePrinterGraph = ({logs}) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   // const mousePosition = useMousePosition();
+  let data = logs.map((d) => {
+    return {
+      online: d.online ? 1 : 0,
+      hours: d.date.substring(11, 16),
+      days: `${d.date.substring(8, 10)}/${d.date.substring(5, 7)}`,
+    };
+  });
 
   const handleMouseMove = (e) => {
     const mouseX = e.nativeEvent.clientX;
@@ -172,7 +179,7 @@ const SinglePrinterGraph = () => {
       }}
       // onMouseMove={handleMouseMove}
     >
-      {data2.length}
+      {data.length}
       <div
         style={{
         
@@ -186,15 +193,15 @@ const SinglePrinterGraph = () => {
       >
         <ResponsiveContainer width="100%">
           <LineChart
-           data={data2}
+           data={data}
            >
             <XAxis dataKey="hours" interval=
-            {intervalByLength(data2.length)} 
+            {intervalByLength(data.length)} 
             />
             <XAxis 
             
             xAxisId="1" 
-            dataKey="days" interval={intervalByLength(data2.length) * 1.5} />
+            dataKey="days" interval={intervalByLength(data.length) * 1.5} />
             <Line
             
              dot={false}
