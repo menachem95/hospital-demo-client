@@ -6,6 +6,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import "dayjs/locale/en-gb";
 
 const returnDateString = (v, cb) => {
@@ -25,21 +26,23 @@ const startDB = start;
 start.setHours(0, 0, 0, 0);
 start = start.toJSON();
 
+
+
 const SinglePrinterStats = () => {
   const [logs, setLogs] = useState([]);
   const [startDate, setStartDete] = useState({ front: "", db: "" });
   const [endDate, setEndDete] = useState({ front: "", db: "" });
-
+  const {printerId} = useParams()
   useEffect(() => {
     returnDateString({ front: end, db: endDB }, setEndDete);
     returnDateString({ front: start, db: startDB }, setStartDete);
   }, []);
 
   const fetchLogs = async () => {
-    console.log("123")
-    if(startDate.db === "" || endDate.db === "") return
+    console.log("123");
+    if (startDate.db === "" || endDate.db === "") return;
     const res = await fetch(
-      `http://localhost:8080/logs/onePrinter/65082196ef2033988448587d/${startDate.db}/${endDate.db}`,
+      `http://localhost:8080/logs/onePrinter/${printerId}/${startDate.db}/${endDate.db}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },

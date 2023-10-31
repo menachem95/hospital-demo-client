@@ -8,6 +8,7 @@ import { TextField } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import PrinterInfoItem from "../UI/PrinterInfoItem";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
   updatePrinters,
   updatePrinterModelStatePrinter,
@@ -43,6 +44,7 @@ import {
 } from "../../store/displayPrintersSlice";
 import { Link } from "react-router-dom";
 import { Formik } from "formik";
+import TimelineIcon from "@mui/icons-material/Timeline";
 
 const printerKey = {
   address: "כתובת רשת",
@@ -104,6 +106,8 @@ const PrinterModel = ({ socket }) => {
   const [editMode, setEditMode] = useState(false);
   const { printerModelState, printers } = useSelector((state) => state.display);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [editedPrinter, setEditedPrinter] = useState(printerModelState.printer);
 
   const theme = useTheme();
@@ -257,9 +261,9 @@ const PrinterModel = ({ socket }) => {
         >
           <Grid container spacing={2} margin="0px">
             <Grid xs={4} sx={{ display: "flex", alignSelf: "center" }}>
-            <IconButton
+              <IconButton
                 title={isFavorite ? "הסרה ממועדפים" : "הוספה למועדפים"}
-                style={{ color: isFavorite ? "gold" : "inherit", }}
+                style={{ color: isFavorite ? "gold" : "inherit" }}
                 onClick={() => {
                   const newPrinter = {
                     ...printerModelState.printer,
@@ -269,7 +273,7 @@ const PrinterModel = ({ socket }) => {
                   socket.emit("update-printres", "update", newPrinter, false);
                 }}
               >
-                <BookmarkIcon style={{fontSize: "larger"}} />
+                <BookmarkIcon style={{ fontSize: "larger" }} />
               </IconButton>
               <IconButton
                 title="הסרה"
@@ -307,7 +311,13 @@ const PrinterModel = ({ socket }) => {
               >
                 <NetworkPingIcon />
               </IconButton>
-              
+              <IconButton
+                title="גרף"
+              >
+                <Link to={`/printer-history/${_id}`}>
+                  <TimelineIcon />
+                </Link>
+              </IconButton>
 
               {/* {online && (
                 <a

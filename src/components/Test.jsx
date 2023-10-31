@@ -53,7 +53,9 @@ import { data1 } from "../data/data1.js";
 // }
 
 const intervalByLength = (len) => {
-  if (len < 2000) return 20;
+  // if (len < 500) return 4;
+   if (len < 1000)return 10
+  else if (len < 2000) return 20;
   else if (len < 4000) return 40;
   // else if (len < 5000) return 60;
   // else if (len < 7000) return 80;
@@ -184,7 +186,8 @@ const SinglePrinterGraph = ({logs}) => {
         style={{
         
           height: "200px",
-          width: "16000px", // כאן אתה מגדיר את הרוחב שאתה רוצה
+          minWidth: "100%",
+          width: `${intervalByLength(data.length) * intervalByLength(data.length)}%`, // כאן אתה מגדיר את הרוחב שאתה רוצה
           // transform: `translateX(-${JSON.stringify(mousePosition.x + 10) }px)`,
           // overflow: "auto",
           // overflowX: "scroll", // זה מאפשר לגלול בציר X
@@ -195,13 +198,19 @@ const SinglePrinterGraph = ({logs}) => {
           <LineChart
            data={data}
            >
-            <XAxis dataKey="hours" interval=
-            {intervalByLength(data.length)} 
+            <XAxis 
+            // tickSize={1}
+            tabIndex={1}
+            dataKey="hours"
+            // interval={1}
+             interval={intervalByLength(data.length)} 
             />
             <XAxis 
-            
+            // tickSize={1}
             xAxisId="1" 
-            dataKey="days" interval={intervalByLength(data.length) * 1.5} />
+            dataKey="days"
+             interval={intervalByLength(data.length) * 1.5} 
+             />
             <Line
             
              dot={false}
