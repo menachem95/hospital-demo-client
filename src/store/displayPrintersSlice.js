@@ -22,7 +22,7 @@ const displayPrintersSlice = createSlice({
     },
     updateTime(state, action) {
       // state.time = new Date().toLocaleString().split(" ")[1];
-      state.time = action.payload;
+      state.time = `${action.payload}${" :עדכון אחרון בוצע בשעה"}`
     },
     updatePrinterModelState(state, action) {
       console.log(action.payload);

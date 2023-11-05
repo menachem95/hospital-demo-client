@@ -21,7 +21,7 @@ const Header = ({ title, subtitle }) => {
                 {subtitle}
             </Typography> */}
             <Typography variant="h5" color={colors.greenAccent[400]}>
-                {time}{" :עדכון אחרון בוצע בשעה"}
+                {time}
             </Typography>
 
             

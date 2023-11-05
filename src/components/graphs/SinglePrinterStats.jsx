@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import SinglePrinterGraph from "../Test";
 import Header from "../Header";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -26,13 +26,11 @@ const startDB = start;
 start.setHours(0, 0, 0, 0);
 start = start.toJSON();
 
-
-
 const SinglePrinterStats = () => {
   const [logs, setLogs] = useState([]);
   const [startDate, setStartDete] = useState({ front: "", db: "" });
   const [endDate, setEndDete] = useState({ front: "", db: "" });
-  const {printerId} = useParams()
+  const { printerId } = useParams();
   useEffect(() => {
     returnDateString({ front: end, db: endDB }, setEndDete);
     returnDateString({ front: start, db: startDB }, setStartDete);
@@ -86,14 +84,9 @@ const SinglePrinterStats = () => {
       >
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ whiteSpace: "pre-wrap", fontSize: "25px" }}>
-              {`תיעוד פעילות המדפסת
-מתאריך ${startDate.front}  
-עד תאריך ${endDate.front}
-              `}
-            </div>
-            <button onClick={fetchLogs} />
-            <DatePicker
+            <div style={{ display: "flex", flexDirection: "column", padding: "10px" }}>
+               <DatePicker
+                 maxDate={dayjs(end)}
               onAccept={(v) => {
                 console.log("v:", v.$d);
                 returnDateString({ front: v.format(), db: v.$d }, setStartDete);
@@ -111,6 +104,26 @@ const SinglePrinterStats = () => {
               label="תאריך סיום"
               sx={{ width: 150, margin: "5px" }}
             />
+            </div>
+           
+            <div>
+              <div style={{ whiteSpace: "pre-wrap", fontSize: "25px" }}>
+                {` הצגת פעילות המדפסת ברשת
+מתאריך ${startDate.front}  
+עד תאריך ${endDate.front}
+`}
+              </div>{" "}
+              <button
+                style={{
+                  width: "100px",
+                  color: "black",
+                  height: "25px",
+                }}
+                onClick={fetchLogs}
+              >
+                הצג
+              </button>
+            </div>
           </div>
         </LocalizationProvider>
 

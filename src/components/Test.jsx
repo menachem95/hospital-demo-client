@@ -52,11 +52,22 @@ import { data1 } from "../data/data1.js";
 //   }
 // }
 
-const intervalByLength = (len) => {
-  // if (len < 500) return 4;
-   if (len < 1000)return 10
-  else if (len < 2000) return 20;
-  else if (len < 4000) return 40;
+const roundToNearestThousand = (number) => {
+  const remainder = number % 1000;
+  if (remainder < 500) {
+    return number - remainder; // עגל לתחתית אלפיים הקרובה יותר
+  } else {
+    return number + (1000 - remainder); // עגל לתקרה אלפיים הקרובה יותר
+  }
+}
+
+const intervalByLength = (number) => {
+  const len = roundToNearestThousand(number)
+  if(number < 500) return 12;
+ if (len === 1000) return 18;
+  else if (len === 2000) return 20;
+  else if (len === 3000) return 30;
+  else if (len === 4000) return 40;
   // else if (len < 5000) return 60;
   // else if (len < 7000) return 80;
   // else if (len < 9000) return 80;
@@ -138,6 +149,12 @@ const SinglePrinterGraph = ({logs}) => {
       }
     }
   };
+
+
+  
+
+
+
   return (
     <>
     {/* <div
@@ -170,8 +187,51 @@ const SinglePrinterGraph = ({logs}) => {
       </div>
     </div>
     ************************************************* */}
+     
+      {data.length} {"הגבלה של  500 פיקסלים"}
+      <div
+        style={{
+        
+          height: "200px",
+          width: "500px",
+          
+        }}
+      >
+        <ResponsiveContainer width="100%">
+          <LineChart
+           data={data}
+           >
+            <XAxis 
+          
+            tabIndex={1}
+            dataKey="hours"
+       
+            />
+            <XAxis 
+           
+            xAxisId="1" 
+            dataKey="days"
+            
+             />
+            <Line
+            
+             dot={false}
+              type="step" dataKey="online" />
+              <Tooltip
+              content={<RepositoryCoverageTimelineGraphTooltip />}
+             
+              //  payload={[{ name: '05-01', value: 12, unit: 'kg' }]} 
+             
+              //  labelStyle={{ color: "green" }} itemStyle={{ color: "cyan" }} 
+               />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    
+ 
     <div
       style={{
+        marginTop: "100px",
         // backgroundColor: "red",
         // paddingBlockEnd: "150px",
 
@@ -181,7 +241,7 @@ const SinglePrinterGraph = ({logs}) => {
       }}
       // onMouseMove={handleMouseMove}
     >
-      {data.length}
+      {data.length} {"ללא הגבלה"}
       <div
         style={{
         
