@@ -21,7 +21,7 @@ import {
 } from "./store/displayPrintersSlice";
 // import DisplayDepartments from './component/Displays/DisplayDepartments';
 // import EnteringPassword from './component/Admin/EnteringPassword';
-import Test from "./components/Test";
+import Test from "./components/SinglePrinterGraph";
 import { ColorModeContext, useMode } from "./theme";
 import Stats from "./components/Stats";
 import { CssBaseline, ThemeProvider } from "@mui/material";
