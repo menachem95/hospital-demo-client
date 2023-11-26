@@ -24,6 +24,7 @@ import {
   aggregateDataByDay,
   aggregateDataByHour,
   aggregateDataByFiveMinutes,
+  aggregateData,
 } from "./aggregateDates func.js";
 
 import { data1 } from "../data/data1.js";
@@ -461,6 +462,7 @@ const Graph = ({ logs }) => {
     typeOfTime: "day",
     data: [],
   });
+  const [data, setData] = useState([]);
 
   const [intervalFormat, setIntervalFormat] = useState(null);
   const daysDiff = defaultDaysDiff(logs);
@@ -558,6 +560,29 @@ const Graph = ({ logs }) => {
     return add10milisec(data);
   };
 
+  // useEffect(() => {
+  //   const newData = test(); // קריאה לפונקציה החיצונית
+  //   setData(newData);
+  // }, [intervalFormat]);
+
+  // const test = () => {
+  //   const data = aggregateData(logs, getIntervalFormat());
+  //   return add10milisec(data);
+  // };
+
+  const tabs = [
+    { value: "minutes", disabled: daysDiff > 3 },
+    { value: "hour", disabled: daysDiff > 30 },
+    { value: "day", disabled: daysDiff < 10 },
+    { value: "week", disabled: daysDiff < 60},
+  ];
+
+  // const times = logs.map(obj => obj.time);
+
+  // // יצירת רשימת אינטרוולים שווים
+  // const timeIntervals = Array.from({ length: 11 }, (_, index) => Math.floor(Math.min(...times) + (index / 10) * (Math.max(...times) - Math.min(...times))));
+
+
   const gradientOffset = () => {
     const dataMax = Math.max(...state.data.map((i) => i.average));
     const dataMin = Math.min(...state.data.map((i) => i.average));
@@ -585,6 +610,7 @@ const Graph = ({ logs }) => {
         // overflowY: false,
       }}
     >
+      {daysDiff}
       <div
         style={{
           marginLeft: "10px",
@@ -594,131 +620,32 @@ const Graph = ({ logs }) => {
       >
         <h4>הגדרת אינטרוול</h4>
         <Tabs
-        
           indicatorColor="secondary"
           textColor="secondary"
           value={intervalFormat}
           onChange={(e, newValue) => setIntervalFormat(newValue)}
+          sx={{
+            "& button": { color: "white" },
+          }}
         >
-          <Tab
-            value={"minutes"}
-            label="minute"
-            disabled={daysDiff > 3}
-            defaultChecked={intervalFormat === "minutes"}
-          />
-           <Tab
-            value={"hour"}
-            label="hour"
-            disabled={daysDiff > 30}
-            defaultChecked={intervalFormat === "hour"}
-          />
-           <Tab
-            value={"day"}
-            label="day"
-            disabled={daysDiff < 10}
-            defaultChecked={intervalFormat === "day"}
-          />
-           <Tab
-            value={"week"}
-            label="week"
-            disabled={daysDiff < 50}
-            defaultChecked={intervalFormat === "week"}
-          />
-        </Tabs>
-        {/* <div className="radio_btns">
-          <button
-            onClick={(e) => setIntervalFormat(e.target.value)}
-            value={"minutes"}
-            className={`${daysDiff > 3 ? "disabled" : ""}${
-              intervalFormat === "minutes" ? "checked" : ""
-            }`}
-          >
-            5 minutes
-          </button>
-          <button
-            onClick={(e) => setIntervalFormat(e.target.value)}
-            value={"hour"}
-            className={`${daysDiff > 40 ? "disabled" : ""}${
-              intervalFormat === "hour" ? "checked" : ""
-            }`}
-          >
-            1 hour
-          </button>
-          <button
-            onClick={(e) => setIntervalFormat(e.target.value)}
-            value={"day"}
-            className={`${daysDiff < 10 ? "disabled" : ""}${
-              intervalFormat === "day" ? "checked" : ""
-            }`}
-          >
-            1 day
-          </button>
-          <button
-            onClick={(e) => setIntervalFormat(e.target.value)}
-            value={"week"}
-            className={`${daysDiff < 60 ? "disabled" : ""}${
-              intervalFormat === "week" ? "checked" : ""
-            }`}
-          >
-            1 week
-          </button>
-        </div> */}
-
-        {/* <input
-          id="minutes"
-          // style={{visibility:"hidden"}}
-          disabled={daysDiff > 3}
-          // disabled
-            defaultChecked={intervalFormat === "minutes"}
-            type="radio"
-            name="intervalFormat"
-            onChange={(e) => setIntervalFormat(e.target.value)}
-            value={"minutes"}
-          />
-        <h4 for="minutes" disabled={daysDiff > 3} >
-          5 minutes
-         
-        </h4>
-       
-         
-          <input
-            disabled={daysDiff > 40}
-            id="hour"
-            defaultChecked={intervalFormat === "hour"}
-            onChange={(e) => setIntervalFormat(e.target.value)}
-            type="radio"
-            name="intervalFormat"
+          {tabs.map((tab) => {
             
-            value={"hour"}
-          />
-          <h4 for="hour">1 hour</h4>
-       
-        
-          <input
-          id="day"
-            disabled={daysDiff < 10}
-            defaultChecked={intervalFormat === "day"}
-            type="radio"
-            name="intervalFormat"
-            onChange={(e) => setIntervalFormat(e.target.value)}
-            value={"day"}
-          />
-          <h4 for="day">1 day</h4>
-        
-       
-          <input
-          id ="week"
-            disabled={daysDiff < 60}
-            defaultChecked={intervalFormat === "week"}
-            type="radio"
-            name="intervalFormat"
-            onChange={(e) => setIntervalFormat(e.target.value)}
-            value={"week"}
-          />
-       <h4 for="week">1 week</h4> */}
+            return (
+              <Tab
+                key={tab.value}
+                value={tab.value}
+                label={tab.value}
+                disabled={tab.disabled}
+               
+                defaultChecked={intervalFormat === tab.value}
+              />
+            );
+          })}
+        </Tabs>
       </div>
 
-     {intervalFormat !== null && <ResponsiveContainer width={"100%"} height={"100%"}>
+      {/* {intervalFormat !== null && ( */}
+      <ResponsiveContainer width={"100%"} height={"100%"}>
         <LineChart
           // width={1200}
           height={300}
@@ -733,13 +660,13 @@ const Graph = ({ logs }) => {
             minTickGap={10}
             padding={{ left: state.left, right: state.right }}
             domain={["dataMin", "dataMax"]}
+            
             tickFormatter={(timestamp) => {
               const date = new Date(timestamp).toISOString();
 
               let time;
               if (intervalFormat === "minutes") time = date.substring(11, 16);
-              else if (intervalFormat === "hour")
-                time = date.substring(11, 16);
+              else if (intervalFormat === "hour") time = date.substring(11, 16);
               else if (intervalFormat === "day" || intervalFormat === "week")
                 time = date.substring(5, 10);
 
@@ -749,7 +676,7 @@ const Graph = ({ logs }) => {
           />
           <YAxis type="number" domain={[0, 100]} />
           <Line
-            isAnimationActive={false}
+            // isAnimationActive={false}
             dot={<CustomizedDot />}
             type="step"
             dataKey="average"
@@ -816,7 +743,8 @@ const Graph = ({ logs }) => {
             </AreaChart>
           </Brush>
         </LineChart>
-      </ResponsiveContainer>}
+      </ResponsiveContainer>
+      {/* )} */}
     </div>
   );
 };

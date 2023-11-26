@@ -139,6 +139,55 @@ export function aggregateDataByFiveMinutes(data) {
   return result;
 }
 
+export function aggregateData(data, intervalFormat) {
+  if (!data || data.length === 0 || !intervalFormat) return [];
+
+  let result = [];
+  let currentInterval = null;
+  let intervalData = [];
+
+  const getInterval = (date) => {
+    if (intervalFormat === "minutes") return date.getMinutes() - (date.getMinutes() % 5);
+    if (intervalFormat === "hour") return date.getHours();
+    if (intervalFormat === "day") return date.toLocaleDateString();
+    if (intervalFormat === "week") return getWeekNumber(date);
+  };
+
+  for (const item of data) {
+    const itemInterval = getInterval(new Date(item.date));
+
+    if (currentInterval === null) {
+      currentInterval = itemInterval;
+    }
+
+    if (itemInterval !== currentInterval) {
+      const intervalAverage = calculateAverage(intervalData);
+      const intervalServerRunning = calculateServerRunning(intervalData);
+
+      result.push({
+        date: item.date,
+        average: intervalAverage,
+        serverRunning: intervalServerRunning,
+        first: true,
+      });
+
+      currentInterval = itemInterval;
+      intervalData = [];
+    }
+
+    intervalData.push(item);
+  }
+
+  return result;
+}
+
+// Usage
+// const test = () => {
+//   const data = aggregateData(logs, getIntervalFormat());
+//   return add10milisec(data);
+// };
+
+
 function getWeekNumber(date) {
   const startOfYear = new Date(date.getFullYear(), 0, 1);
   const days = Math.floor((date - startOfYear) / (24 * 60 * 60 * 1000));

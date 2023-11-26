@@ -184,7 +184,8 @@ const SinglePrinterStats = () => {
     // const timeDifference = logs[0].date - logs[logs.length - 1].date;
     // setDaysDiff(timeDifference / (1000 * 60 * 60 * 24))
 
-    let datadata = getAllDates(logs);
+    let datadata =
+     getAllDates(logs);
     // getAllDates(
     // d//.sort((a, b) => new Date(a.date) - new Date(b.date))
     // );
