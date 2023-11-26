@@ -1,25 +1,18 @@
 export function aggregateDataByWeek(data) {
   if (!data || data.length === 0) return [];
   let result = [];
-
-  // מיון המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // אתחול משתנים לצורך אגרגציה לפי שבועות
   let currentWeek = null;
   let weekData = [];
 
   for (const item of data) {
     const itemDate = new Date(item.date);
     const itemWeek = getWeekNumber(itemDate);
-    // debugger
 
     if (currentWeek === null) {
       currentWeek = itemWeek;
     }
 
     if (itemWeek !== currentWeek) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
       const weekAverage = calculateAverage(weekData);
       const weekServerRunning = calculateServerRunning(weekData);
 
@@ -30,7 +23,6 @@ export function aggregateDataByWeek(data) {
         first: true,
       });
 
-      // אתחול לשבוע הבא
       currentWeek = itemWeek;
       weekData = [];
     }
@@ -44,10 +36,6 @@ export function aggregateDataByDay(data) {
   if (!data || data.length === 0) return [];
   let result = [];
 
-  // מיון המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // אתחול משתנים לצורך אגרגציה לפי ימים
   let currentDay = null;
   let dayData = [];
 
@@ -59,7 +47,6 @@ export function aggregateDataByDay(data) {
     }
 
     if (itemDay !== currentDay) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
       const dayAverage = calculateAverage(dayData);
       const dayServerRunning = calculateServerRunning(dayData);
 
@@ -70,7 +57,6 @@ export function aggregateDataByDay(data) {
         first: true,
       });
 
-      // אתחול ליום הבא
       currentDay = itemDay;
       dayData = [];
     }
@@ -85,10 +71,6 @@ export function aggregateDataByDay(data) {
 export function aggregateDataByHour(data) {
   let result = [];
 
-  // סידור המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // קצאת המידע לשעה
   let currentHour = null;
   let hourData = [];
 
@@ -100,7 +82,6 @@ export function aggregateDataByHour(data) {
     }
 
     if (itemHour !== currentHour) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
       const hourAverage = calculateAverage(hourData);
       const hourServerRunning = calculateServerRunning(hourData);
 
@@ -111,36 +92,33 @@ export function aggregateDataByHour(data) {
         first: true,
       });
 
-      // אתחול לשעה הבאה
       currentHour = itemHour;
       hourData = [];
     }
 
     hourData.push(item);
   }
+  return result;
 }
 
 export function aggregateDataByFiveMinutes(data) {
   let result = [];
 
-  // סידור המערך לפי התאריכים
   data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // קצאת המידע ליחידות של חמישה דקות
   let currentInterval = null;
   let intervalData = [];
 
   for (const item of data) {
     const itemTime = new Date(item.date);
     const itemMinutes = itemTime.getMinutes();
-    const currentMinutes = itemMinutes - (itemMinutes % 5); 
+    const currentMinutes = itemMinutes - (itemMinutes % 5);
 
     if (currentInterval === null) {
       currentInterval = currentMinutes;
     }
 
     if (currentMinutes !== currentInterval) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
       const intervalAverage = calculateAverage(intervalData);
       const intervalServerRunning = calculateServerRunning(intervalData);
 
@@ -151,15 +129,12 @@ export function aggregateDataByFiveMinutes(data) {
         first: true,
       });
 
-      // אתחול ליחידת הזמן הבאה
       currentInterval = currentMinutes;
       intervalData = [];
     }
 
     intervalData.push(item);
   }
-
-
 
   return result;
 }
@@ -175,7 +150,7 @@ function calculateAverage(data) {
   const falseCount = data.filter((obj) => obj.online === false).length;
   const total = trueCount + falseCount;
 
-  return total === 0 ? 0 : Number(((trueCount / total) * 100).toFixed(2));
+  return total === 0 ? 0 : ((trueCount / total) * 100).toFixed(2);
 }
 
 function calculateServerRunning(data) {
@@ -184,5 +159,5 @@ function calculateServerRunning(data) {
 
   return totalServer === 0
     ? 0
-    : Number(((filterdArr.length / totalServer) * 100).toFixed(2));
+    : ((filterdArr.length / totalServer) * 100).toFixed(2);
 }

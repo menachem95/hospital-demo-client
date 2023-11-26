@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import "./111.css";
 import { Box } from "@mui/material";
 import * as React from "react";
 import useMousePosition from "../hooks/useMousePosition.js";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 // import { LineChart } from "@mui/x-charts/LineChart";
 import {
   ResponsiveContainer,
@@ -16,175 +19,177 @@ import {
   AreaChart,
 } from "recharts";
 
-// import { aggregateDataByWeek, aggregateDataByDay, aggregateDataByHour, aggregateDataByFiveMinutes } from "./aggregateDates func.js";
+import {
+  aggregateDataByWeek,
+  aggregateDataByDay,
+  aggregateDataByHour,
+  aggregateDataByFiveMinutes,
+} from "./aggregateDates func.js";
 
 import { data1 } from "../data/data1.js";
-export function aggregateDataByWeek(data) {
-  if (!data || data.length === 0) return [];
-  let result = [];
+// export function aggregateDataByWeek(data) {
+//   if (!data || data.length === 0) return [];
+//   let result = [];
 
-  // מיון המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
+//   // מיון המערך לפי התאריכים
+//   data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // אתחול משתנים לצורך אגרגציה לפי שבועות
-  let currentWeek = null;
-  let weekData = [];
+//   // אתחול משתנים לצורך אגרגציה לפי שבועות
+//   let currentWeek = null;
+//   let weekData = [];
 
-  for (const item of data) {
-    const itemDate = new Date(item.date);
-    const itemWeek = getWeekNumber(itemDate);
-    // debugger
+//   for (const item of data) {
+//     const itemDate = new Date(item.date);
+//     const itemWeek = getWeekNumber(itemDate);
+//     // debugger
 
-    if (currentWeek === null) {
-      currentWeek = itemWeek;
-    }
+//     if (currentWeek === null) {
+//       currentWeek = itemWeek;
+//     }
 
-    if (itemWeek !== currentWeek) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
-      const weekAverage = calculateAverage(weekData);
-      const weekServerRunning = calculateServerRunning(weekData);
+//     if (itemWeek !== currentWeek) {
+//       // חישוב סטטיסטיקות והוספתן לתוצאה
+//       const weekAverage = calculateAverage(weekData);
+//       const weekServerRunning = calculateServerRunning(weekData);
 
-      result.push({
-        date: item.date,
-        average: weekAverage,
-        serverRunning: weekServerRunning,
-        first: true,
-      });
+//       result.push({
+//         date: item.date,
+//         average: weekAverage,
+//         serverRunning: weekServerRunning,
+//         first: true,
+//       });
 
-      // אתחול לשבוע הבא
-      currentWeek = itemWeek;
-      weekData = [];
-    }
+//       // אתחול לשבוע הבא
+//       currentWeek = itemWeek;
+//       weekData = [];
+//     }
 
-    weekData.push(item);
-  }
-  return result;
-}
+//     weekData.push(item);
+//   }
+//   return result;
+// }
 
-export function aggregateDataByDay(data) {
-  if (!data || data.length === 0) return [];
-  let result = [];
+// export function aggregateDataByDay(data) {
+//   if (!data || data.length === 0) return [];
+//   let result = [];
 
-  // מיון המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
+//   // מיון המערך לפי התאריכים
+//   data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // אתחול משתנים לצורך אגרגציה לפי ימים
-  let currentDay = null;
-  let dayData = [];
+//   // אתחול משתנים לצורך אגרגציה לפי ימים
+//   let currentDay = null;
+//   let dayData = [];
 
-  for (const item of data) {
-    const itemDay = new Date(item.date).toLocaleDateString();
+//   for (const item of data) {
+//     const itemDay = new Date(item.date).toLocaleDateString();
 
-    if (currentDay === null) {
-      currentDay = itemDay;
-    }
+//     if (currentDay === null) {
+//       currentDay = itemDay;
+//     }
 
-    if (itemDay !== currentDay) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
-      const dayAverage = calculateAverage(dayData);
-      const dayServerRunning = calculateServerRunning(dayData);
+//     if (itemDay !== currentDay) {
+//       // חישוב סטטיסטיקות והוספתן לתוצאה
+//       const dayAverage = calculateAverage(dayData);
+//       const dayServerRunning = calculateServerRunning(dayData);
 
-      result.push({
-        date: item.date,
-        average: dayAverage,
-        serverRunning: dayServerRunning,
-        first: true,
-      });
+//       result.push({
+//         date: item.date,
+//         average: dayAverage,
+//         serverRunning: dayServerRunning,
+//         first: true,
+//       });
 
-      // אתחול ליום הבא
-      currentDay = itemDay;
-      dayData = [];
-    }
+//       // אתחול ליום הבא
+//       currentDay = itemDay;
+//       dayData = [];
+//     }
 
-    dayData.push(item);
-  }
-  
+//     dayData.push(item);
+//   }
 
-  return result;
-}
+//   return result;
+// }
 
-export function aggregateDataByHour(data) {
-  let result = [];
+// export function aggregateDataByHour(data) {
+//   let result = [];
 
-  // סידור המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
+//   // סידור המערך לפי התאריכים
+//   data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // קצאת המידע לשעה
-  let currentHour = null;
-  let hourData = [];
+//   // קצאת המידע לשעה
+//   let currentHour = null;
+//   let hourData = [];
 
-  for (const item of data) {
-    const itemHour = new Date(item.date).getHours();
+//   for (const item of data) {
+//     const itemHour = new Date(item.date).getHours();
 
-    if (currentHour === null) {
-      currentHour = itemHour;
-    }
+//     if (currentHour === null) {
+//       currentHour = itemHour;
+//     }
 
-    if (itemHour !== currentHour) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
-      const hourAverage = calculateAverage(hourData);
-      const hourServerRunning = calculateServerRunning(hourData);
+//     if (itemHour !== currentHour) {
+//       // חישוב סטטיסטיקות והוספתן לתוצאה
+//       const hourAverage = calculateAverage(hourData);
+//       const hourServerRunning = calculateServerRunning(hourData);
 
-      result.push({
-        date: item.date,
-        average: hourAverage,
-        serverRunning: hourServerRunning,
-        first: true,
-      });
+//       result.push({
+//         date: item.date,
+//         average: hourAverage,
+//         serverRunning: hourServerRunning,
+//         first: true,
+//       });
 
-      // אתחול לשעה הבאה
-      currentHour = itemHour;
-      hourData = [];
-    }
+//       // אתחול לשעה הבאה
+//       currentHour = itemHour;
+//       hourData = [];
+//     }
 
-    hourData.push(item);
-  }
-  return result;
-}
+//     hourData.push(item);
+//   }
+//   return result;
+// }
 
-export function aggregateDataByFiveMinutes(data) {
-  let result = [];
+// export function aggregateDataByFiveMinutes(data) {
+//   let result = [];
 
-  // סידור המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
+//   // סידור המערך לפי התאריכים
+//   data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // קצאת המידע ליחידות של חמישה דקות
-  let currentInterval = null;
-  let intervalData = [];
+//   // קצאת המידע ליחידות של חמישה דקות
+//   let currentInterval = null;
+//   let intervalData = [];
 
-  for (const item of data) {
-    const itemTime = new Date(item.date);
-    const itemMinutes = itemTime.getMinutes();
-    const currentMinutes = itemMinutes - (itemMinutes % 5); 
+//   for (const item of data) {
+//     const itemTime = new Date(item.date);
+//     const itemMinutes = itemTime.getMinutes();
+//     const currentMinutes = itemMinutes - (itemMinutes % 5);
 
-    if (currentInterval === null) {
-      currentInterval = currentMinutes;
-    }
+//     if (currentInterval === null) {
+//       currentInterval = currentMinutes;
+//     }
 
-    if (currentMinutes !== currentInterval) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
-      const intervalAverage = calculateAverage(intervalData);
-      const intervalServerRunning = calculateServerRunning(intervalData);
+//     if (currentMinutes !== currentInterval) {
+//       // חישוב סטטיסטיקות והוספתן לתוצאה
+//       const intervalAverage = calculateAverage(intervalData);
+//       const intervalServerRunning = calculateServerRunning(intervalData);
 
-      result.push({
-        date: item.date,
-        average: intervalAverage,
-        serverRunning: intervalServerRunning,
-        first: true,
-      });
+//       result.push({
+//         date: item.date,
+//         average: intervalAverage,
+//         serverRunning: intervalServerRunning,
+//         first: true,
+//       });
 
-      // אתחול ליחידת הזמן הבאה
-      currentInterval = currentMinutes;
-      intervalData = [];
-    }
+//       // אתחול ליחידת הזמן הבאה
+//       currentInterval = currentMinutes;
+//       intervalData = [];
+//     }
 
-    intervalData.push(item);
-  }
+//     intervalData.push(item);
+//   }
 
-
-
-  return result;
-}
+//   return result;
+// }
 
 function getWeekNumber(date) {
   const startOfYear = new Date(date.getFullYear(), 0, 1);
@@ -192,28 +197,6 @@ function getWeekNumber(date) {
   return Math.ceil((days + startOfYear.getDay() + 1) / 7);
 }
 
-function calculateAverage(data) {
-  const trueCount = data.filter((obj) => obj.online === true).length;
-  const falseCount = data.filter((obj) => obj.online === false).length;
-  const total = trueCount + falseCount;
-
-  return total === 0 ? 0 : Number(((trueCount / total) * 100).toFixed(2));
-}
-
-function calculateServerRunning(data) {
-  const totalServer = data.length;
-  const filterdArr = data.filter((obj) => obj.isTheServerRunning);
-
-  return totalServer === 0
-    ? 0
-    : Number(((filterdArr.length / totalServer) * 100).toFixed(2));
-}
-
-// function getWeekNumber(date) {
-//   const startOfYear = new Date(date.getFullYear(), 0, 1);
-//   const days = Math.floor((date - startOfYear) / (24 * 60 * 60 * 1000));
-//   return Math.ceil((days + startOfYear.getDay() + 1) / 7);
-// }
 const Fill = (props) => {
   debugger;
   console.log("props", props);
@@ -223,7 +206,7 @@ const Fill = (props) => {
 
 const add10milisec = (result) => {
   const newResult = [];
-  for (let i = 0; i < result.length; i++) {
+  for (let i = 0; i < result?.length; i++) {
     newResult.push(result[i]);
     let date = result[i].date + 10;
     let obj = { ...result[i + 1], date, first: false };
@@ -232,71 +215,6 @@ const add10milisec = (result) => {
   }
   return newResult;
 };
-
-
-
-
-
-// let data = data1.map((d) => {
-//   return {
-//     online: d.online ? 1 : 0,
-//     hours: d.date.substring(11, 16),
-//     days: `${d.date.substring(8, 10)}/${d.date.substring(5, 7)}`,
-//   };
-// });
-
-// let data2 = [...data, ...data, ...data, ...data, ...data, ...data];
-
-// data = data.map(d => {
-//   return {online: d.online, time: d.time.substring(11, 16)}
-// })
-
-// data = data.map((d) => {
-//   return {
-//     ...d,
-//     ...d.time,
-//     hours: `${d.time.hours}:${d.time.minutes}`,
-//     online: d.online ? 1 : 0,
-//   };
-// });
-
-// const sortedData = data?.sort((a, b) => new Date(a.time) - new Date(b.time));
-
-// const changeDates = [{ online: 2 }];
-
-// for (let i = 1; i < sortedData.length; i++) {
-//   if (sortedData[i].online !== sortedData[i - 1].online) {
-//     changeDates.push({
-//       time: `${sortedData[i].time.day} ב${sortedData[i].time.month}, ${sortedData[i].time.hours}:${sortedData[i].time.minutes}`,
-//       online: sortedData[i]?.online ? 1 : 0,
-//     //   hours
-//     });
-//   }
-// }
-
-// const roundToNearestThousand = (number) => {
-//   const remainder = number % 1000;
-//   if (remainder < 500) {
-//     return number - remainder; // עגל לתחתית אלפיים הקרובה יותר
-//   } else {
-//     return number + (1000 - remainder); // עגל לתקרה אלפיים הקרובה יותר
-//   }
-// };
-
-// const intervalByLength = (number) => {
-//   const len = roundToNearestThousand(number);
-//   if (number < 500) return 12;
-//   if (len === 1000) return 18;
-//   else if (len === 2000) return 20;
-//   else if (len === 3000) return 30;
-//   else if (len === 4000) return 40;
-//   // else if (len < 5000) return 60;
-//   // else if (len < 7000) return 80;
-//   // else if (len < 9000) return 80;
-//   else if (len < 10000) return 60;
-// };
-
-//////////////////////////////////////////////////////////////////////////////////////
 
 const CustomizedDot = (props) => {
   const { cx, cy, value, payload } = props;
@@ -455,83 +373,85 @@ const RepositoryCoverageTimelineGraphTooltip = (props) => {
 //   return result;
 // }
 
+// const getAllDates = (arr) => {
+//   const arr1 = arr.map((obj) => {
+//     let newDate = new Date(obj.date);
+//     newDate.setSeconds(0);
+//     newDate.setMilliseconds(0);
+//     newDate.getTime();
+//     return {
+//       // date: obj,//: newDate,//.toISOString().substring(0, 16),
+//       // online: obj.online ? true : false,
+//       ...obj,
+//       date: newDate,
+//       isTheServerRunning: true,
+//     };
+//   });
 
+//   let lastMinute = new Date(arr1[0].date).getTime();
 
-const getAllDates = (arr) => {
-  const arr1 = arr.map((obj) => {
-    let newDate = new Date(obj.date);
-    newDate.setSeconds(0);
-    newDate.setMilliseconds(0);
-    newDate.getTime();
-    return {
-      // date: obj,//: newDate,//.toISOString().substring(0, 16),
-      // online: obj.online ? true : false,
-      ...obj,
-      date: newDate,
-      isTheServerRunning: true,
-    };
-  });
+//   const newArr = [
+//     {
+//       date: lastMinute,
+//       isTheServerRunning: true,
+//       online: arr1[0].online,
+//     },
+//   ];
 
-  let lastMinute = new Date(arr1[0].date).getTime();
+//   const theLastInOriginalArr = new Date(arr1[arr1.length - 1].date).getTime();
+//   let fromTheLastOneInTheOriginal = 0;
+//   while (lastMinute <= theLastInOriginalArr) {
+//     // console.log("lastMinute:", lastMinute);
+//     // console.log("theLastInOriginalArr:", theLastInOriginalArr);
+//     const next5Minute = lastMinute + 1000 * 60; //*5;
 
-  const newArr = [
-    {
-      date: lastMinute,
-      isTheServerRunning: true,
-      online: arr1[0].online,
-    },
-  ];
+//     const foundItem = arr1.find(
+//       (item) =>
+//         new Date(item.date).toISOString().substring(0, 16) ===
+//         new Date(next5Minute).toISOString().substring(0, 16)
+//     );
 
-  const theLastInOriginalArr = new Date(arr1[arr1.length - 1].date).getTime();
-  let fromTheLastOneInTheOriginal = 0;
-  while (lastMinute <= theLastInOriginalArr) {
-    // console.log("lastMinute:", lastMinute);
-    // console.log("theLastInOriginalArr:", theLastInOriginalArr);
-    const next5Minute = lastMinute + 1000 * 60; //*5;
+//     let isTheServerRunning = foundItem ? true : false;
+//     const online = foundItem ? foundItem.online : null;
+//     fromTheLastOneInTheOriginal++;
+//     if (isTheServerRunning) {
+//       fromTheLastOneInTheOriginal = 0;
+//     }
+//     if (!isTheServerRunning && fromTheLastOneInTheOriginal < 5) {
+//       isTheServerRunning = true;
+//     }
 
-    const foundItem = arr1.find(
-      (item) =>
-        new Date(item.date).toISOString().substring(0, 16) ===
-        new Date(next5Minute).toISOString().substring(0, 16)
-    );
+//     // if (fromTheLastOneInTheOriginal <= 5 && !isTheServerRunning) {
+//     //   isTheServerRunning = true;
+//     //   // if (fromTheLastOneInTheOriginal === 5){
 
-    let isTheServerRunning = foundItem ? true : false;
-    const online = foundItem ? foundItem.online : null;
-    fromTheLastOneInTheOriginal++;
-    if (isTheServerRunning) {
-      fromTheLastOneInTheOriginal = 0;
-    }
-    if (!isTheServerRunning && fromTheLastOneInTheOriginal < 5) {
-      isTheServerRunning = true;
-    }
+//     //   // }
+//     // } else{
+//     //   fromTheLastOneInTheOriginal = 0
+//     // }
 
-    // if (fromTheLastOneInTheOriginal <= 5 && !isTheServerRunning) {
-    //   isTheServerRunning = true;
-    //   // if (fromTheLastOneInTheOriginal === 5){
+//     const obj = {
+//       date: next5Minute,
+//       isTheServerRunning,
+//       online,
+//     };
+//     newArr.push(obj);
 
-    //   // }
-    // } else{
-    //   fromTheLastOneInTheOriginal = 0
-    // }
+//     lastMinute = obj.date;
+//   }
 
-    const obj = {
-      date: next5Minute,
-      isTheServerRunning,
-      online,
-    };
-    newArr.push(obj);
+//   console.log("newArr", newArr);
+//   return newArr;
+// };
 
-    lastMinute = obj.date;
-  }
-
-  console.log("newArr", newArr);
-  return newArr;
+const defaultDaysDiff = (logs) => {
+  const one = new Date(logs[0].date).getTime();
+  const tow = new Date(logs[logs.length - 1].date).getTime();
+  const timeDiff = tow - one;
+  return Math.max(1, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
 };
 
-
-
-
-const StreamingDemo = ({ logs, intervalFormat }) => {
+const Graph = ({ logs }) => {
   const [state, setState] = useState({
     startIndex: 0,
     endIndex: 25,
@@ -541,7 +461,18 @@ const StreamingDemo = ({ logs, intervalFormat }) => {
     typeOfTime: "day",
     data: [],
   });
+
+  const [intervalFormat, setIntervalFormat] = useState(null);
+  const daysDiff = defaultDaysDiff(logs);
   console.log("logs in 1111:", logs);
+  // useEffect(() => {
+
+  // }, []);
+  console.log("daysDiff", daysDiff);
+  console.log("intervalFormat", intervalFormat);
+  useEffect(() => {
+    setIntervalFormat(getIntervalFormat());
+  }, [daysDiff]);
 
   //  let d = logs.map((o) => {
   //     let date = new Date(o.date);
@@ -611,16 +542,19 @@ const StreamingDemo = ({ logs, intervalFormat }) => {
   //   setState((prevState) => ({...prevState, data: logs}))
   // }, []);
 
+  function getIntervalFormat() {
+    if (daysDiff > 60) return "week";
+    if (daysDiff > 11 && daysDiff < 60) return "day";
+    if (daysDiff < 30) return "hour";
+    if (daysDiff <= 1) return "minutes";
+  }
+
   const test = () => {
     let data = [];
-    if (intervalFormat === "minutes")
-      data = aggregateDataByFiveMinutes(logs)
-    else if (intervalFormat === "houer")
-      data = aggregateDataByHour(logs);
-    else if (intervalFormat === "day")
-      data = aggregateDataByDay(logs);
-    else if (intervalFormat === "week")
-      data = aggregateDataByWeek(logs);
+    if (intervalFormat === "minutes") data = aggregateDataByFiveMinutes(logs);
+    else if (intervalFormat === "hour") data = aggregateDataByHour(logs);
+    else if (intervalFormat === "day") data = aggregateDataByDay(logs);
+    else if (intervalFormat === "week") data = aggregateDataByWeek(logs);
     return add10milisec(data);
   };
 
@@ -638,6 +572,7 @@ const StreamingDemo = ({ logs, intervalFormat }) => {
   };
 
   const off = gradientOffset();
+  // if (intervalFormat === null) return
 
   return (
     <div
@@ -650,7 +585,140 @@ const StreamingDemo = ({ logs, intervalFormat }) => {
         // overflowY: false,
       }}
     >
-      <ResponsiveContainer width={"100%"} height={"100%"}>
+      <div
+        style={{
+          marginLeft: "10px",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        <h4>הגדרת אינטרוול</h4>
+        <Tabs
+        
+          indicatorColor="secondary"
+          textColor="secondary"
+          value={intervalFormat}
+          onChange={(e, newValue) => setIntervalFormat(newValue)}
+        >
+          <Tab
+            value={"minutes"}
+            label="minute"
+            disabled={daysDiff > 3}
+            defaultChecked={intervalFormat === "minutes"}
+          />
+           <Tab
+            value={"hour"}
+            label="hour"
+            disabled={daysDiff > 30}
+            defaultChecked={intervalFormat === "hour"}
+          />
+           <Tab
+            value={"day"}
+            label="day"
+            disabled={daysDiff < 10}
+            defaultChecked={intervalFormat === "day"}
+          />
+           <Tab
+            value={"week"}
+            label="week"
+            disabled={daysDiff < 50}
+            defaultChecked={intervalFormat === "week"}
+          />
+        </Tabs>
+        {/* <div className="radio_btns">
+          <button
+            onClick={(e) => setIntervalFormat(e.target.value)}
+            value={"minutes"}
+            className={`${daysDiff > 3 ? "disabled" : ""}${
+              intervalFormat === "minutes" ? "checked" : ""
+            }`}
+          >
+            5 minutes
+          </button>
+          <button
+            onClick={(e) => setIntervalFormat(e.target.value)}
+            value={"hour"}
+            className={`${daysDiff > 40 ? "disabled" : ""}${
+              intervalFormat === "hour" ? "checked" : ""
+            }`}
+          >
+            1 hour
+          </button>
+          <button
+            onClick={(e) => setIntervalFormat(e.target.value)}
+            value={"day"}
+            className={`${daysDiff < 10 ? "disabled" : ""}${
+              intervalFormat === "day" ? "checked" : ""
+            }`}
+          >
+            1 day
+          </button>
+          <button
+            onClick={(e) => setIntervalFormat(e.target.value)}
+            value={"week"}
+            className={`${daysDiff < 60 ? "disabled" : ""}${
+              intervalFormat === "week" ? "checked" : ""
+            }`}
+          >
+            1 week
+          </button>
+        </div> */}
+
+        {/* <input
+          id="minutes"
+          // style={{visibility:"hidden"}}
+          disabled={daysDiff > 3}
+          // disabled
+            defaultChecked={intervalFormat === "minutes"}
+            type="radio"
+            name="intervalFormat"
+            onChange={(e) => setIntervalFormat(e.target.value)}
+            value={"minutes"}
+          />
+        <h4 for="minutes" disabled={daysDiff > 3} >
+          5 minutes
+         
+        </h4>
+       
+         
+          <input
+            disabled={daysDiff > 40}
+            id="hour"
+            defaultChecked={intervalFormat === "hour"}
+            onChange={(e) => setIntervalFormat(e.target.value)}
+            type="radio"
+            name="intervalFormat"
+            
+            value={"hour"}
+          />
+          <h4 for="hour">1 hour</h4>
+       
+        
+          <input
+          id="day"
+            disabled={daysDiff < 10}
+            defaultChecked={intervalFormat === "day"}
+            type="radio"
+            name="intervalFormat"
+            onChange={(e) => setIntervalFormat(e.target.value)}
+            value={"day"}
+          />
+          <h4 for="day">1 day</h4>
+        
+       
+          <input
+          id ="week"
+            disabled={daysDiff < 60}
+            defaultChecked={intervalFormat === "week"}
+            type="radio"
+            name="intervalFormat"
+            onChange={(e) => setIntervalFormat(e.target.value)}
+            value={"week"}
+          />
+       <h4 for="week">1 week</h4> */}
+      </div>
+
+     {intervalFormat !== null && <ResponsiveContainer width={"100%"} height={"100%"}>
         <LineChart
           // width={1200}
           height={300}
@@ -670,7 +738,7 @@ const StreamingDemo = ({ logs, intervalFormat }) => {
 
               let time;
               if (intervalFormat === "minutes") time = date.substring(11, 16);
-              else if (intervalFormat === "houer")
+              else if (intervalFormat === "hour")
                 time = date.substring(11, 16);
               else if (intervalFormat === "day" || intervalFormat === "week")
                 time = date.substring(5, 10);
@@ -721,7 +789,7 @@ const StreamingDemo = ({ logs, intervalFormat }) => {
             tickFormatter={(timestamp) => {
               const date = new Date(timestamp).toISOString();
               let time;
-              if (intervalFormat === "houer")
+              if (intervalFormat === "hour")
                 time = `${date.substring(5, 10)}/${date.substring(11, 16)}`;
               else if (intervalFormat === "day") time = date.substring(5, 10);
 
@@ -748,8 +816,58 @@ const StreamingDemo = ({ logs, intervalFormat }) => {
             </AreaChart>
           </Brush>
         </LineChart>
-      </ResponsiveContainer>
+      </ResponsiveContainer>}
     </div>
   );
 };
-export default StreamingDemo;
+export default Graph;
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+// let data = data1.map((d) => {
+//   return {
+//     online: d.online ? 1 : 0,
+//     hours: d.date.substring(11, 16),
+//     days: `${d.date.substring(8, 10)}/${d.date.substring(5, 7)}`,
+//   };
+// });
+
+// let data2 = [...data, ...data, ...data, ...data, ...data, ...data];
+
+// data = data.map(d => {
+//   return {online: d.online, time: d.time.substring(11, 16)}
+// })
+
+// data = data.map((d) => {
+//   return {
+//     ...d,
+//     ...d.time,
+//     hours: `${d.time.hours}:${d.time.minutes}`,
+//     online: d.online ? 1 : 0,
+//   };
+// });
+
+// const sortedData = data?.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+// const changeDates = [{ online: 2 }];
+
+// for (let i = 1; i < sortedData.length; i++) {
+//   if (sortedData[i].online !== sortedData[i - 1].online) {
+//     changeDates.push({
+//       time: `${sortedData[i].time.day} ב${sortedData[i].time.month}, ${sortedData[i].time.hours}:${sortedData[i].time.minutes}`,
+//       online: sortedData[i]?.online ? 1 : 0,
+//     //   hours
+//     });
+//   }
+// }
+
+// const roundToNearestThousand = (number) => {
+//   const remainder = number % 1000;
+//   if (remainder < 500) {
+//     return number - remainder; // עגל לתחתית אלפיים הקרובה יותר
+//   } else {
+//     return number + (1000 - remainder); // עגל לתקרה אלפיים הקרובה יותר
+//   }
+// };
+
+//////////////////////////////////////////////////////////////////////////////////////

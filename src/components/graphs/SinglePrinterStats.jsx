@@ -1,248 +1,28 @@
 import { Box, Button } from "@mui/material";
 import SinglePrinterGraph from "../SinglePrinterGraph";
 import Header from "../Header";
+import Calendar from "@mui/icons-material/Event";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DesktopDateRangePicker } from "@mui/x-date-pickers-pro/DesktopDateRangePicker";
+import { StaticDateRangePicker } from "@mui/x-date-pickers-pro/StaticDateRangePicker";
+import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
+import CircularProgress from '@mui/material/CircularProgress';
+import LinearProgress from '@mui/material/LinearProgress';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { pickersLayoutClasses } from "@mui/x-date-pickers/PickersLayout";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import StreamingDemo from "../111";
 import "dayjs/locale/en-gb";
 
-const add10milisec = (result) => {
-  const newResult = [];
-  for (let i = 0; i < result.length; i++) {
-    newResult.push(result[i]);
-    let date = result[i].date + 10;
-    let obj = { ...result[i + 1], date, first: false };
-    // delete obj.average;
-    newResult.push(obj);
-  }
-  console.log("newResult", newResult);
 
-  return newResult;
-};
+ const end = new Date()
+ let start = new Date(end);
+ start.setMonth(start.getMonth() - 1);
 
-const returnDateString = (v, cb) => {
-  const year = v.front.substring(0, 4);
-  const month = v.front.substring(5, 7);
-  const day = v.front.substring(8, 10);
-  const date = `${day}/${month}/${year}`;
-  cb({ front: date, db: v.db || "" });
-};
-
-const end = new Date().toJSON();
-let start = new Date(end);
-start.setMonth(start.getMonth() - 1);
-const endDB = new Date();
-endDB.setHours(23, 59, 59, 999);
-const startDB = start;
-start.setHours(0, 0, 0, 0);
-start = start.toJSON();
-
-function calculateAverage(data) {
-  const trueCount = data.filter((obj) => obj.online === true).length;
-  const falseCount = data.filter((obj) => obj.online === false).length;
-  const total = trueCount + falseCount;
-
-  return total === 0 ? 0 : ((trueCount / total) * 100).toFixed(2);
-}
-
-function calculateServerRunning(data) {
-  const totalServer = data.length;
-  const filterdArr = data.filter((obj) => obj.isTheServerRunning);
-
-  return totalServer === 0
-    ? null
-    : Number(((filterdArr.length / totalServer) * 100).toFixed(2));
-}
-
-function aggregateDataByHour(data) {
-  if (!data || data.length === 0) return [];
-  let result = [];
-
-  // סידור המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // קצאת המידע לשעה
-  let currentHour = null;
-  let hourData = [];
-
-  for (const item of data) {
-    const itemHour = new Date(item.date).getHours();
-
-    if (currentHour === null) {
-      currentHour = itemHour;
-    }
-
-    if (itemHour !== currentHour) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
-      const hourAverage = calculateAverage(hourData);
-      const hourServerRunning = calculateServerRunning(hourData);
-
-      result.push({
-        date: item.date,
-        average: hourAverage,
-        serverRunning: hourServerRunning,
-        first: true,
-      });
-
-      // אתחול לשעה הבאה
-      currentHour = itemHour;
-      hourData = [];
-    }
-
-    hourData.push(item);
-  }
-
-  // טיפול בשעה האחרונה
-  // if (hourData.length > 0) {
-  //   const hourAverage = calculateAverage(hourData);
-  //   const hourServerRunning = calculateServerRunning(hourData);
-
-  //   result.push({
-  //     date: data[data.length - 1].date,
-  //     average: hourAverage,
-  //     serverRunning: hourServerRunning,
-  //   });
-  // }
-  const newResult = [];
-  for (let i = 0; i < result.length; i++) {
-    newResult.push(result[i]);
-    let date = result[i].date + 10;
-    let obj = { ...result[i + 1], date, first: false };
-    // delete obj.average;
-    newResult.push(obj);
-  }
-  console.log("newResult", newResult);
-  console.log("result", result);
-  // return result;
- return newResult;
-}
-
-function aggregateDataByDay(data) {
-  if (!data || data.length === 0) return [];
-  let result = [];
-
-  // מיון המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // אתחול משתנים לצורך אגרגציה לפי ימים
-  let currentDay = null;
-  let dayData = [];
-
-  for (const item of data) {
-    const itemDay = new Date(item.date).toLocaleDateString();
-
-    if (currentDay === null) {
-      currentDay = itemDay;
-    }
-
-    if (itemDay !== currentDay) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
-      const dayAverage = calculateAverage(dayData);
-      const dayServerRunning = calculateServerRunning(dayData);
-
-      result.push({
-        date: item.date,
-        average: dayAverage,
-        serverRunning: dayServerRunning,
-        first: true,
-      });
-
-      // אתחול ליום הבא
-      currentDay = itemDay;
-      dayData = [];
-    }
-
-    dayData.push(item);
-  }
-  console.log("result day", result);
-
-  // const newResult = [];
-  // for (let i = 0; i < result.length; i++) {
-  //   newResult.push(result[i]);
-  //   let date = result[i].date + 10;
-  //   let obj = { ...result[i + 1], date, first: false };
-  //   // delete obj.average;
-  //   newResult.push(obj);
-  // }
-  // console.log("newResult", newResult);
-
-  // return newResult;
-  return result;
-}
-
-function aggregateDataByWeek(data) {
-  if (!data || data.length === 0) return [];
-  let result = [];
-
-  // מיון המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // אתחול משתנים לצורך אגרגציה לפי שבועות
-  let currentWeek = null;
-  let weekData = [];
-
-  for (const item of data) {
-    const itemDate = new Date(item.date);
-    const itemWeek = getWeekNumber(itemDate);
-    // debugger
-
-    if (currentWeek === null) {
-      currentWeek = itemWeek;
-    }
-
-    if (itemWeek !== currentWeek) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
-      const weekAverage = calculateAverage(weekData);
-      const weekServerRunning = calculateServerRunning(weekData);
-
-      result.push({
-        date: item.date,
-        average: weekAverage,
-        serverRunning: weekServerRunning,
-        first: true,
-      });
-
-      // אתחול לשבוע הבא
-      currentWeek = itemWeek;
-      weekData = [];
-    }
-
-    weekData.push(item);
-  }
-
-  // const newResult = [];
-  // for (let i = 0; i < result.length; i++) {
-  //   newResult.push(result[i]);
-  //   let date = result[i].date + 10;
-  //   let obj = { ...result[i + 1], date, first: false };
-  //   // delete obj.average;
-  //   newResult.push(obj);
-  // }
-  // console.log("newResult", newResult);
-
-  // return newResult;
-
-  return result;
-}
-
-// פונקציה לקבלת מספר השבוע בשנה
-function getWeekNumber(date) {
-  const startOfYear = new Date(date.getFullYear(), 0, 1);
-  const days = Math.floor((date - startOfYear) / (24 * 60 * 60 * 1000));
-  return Math.ceil((days + startOfYear.getDay() + 1) / 7);
-}
-
-// Example usage:
-// const dataByWeek = aggregateDataByWeek(yourDataArray);
-// console.log(dataByWeek);
-
-// שימוש דוגמא:
-// const dataByDay = aggregateDataByDay(מערך_הנתונים_שלך);
-// console.log(dataByDay);
 
 const getAllDates = (arr) => {
   if (arr.length === 0) return [];
@@ -252,7 +32,6 @@ const getAllDates = (arr) => {
     newDate.setMilliseconds(0);
     newDate.getTime();
     return {
-     
       ...obj,
       date: newDate,
       isTheServerRunning: true,
@@ -308,15 +87,19 @@ const getAllDates = (arr) => {
 const SinglePrinterStats = () => {
   const [logs, setLogs] = useState([]);
   const [intervalFormat, setIntervalFormat] = useState("day");
+  const [isLoading, setIsLoading] = useState(false);
   const [daysDiff, setDaysDiff] = useState();
   // const [datadata, setDatadata] = useState([]);
-  const [startDate, setStartDete] = useState({ front: "", db: "" });
-  const [endDate, setEndDete] = useState({ front: "", db: "" });
+ const [dateState, setDateState] = useState([start,end])
   const { printerId } = useParams();
-  useEffect(() => {
-    returnDateString({ front: end, db: endDB }, setEndDete);
-    returnDateString({ front: start, db: startDB }, setStartDete);
-  }, []);
+
+  useEffect(()=>{
+    console.log("dateState", dateState)
+  },[dateState])
+  // useEffect(() => {
+  //   // returnDateString({ front: end, db: endDB }, setEndDete);
+  //   // returnDateString({ front: start, db: startDB }, setStartDete);
+  // }, []);
 
   // useEffect(() => {
   //   const one = new Date(start).getTime();
@@ -326,14 +109,13 @@ const SinglePrinterStats = () => {
   //   setDaysDiff(daysDiff);
   // }, []);
 
-  useEffect(() => {
-    const one = new Date(startDate.db).getTime();
-    const tow = new Date(endDate.db).getTime();
-    const timeDiff = tow - one;
-    const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-    setDaysDiff(daysDiff);
-  }, [startDate, endDate]);
- 
+  // useEffect(() => {******************************************************************************************************************************************
+  //   const one = new Date(startDate.db).getTime();
+  //   const tow = new Date(endDate.db).getTime();
+  //   const timeDiff = tow - one;
+  //   const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+  //   setDaysDiff(daysDiff);
+  // }, [startDate, endDate]);
 
   //   const fetchLogs = async () => {
   //     console.log(`http://localhost:8080/logs/onePrinter/${printerId}/${startDate.db}/${endDate.db}`);
@@ -374,23 +156,21 @@ const SinglePrinterStats = () => {
   //   setDatadata(aggregateDataByHour(getAllDates(logs)));
   //    }, [logs]);
   const fetchLogs = async () => {
+    setIsLoading(true);
     console.log(
-      `http://localhost:8080/logs/onePrinter/${printerId}/${startDate.db}/${endDate.db}`
+      `http://localhost:8080/logs/onePrinter/${printerId}/${dateState[0]}/${dateState[1]}`
     );
-    console.log(`start at ${new Date().toISOString()}`)
-    console.log("startDate.db", startDate.db);
-    console.log("endDate.db", endDate.db);
-    if (startDate.db === "" || endDate.db === "") return;
+   
     const res = await fetch(
-      `http://localhost:8080/logs/onePrinter/${printerId}/${startDate.db}/${endDate.db}`,
+      `http://localhost:8080/logs/onePrinter/${printerId}/${dateState[0]}/${dateState[1]}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }
     );
     const logs = await res.json();
-    console.log("logs:", logs)
-   
+    console.log("logs:", logs);
+
     // let d = logs.map((o) => {
     //   let date = new Date(o.date);
     //   date.getTime();
@@ -400,18 +180,18 @@ const SinglePrinterStats = () => {
     //     date,
     //   };
     // });
-    
+
     // const timeDifference = logs[0].date - logs[logs.length - 1].date;
     // setDaysDiff(timeDifference / (1000 * 60 * 60 * 24))
 
-    let datadata = getAllDates(logs)
+    let datadata = getAllDates(logs);
     // getAllDates(
-      // d//.sort((a, b) => new Date(a.date) - new Date(b.date))
+    // d//.sort((a, b) => new Date(a.date) - new Date(b.date))
     // );
     // let datadata = d
     //  console.log("d:", d);
-     console.log("datadata:", datadata);
-    console.log(`end at ${new Date().toISOString()}`)
+    console.log("datadata:", datadata);
+    console.log(`end at ${new Date().toISOString()}`);
     console.log("intervalFormat", intervalFormat);
     // if (intervalFormat === "minutes") setLogs(add10milisec(datadata));
     // else if (intervalFormat === "houer") setLogs(add10milisec(aggregateDataByHour(datadata)));
@@ -424,6 +204,7 @@ const SinglePrinterStats = () => {
     //   aggregateDataByWeek(datadata);
     // console.log("datadata", datadata);
     setLogs(datadata);
+    setIsLoading(false);
   };
 
   // useEffect(() => {
@@ -452,6 +233,7 @@ const SinglePrinterStats = () => {
   // },[logs])
 
   return (
+    
     <Box m="20px">
       <Box
         display="flex"
@@ -460,7 +242,7 @@ const SinglePrinterStats = () => {
         position="sticky"
         top="80px"
       >
-        <Header title={"מדפסת"} />
+        <Header title={"מדפסת"} subtitle={""} />
       </Box>
       <Box
         display="grid"
@@ -483,8 +265,32 @@ const SinglePrinterStats = () => {
                 flexDirection: "column",
                 padding: "10px",
               }}
-            >
-              <DatePicker
+            >הצגת נתונים בתאריכים
+              <DateRangePicker
+              calendars={1}
+                defaultValue={dateState.map(d => dayjs(d))}
+                onChange={(newValue) => setDateState(newValue.map(d => d.$d))}
+                slots={{ field: SingleInputDateRangeField }}
+                slotProps={{
+                  shortcuts: {
+                    items: shortcutsItems,
+                  },
+                  textField: { InputProps: { endAdornment: <Calendar /> } },
+                }}
+              />
+              {/* <DateRangePicker slots={{ field: SingleInputDateRangeField }} /> */}
+              {/* <StaticDateRangePicker
+            defaultValue={[dayjs('2022-04-17'), dayjs('2022-04-21')]}
+            // sx={{
+            //   [`.${pickersLayoutClasses.contentWrapper}`]: {
+            //     alignItems: 'center',
+            //   },
+            // }}
+          /> */}
+              {/* <DesktopDateRangePicker
+            defaultValue={[dayjs('2022-04-17'), dayjs('2022-04-21')]}
+          /> */}
+              {/* <DatePicker
                 maxDate={dayjs(end)}
                 onAccept={(v) => {
                   console.log("v:", v.$d);
@@ -505,16 +311,16 @@ const SinglePrinterStats = () => {
                 defaultValue={dayjs(end)}
                 label="תאריך סיום"
                 sx={{ width: 150, margin: "5px" }}
-              />
+              /> */}
             </div>
 
             <div>
-              <div style={{ whiteSpace: "pre-wrap", fontSize: "25px" }}>
+              {/* <div style={{ whiteSpace: "pre-wrap", fontSize: "25px" }}>
                 {` הצגת פעילות המדפסת ברשת
 מתאריך ${startDate.front}  
 עד תאריך ${endDate.front}
 `}
-              </div>{" "}
+              </div>{" "} */}
               <button
                 style={{
                   width: "100px",
@@ -527,7 +333,7 @@ const SinglePrinterStats = () => {
               </button>
             </div>
             {/* <div> */}
-            <div
+            {/* <div
               style={{
                 marginLeft: "10px",
                 display: "flex",
@@ -548,9 +354,8 @@ const SinglePrinterStats = () => {
               <label>
                 ממוצע של שעה
                 <input
-                disabled={daysDiff > 40}
-               defaultValue={daysDiff < 10}
-                  
+                  disabled={daysDiff > 40}
+                  defaultValue={daysDiff < 10}
                   type="radio"
                   name="intervalFormat"
                   onChange={(e) => setIntervalFormat(e.target.value)}
@@ -560,10 +365,9 @@ const SinglePrinterStats = () => {
               </label>
               <label>
                 ממוצע של יום
-                <input 
-                disabled={daysDiff < 10 }
-                  defaultValue={ daysDiff > 11 && daysDiff < 40}
-                 
+                <input
+                  disabled={daysDiff < 10}
+                  defaultValue={daysDiff > 11 && daysDiff < 40}
                   type="radio"
                   name="intervalFormat"
                   onChange={(e) => setIntervalFormat(e.target.value)}
@@ -573,16 +377,15 @@ const SinglePrinterStats = () => {
               <label>
                 ממוצע של שבוע
                 <input
-                disabled={daysDiff < 60}
-                defaultValue={ daysDiff > 40}
-                 
+                  disabled={daysDiff < 60}
+                  defaultValue={daysDiff > 40}
                   type="radio"
                   name="intervalFormat"
                   onChange={(e) => setIntervalFormat(e.target.value)}
                   value={"week"}
                 />
               </label>
-            </div>
+            </div> */}
             {/* <div style={{ padding: "10px" }}>
                 <h4>Tiks</h4>
                 <label>
@@ -597,14 +400,64 @@ const SinglePrinterStats = () => {
             </div> */}
           </div>
         </LocalizationProvider>
-
+      {isLoading && 
+    //   <Box sx={{ width: '500px' }}>
+    //   <LinearProgress />
+    // </Box>
+      <CircularProgress color="inherit" />
+      
+      
+      }
+     
         {/* {logs.length > 0 &&<SinglePrinterGraph logs={logs.sort((a, b) => new Date(a.date) - new Date(b.date) )} />}  */}
-        {logs.length > 0 && (
-          <StreamingDemo logs={logs} intervalFormat={intervalFormat} />
+        {logs.length > 0 && isLoading === false && (
+          <StreamingDemo logs={logs}  />
         )}
+          
       </Box>
     </Box>
   );
 };
 
 export default SinglePrinterStats;
+
+const shortcutsItems = [
+  {
+    label: "This Week",
+    getValue: () => {
+      const today = dayjs();
+      return [today.startOf("week"), today.endOf("week")];
+    },
+  },
+  {
+    label: "Last Week",
+    getValue: () => {
+      const today = dayjs();
+      const prevWeek = today.subtract(7, "day");
+      return [prevWeek.startOf("week"), prevWeek.endOf("week")];
+    },
+  },
+  {
+    label: "Last 7 Days",
+    getValue: () => {
+      const today = dayjs();
+      return [today.subtract(7, "day"), today];
+    },
+  },
+  {
+    label: "Current Month",
+    getValue: () => {
+      const today = dayjs();
+      return [today.startOf("month"), today.endOf("month")];
+    },
+  },
+  {
+    label: "Next Month",
+    getValue: () => {
+      const today = dayjs();
+      const startOfNextMonth = today.endOf("month").add(1, "day");
+      return [startOfNextMonth, startOfNextMonth.endOf("month")];
+    },
+  },
+  { label: "Reset", getValue: () => [null, null] },
+];
