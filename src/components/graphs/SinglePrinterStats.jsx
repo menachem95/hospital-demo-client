@@ -16,6 +16,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import StreamingDemo from "../111";
+import LinearDeterminate from "../UI/LinearDeterminate";
 import "dayjs/locale/en-gb";
 
 
@@ -25,6 +26,7 @@ import "dayjs/locale/en-gb";
 
 
 const getAllDates = (arr) => {
+  
   if (arr.length === 0) return [];
   const arr1 = arr.map((obj) => {
     let newDate = new Date(obj.date);
@@ -243,7 +245,8 @@ const SinglePrinterStats = () => {
         position="sticky"
         top="80px"
       >
-        <Header title={"מדפסת"} subtitle={""} />
+        <Header title={"מדפסת"} subtitle={" "} />
+      
       </Box>
       <Box
         display="grid"

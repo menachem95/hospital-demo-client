@@ -549,9 +549,11 @@ const Graph = ({ logs }) => {
     if (daysDiff > 11 && daysDiff < 60) return "day";
     if (daysDiff < 30) return "hour";
     if (daysDiff <= 1) return "minutes";
+    
   }
 
   const test = () => {
+    
     let data = [];
     if (intervalFormat === "minutes") data = aggregateDataByFiveMinutes(logs);
     else if (intervalFormat === "hour") data = aggregateDataByHour(logs);

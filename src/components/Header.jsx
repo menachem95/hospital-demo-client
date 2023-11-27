@@ -2,7 +2,7 @@ import { Typography, Box, useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { tokens } from '../theme';
 
-const Header = ({ title, subtitle }) => {
+const Header = ({ title, subtitle=null }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const {time} = useSelector(state => state.display)
@@ -21,7 +21,7 @@ const Header = ({ title, subtitle }) => {
                 {subtitle}
             </Typography> */}
             <Typography variant="h5" color={colors.greenAccent[400]}>
-                {time}
+                {subtitle ? subtitle : time}
             </Typography>
 
             
