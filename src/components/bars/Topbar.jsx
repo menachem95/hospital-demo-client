@@ -1,30 +1,29 @@
-import { Box, CircularProgress, IconButton, useTheme } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
+import { useDispatch } from "react-redux";
+
+import { Box, CircularProgress, IconButton, useTheme } from "@mui/material";
 import { ColorModeContext, tokens } from "../../theme";
+
+import { updatePrinters, updateTime, updateSearch } from "../../store/displayPrintersSlice";
+
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-import { useDispatch } from "react-redux";
-import { updateSearch } from "../../store/displayPrintersSlice";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import LinearDeterminate from "../../components/UI/LinearDeterminate";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { updatePrinters, updateTime } from "../../store/displayPrintersSlice";
 
-import { useNavigate } from "react-router-dom";
+
+
 
 const Topbar = ({ socket }) => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
 
   return (
     <Box
@@ -35,7 +34,6 @@ const Topbar = ({ socket }) => {
       position="sticky"
       top="0px"
     >
-      {/* SEARCH BAR */}
       <Box
         display="flex"
         backgroundColor={colors.primary[400]}
@@ -55,25 +53,26 @@ const Topbar = ({ socket }) => {
         </IconButton>
       </Box>
 
-      {/* ICONS */}
       <Box display="flex">
-        {/* <LinearDeterminate /> */}
-
-       {isLoading ? 
-          <CircularProgress size={"20px"} style={{color:"white", marginTop: "7px"}}  /> :
-      
-        <IconButton
-          onClick={() => {
-            setIsLoading(true)
-            socket.emit("refresh", (printers, time) => {
-              setIsLoading(false)
-              dispatch(updatePrinters([...printers]));
-              dispatch(updateTime(time));
-            });
-          }}
-        >
-          <RefreshIcon />
-        </IconButton>}
+        {isLoading ? (
+          <CircularProgress
+            size={"20px"}
+            style={{ color: "white", marginTop: "7px" }}
+          />
+        ) : (
+          <IconButton
+            onClick={() => {
+              setIsLoading(true);
+              socket.emit("refresh", (printers, time) => {
+                setIsLoading(false);
+                dispatch(updatePrinters([...printers]));
+                dispatch(updateTime(time));
+              });
+            }}
+          >
+            <RefreshIcon />
+          </IconButton>
+        )}
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <DarkModeOutlinedIcon />
@@ -84,16 +83,6 @@ const Topbar = ({ socket }) => {
         <IconButton onClick={() => navigate("/server-setting")}>
           <SettingsIcon />
         </IconButton>
-
-        {/* <IconButton>
-          <NotificationsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <SettingsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <PersonOutlinedIcon />
-        </IconButton> */}
       </Box>
     </Box>
   );

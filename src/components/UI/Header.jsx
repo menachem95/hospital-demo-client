@@ -1,6 +1,7 @@
-import { Typography, Box, useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { tokens } from '../theme';
+
+import { Typography, Box, useTheme } from '@mui/material';
+import { tokens } from '../../theme';
 
 const Header = ({ title, subtitle=null }) => {
     const theme = useTheme();
@@ -17,9 +18,7 @@ const Header = ({ title, subtitle=null }) => {
             >
                 {title}
             </Typography>
-            {/* <Typography variant="h5" color={colors.greenAccent[400]}>
-                {subtitle}
-            </Typography> */}
+         
             <Typography variant="h5" color={colors.greenAccent[400]}>
                 {subtitle ? subtitle : time}
             </Typography>

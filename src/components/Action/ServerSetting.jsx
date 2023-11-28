@@ -1,20 +1,10 @@
-import { Box, useTheme, Typography, Input } from "@mui/material";
-import { tokens } from "../theme";
-import Header from "../components/Header";
-import StatBox from "../components/StatBox";
-import PrintIcon from "@mui/icons-material/Print";
-import ProgressCircle from "../components/ProgressCircle";
-import { useSelector } from "react-redux";
-import { Link, Navigate, NavLink, useNavigate } from "react-router-dom";
-import { Skeleton } from "@mui/material";
-import { Select, selectClasses } from "@mui/base/Select";
-import { Option, optionClasses } from "@mui/base/Option";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
+import { Box, useTheme, Typography } from "@mui/material";
+import { tokens } from "../../theme";
 import NativeSelect from "@mui/material/NativeSelect";
-import { useState } from "react";
+
+import Header from "../UI/Header";
 
 const ServerSeting = () => {
   const theme = useTheme();
@@ -38,19 +28,16 @@ const ServerSeting = () => {
   };
 
   useEffect(() => {
-   
     getServerConfiguration();
   }, []);
   return (
-    <Box m="20px" >
-      {/* HEADER */}
+    <Box m="20px">
       <Box
         sx={{ width: 1 }}
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         position="sticky"
-        // top="80px"
         top={"5%"}
       >
         <Header title="הגדרות שרת" subtitle={""} />
@@ -64,16 +51,12 @@ const ServerSeting = () => {
         sx={{
           backgroundColor: colors.primary[400],
           mb: 2,
-          // display: "flex",
+
           flexDirection: "column",
           height: "70vh",
-          // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
         }}
       >
-        <form style={{width: 500, display: "flex"}}>
-          {/* <InputLabel variant="standard" htmlFor="uncontrolled-native">
-          {"בדיקת מדפסות כל"}
-        </InputLabel> */}
+        <form style={{ width: 500, display: "flex" }}>
           <Typography
             marginTop={"10px"}
             variant="h5"
@@ -97,14 +80,7 @@ const ServerSeting = () => {
               setIntervalMinutes(selectedValue);
             }}
             sx={{ color: colors.grey[200] }}
-            // defaultValue={isServerDataLoaded ? intervalMinutes : ""}
             value={intervalMinutes}
-            // inputProps={
-            //   {
-            //     // name: 'age',
-            //     // id: 'uncontrolled-native',
-            //   }
-            // }
           >
             <option value={0.5}>0.5</option>
             <option value={1}>1</option>
@@ -117,8 +93,7 @@ const ServerSeting = () => {
               e.preventDefault();
               const setServerInterval = await fetch(
                 `${process.env.REACT_APP_BACKEND_URL}/setinterval`,
-                // "http://localhost:8080/add-printer",
-                // "https://hospitol-demo-server.onrender.com/add-printer",
+
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },

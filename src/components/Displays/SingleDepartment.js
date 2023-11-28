@@ -1,20 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Box, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
-import Header from "../../components/Header";
-import Printer from "../Printer";
-import PrintIcon from "@mui/icons-material/Print";
-import ComputerIcon from "@mui/icons-material/Computer";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import PrinterModel from "../modal/PrinterModel";
+
 import { updatePrinterModelState } from "../../store/displayPrintersSlice";
 
-const SingleDepartment = ({socket}) => {
-  const { printers, printerModelState } = useSelector(
-    (state) => state.display
-  );
+import { Box, useTheme } from "@mui/material";
+import { tokens } from "../../theme";
+
+import Header from "../UI/Header";
+import Printer from "../UI/Printer";
+import PrinterModel from "../modal/PrinterModel";
+
+const SingleDepartment = ({ socket }) => {
+  const { printers, printerModelState } = useSelector((state) => state.display);
   const { departmentId, deviceId } = useParams();
   const dispatch = useDispatch();
 
@@ -23,76 +20,9 @@ const SingleDepartment = ({socket}) => {
 
   let department = printers.filter(
     (printer) => printer.department === departmentId
-  ); //[]
-
-  // if (deviceId === "printers"){
-  //   department = printers.filter(
-  //   (printer) => printer.department === departmentId
-  // );
-  // } else if (deviceId === "computers"){
-  //   department = computers.filter(
-  //     (computer) => computer.department === departmentId
-  //   );
-  // }
+  );
 
   const onlineDevices = department.filter((device) => device.online).length;
-
-  //   if (deviceId === "computers"){
-  //     return (
-  //       <Box m="20px">
-  //         <Box
-  //           display="flex"
-  //           justifyContent="space-between"
-  //           alignItems="center"
-  //           position="sticky"
-  //           top="80px"
-  //         >
-  //           <Header
-  //             title={departmentId}
-  //             subtitle={`מחשבים מקוונים: ${onlineDevices}/${department.length}`}
-  //           />
-  //         </Box>
-  //         <Box
-  //           display="grid"
-  //           gridTemplateColumns="repeat(12, 1fr)"
-  //           gridAutoRows="140px"
-  //           gap="20px"
-  //         >
-  //           {department.map((printer) => {
-  //             return (
-  //               <Box
-  //                 key={printer.pag}
-  //                 gridColumn="span 3"
-  //                 gridRow="span 2"
-  //                 backgroundColor={colors.primary[400]}
-  //                 display="flex"
-  //                 alignItems="center"
-  //                 justifyContent="center"
-  //               ><Printer
-  //               room={printer.room}
-  //               address={printer.address}
-  //               online={printer.online}
-  //               pag={printer.pag}
-  //               line={printer.line}
-  //               department={printer.department}
-  //               description={printer.description}
-  //               model={printer.model}
-  //               icon={
-  //                 <ComputerIcon
-  //                   sx={{
-  //                     color: colors.greenAccent[600],
-  //                     fontSize: "90px",
-  //                   }}
-  //                 />
-  //               }
-  //             />
-
-  //       </Box>
-  //     );
-  //   })}
-  // </Box>
-  // </Box>
-  //  ) }
 
   return (
     <>
@@ -116,11 +46,10 @@ const SingleDepartment = ({socket}) => {
           gap="20px"
           sx={{
             mb: 2,
-            // display: "flex",
             flexDirection: "column",
-            height: "70vh",            overflow: "hidden",
+            height: "70vh",
+            overflow: "hidden",
             overflowY: "scroll",
-           // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
           }}
         >
           {department.map((printer) => {
@@ -138,33 +67,7 @@ const SingleDepartment = ({socket}) => {
                   dispatch(updatePrinterModelState({ isOpen: true, printer }))
                 }
               >
-                {/* <a
-                  href={`https:${printer.address}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                > */}
-                {/* <Link to={`/one-printer/${printer._id}`}> */}
-                <Printer 
-                printer={printer}
-                  // room={printer.room}
-                  // address={printer.address}
-                  // online={printer.online}
-                  // pag={printer.pag}
-                  // line={printer.line}
-                  // department={printer.department}
-                  // description={printer.description}
-                  // model={printer.model}
-                  // icon={
-                  //   <PrintIcon
-                  //     sx={{
-                  //       color: colors.greenAccent[600],
-                  //       fontSize: "90px",
-                  //     }}
-                  //   />
-                  // }
-                />
-                {/* </Link> */}
-                {/* </a> */}
+                <Printer printer={printer} />
               </Box>
             );
           })}

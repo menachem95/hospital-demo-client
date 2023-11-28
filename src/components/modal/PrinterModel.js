@@ -1,50 +1,38 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import { Input } from "@mui/material";
-import { TextField } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
-import PrinterInfoItem from "../UI/PrinterInfoItem";
-import { Navigate, useNavigate } from "react-router-dom";
-import {
-  updatePrinters,
-  updatePrinterModelStatePrinter,
-} from "../../store/displayPrintersSlice";
-import OpenInBrowserIcon from "@mui/icons-material/OpenInBrowser";
-import PropTypes from "prop-types";
-import Button from "@mui/material/Button";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+
+import { updatePrinterModelState } from "../../store/displayPrintersSlice";
+
 import { styled } from "@mui/material/styles";
+import { tokens } from "../../theme";
+
+import { Box, useTheme, Typography } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Unstable_Grid2";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
+
+import { motion } from "framer-motion";
+import PropTypes from "prop-types";
+
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
-import Typography from "@mui/material/Typography";
-import { Box, useTheme } from "@mui/material";
-import PrintDisabledIcon from "@mui/icons-material/PrintDisabled";
-import Divider from "@mui/material/Divider";
-import { tokens } from "../../theme";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-
-// import img from "./images/minolta.jpg";
-// import imga from "./images/5750.png";
-import { display } from "@mui/system";
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Unstable_Grid2";
-import NetworkPingIcon from "@mui/icons-material/NetworkPing";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  updatePrinterModelState,
-  updatePrinterModelStateOnline,
-} from "../../store/displayPrintersSlice";
-import { Link } from "react-router-dom";
-import { Formik } from "formik";
+import OpenInBrowserIcon from "@mui/icons-material/OpenInBrowser";
 import TimelineIcon from "@mui/icons-material/Timeline";
+import NetworkPingIcon from "@mui/icons-material/NetworkPing";
+
+import PrinterInfoItem from "../UI/PrinterInfoItem";
+
+
+
+
+
 
 const printerKey = {
   address: "כתובת רשת",
@@ -149,50 +137,20 @@ const PrinterModel = ({ socket }) => {
   const onBlurHandler = (input) => {
     const { name, value } = input;
     const key = findKeyByValue(printerKey, name);
-    // console.log("input:", input);
-    // console.log("key:", key);
+
     setEditedPrinter({ ...editedPrinter, [key]: value });
   };
 
   const onSubmit = async (value) => {
-    // console.log("editedPrinter:", editedPrinter);
-    // await fetch(
-    //   `${process.env.REACT_APP_BACKEND_URL}/edit-printer`,
-    //   // "http://localhost:8080/edit-printer",
-    //   // "https://hospitol-demo-server.onrender.com/edit-printer",
-    //   {
-    //     method: "PUT",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(editedPrinter),
-    //   }
-    // );
-    // const newPrinters = [...printers];
-    // for (let i = 0; i < newPrinters.length; i++) {
-    //   if (newPrinters[i]._id === editedPrinter._id) {
-    //     newPrinters[i] = { ...editedPrinter };
-    //     console.log("newPrinters[i]:", newPrinters[i]);
-    //     break;
-    //   }
-    // }
-    // dispatch(updatePrinters(newPrinters));
     console.log("editedPrinter:", editedPrinter);
     socket.emit("update-printres", "update", editedPrinter);
     dispatch(updatePrinterModelState({ isOpen: false }));
-    // dispatch(updatePrinterModelStatePrinter(editedPrinter));
   };
 
   const deletePrinter = async (_id) => {
     socket.emit("update-printres", "delete", { _id });
-    // await fetch(
-    //   `${process.env.REACT_APP_BACKEND_URL}/delete-printer/${_id}`,
-
-    //   {
-    //     method: "DELETE",
-    //   }
-    // );
 
     alert("המדפסת הוסרה בהצלחה");
-    // dispatch(updatePrinters(printers.filter((p) => p._id !== _id)));
   };
 
   const editPrinter = async (value) => {
@@ -205,7 +163,6 @@ const PrinterModel = ({ socket }) => {
     setEditMode(!editMode);
   };
 
-  // ********************************
   useEffect(() => {
     dispatch(
       updatePrinterModelState({
@@ -218,33 +175,6 @@ const PrinterModel = ({ socket }) => {
       })
     );
   }, [printers]);
-
-  // ********************************
-
-  // const formik = useFormik({
-  //   initialValues: initialValues,
-  //   validationSchema: validationSchema,
-  //   onSubmit: async (value) => {
-  //     const newPrinter = {
-  //       ...value,
-  //       // department: departmentValue,
-  //       // printerModel: printerModelValue,
-  //     };
-  //     console.log("newPrinter", newPrinter);
-
-  //     await fetch(
-  //       // "http://localhost:8080/add-printer",
-  //       "https://hospitol-demo-server.onrender.com/add-printer",
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify(newPrinter),
-  //       }
-  //     );
-
-  //     alert("המדפסת נוספה בהצלחה");
-  //   },
-  // });
 
   return (
     <form>
@@ -311,32 +241,11 @@ const PrinterModel = ({ socket }) => {
               >
                 <NetworkPingIcon />
               </IconButton>
-              <IconButton
-                title="גרף"
-              >
+              <IconButton title="גרף">
                 <Link to={`/printer-history/${_id}`}>
                   <TimelineIcon />
                 </Link>
               </IconButton>
-
-              {/* {online && (
-                <a
-                  href={`https://${address}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Item
-                    className="link"
-                    style={{
-                      color: colors.greenAccent[300],
-                      backgroundColor: colors.primary[600],
-                      width: "100%",
-                    }}
-                  >
-                    מעבר למדפסת
-                  </Item>
-                </a>
-               )}  */}
             </Grid>
             <Grid
               xs={4}
@@ -554,8 +463,6 @@ const PrinterModel = ({ socket }) => {
               </Item>
             </Grid>
           </Grid>
-          {/* <CheckIcon />
-          <ClearIcon /> */}
         </Box>
       </BootstrapDialog>
     </form>

@@ -211,3 +211,132 @@ function calculateServerRunning(data) {
     ? 0
     : ((filterdArr.length / totalServer) * 100).toFixed(2);
 }
+
+
+
+
+
+
+
+// function splitAndAverageArray(arr) {
+//   // debugger
+
+//   // const arr = arr1.filter(obj => obj.isTheServerRunning)
+
+//   const result = [];
+
+//   const step = Math.ceil(arr.length / 9);
+//   const remainder = arr.length % step;
+
+//   for (let i = 0; i < arr.length; i += step) {
+//     // const chunk = arr.slice(i, i + step);
+//     const chunk = arr.slice(i, i + step + (i + step === arr.length ? remainder : 0));
+//     const filterdArr = chunk.filter((obj) => obj.isTheServerRunning);
+
+//     if (chunk.length > 0) {
+//       // debugger;
+//       console.log("chunk:", chunk);
+//       console.log(filterdArr);
+//       console.log("filterdArr.length", filterdArr.length);
+//       console.log("chunk.length", chunk.length);
+//       const totalServer = chunk.length + filterdArr.length;
+//       let serverRunning =
+//         totalServer === 0
+//           ? null
+//           : ((filterdArr.length / chunk.length) * 100).toFixed(2);
+//       console.log("serverRunning:", serverRunning);
+//       let time = chunk[0].date;
+//       const trueCount = chunk.filter((obj) => obj.online === true).length;
+//       const falseCount = chunk.filter((obj) => obj.online === false).length;
+//       const total = trueCount + falseCount;
+//       const average = total === 0 ? 0 : ((trueCount / total) * 100).toFixed(2);
+
+//       time = new Date(time).toISOString();
+//       const dateStinrg = `${time?.substring(8, 10)}/${time?.substring(
+//         5,
+//         7
+//       )},${time?.substring(11, 16)}`;
+//       let date = new Date(time);
+//       date = date.getTime();
+//       // serverRunning = serverRunning > 0 ? serverRunning : null;
+//       result.push({ date, average, dateStinrg, serverRunning });
+//       if (i + step === arr.length) {
+//         date = arr[arr.length - 1].date;
+//         result.push({ date, average, dateStinrg, serverRunning });
+//       }
+//     }
+//   }
+//   console.log(result);
+//   return result;
+// }
+
+// const getAllDates = (arr) => {
+//   const arr1 = arr.map((obj) => {
+//     let newDate = new Date(obj.date);
+//     newDate.setSeconds(0);
+//     newDate.setMilliseconds(0);
+//     newDate.getTime();
+//     return {
+//       // date: obj,//: newDate,//.toISOString().substring(0, 16),
+//       // online: obj.online ? true : false,
+//       ...obj,
+//       date: newDate,
+//       isTheServerRunning: true,
+//     };
+//   });
+
+//   let lastMinute = new Date(arr1[0].date).getTime();
+
+//   const newArr = [
+//     {
+//       date: lastMinute,
+//       isTheServerRunning: true,
+//       online: arr1[0].online,
+//     },
+//   ];
+
+//   const theLastInOriginalArr = new Date(arr1[arr1.length - 1].date).getTime();
+//   let fromTheLastOneInTheOriginal = 0;
+//   while (lastMinute <= theLastInOriginalArr) {
+//     // console.log("lastMinute:", lastMinute);
+//     // console.log("theLastInOriginalArr:", theLastInOriginalArr);
+//     const next5Minute = lastMinute + 1000 * 60; //*5;
+
+//     const foundItem = arr1.find(
+//       (item) =>
+//         new Date(item.date).toISOString().substring(0, 16) ===
+//         new Date(next5Minute).toISOString().substring(0, 16)
+//     );
+
+//     let isTheServerRunning = foundItem ? true : false;
+//     const online = foundItem ? foundItem.online : null;
+//     fromTheLastOneInTheOriginal++;
+//     if (isTheServerRunning) {
+//       fromTheLastOneInTheOriginal = 0;
+//     }
+//     if (!isTheServerRunning && fromTheLastOneInTheOriginal < 5) {
+//       isTheServerRunning = true;
+//     }
+
+//     // if (fromTheLastOneInTheOriginal <= 5 && !isTheServerRunning) {
+//     //   isTheServerRunning = true;
+//     //   // if (fromTheLastOneInTheOriginal === 5){
+
+//     //   // }
+//     // } else{
+//     //   fromTheLastOneInTheOriginal = 0
+//     // }
+
+//     const obj = {
+//       date: next5Minute,
+//       isTheServerRunning,
+//       online,
+//     };
+//     newArr.push(obj);
+
+//     lastMinute = obj.date;
+//   }
+
+//   console.log("newArr", newArr);
+//   return newArr;
+// };

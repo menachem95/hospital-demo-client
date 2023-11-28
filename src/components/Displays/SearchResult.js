@@ -1,12 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+
+import { updatePrinterModelState } from "../../store/displayPrintersSlice";
+
 import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import Header from "../Header";
-import Printer from "../Printer";
+
+import Header from "../UI/Header";
+import Printer from "../UI/Printer";
 import PrinterModel from "../modal/PrinterModel";
-import { updatePrinterModelState } from "../../store/displayPrintersSlice";
-import Dashboard from "../../scenes/dashboardPrinters";
+import PrntersDashboard from "./PrintersDashboard";
 
 const SearchResult = ({favorite=false, socket}) => {
     const { printers, printerModelState, searchKey } = useSelector(
@@ -18,7 +21,7 @@ const SearchResult = ({favorite=false, socket}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  if (searchKey.trim() === "" && !favorite) return <Dashboard />;
+  if (searchKey.trim() === "" && !favorite) return <PrntersDashboard />;
 
   let filtersPrinters;
 
