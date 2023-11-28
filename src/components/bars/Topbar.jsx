@@ -2,10 +2,15 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { Box, CircularProgress, IconButton, useTheme } from "@mui/material";
+import { Box, IconButton, useTheme } from "@mui/material";
 import { ColorModeContext, tokens } from "../../theme";
+import { createStyles, makeStyles } from "@material-ui/core";
 
-import { updatePrinters, updateTime, updateSearch } from "../../store/displayPrintersSlice";
+import {
+  updatePrinters,
+  updateTime,
+  updateSearch,
+} from "../../store/displayPrintersSlice";
 
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -14,11 +19,25 @@ import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SettingsIcon from "@mui/icons-material/Settings";
 
-
-
+export const useStyles = makeStyles(() =>
+  createStyles({
+    rotateIcon: {
+      animation: "$spin 1s linear infinite",
+    },
+    "@keyframes spin": {
+      "0%": {
+        transform: "rotate(0deg)",
+      },
+      "100%": {
+        transform: "rotate(360deg)",
+      },
+    },
+  })
+);
 
 const Topbar = ({ socket }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const classes = useStyles();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
@@ -55,18 +74,17 @@ const Topbar = ({ socket }) => {
 
       <Box display="flex">
         {isLoading ? (
-          <CircularProgress
-            size={"20px"}
-            style={{ color: "white", marginTop: "7px" }}
-          />
+          <IconButton>
+            <RefreshIcon className={classes.rotateIcon} />
+          </IconButton>
         ) : (
           <IconButton
             onClick={() => {
               setIsLoading(true);
               socket.emit("refresh", (printers, time) => {
-                setIsLoading(false);
                 dispatch(updatePrinters([...printers]));
                 dispatch(updateTime(time));
+                setIsLoading(false);
               });
             }}
           >

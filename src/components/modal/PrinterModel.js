@@ -116,9 +116,9 @@ const PrinterModel = ({ socket }) => {
 
   let img;
   try {
-    img = require(`./images/${printerModel}.png`);
+    img = require(`../../images/printers${printerModel}.png`);
   } catch {
-    img = require(`./images/generic printer.png`);
+    img = require(`../../images/printers/generic printer.png`);
   }
 
   const findKeyByValue = (obj, value) => {
