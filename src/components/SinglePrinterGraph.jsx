@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+
 import { Box } from "@mui/material";
 import * as React from "react";
 import useMousePosition from "../hooks/useMousePosition.js";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 // import { LineChart } from "@mui/x-charts/LineChart";
 import {
   ResponsiveContainer,
@@ -16,7 +19,192 @@ import {
   AreaChart,
 } from "recharts";
 
+import {
+  aggregateDataByWeek,
+  aggregateDataByDay,
+  aggregateDataByHour,
+  aggregateDataByFiveMinutes,
+  aggregateData,
+} from "./aggregateDates func.js";
+
 import { data1 } from "../data/data1.js";
+// export function aggregateDataByWeek(data) {
+//   if (!data || data.length === 0) return [];
+//   let result = [];
+
+//   // מיון המערך לפי התאריכים
+//   data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+//   // אתחול משתנים לצורך אגרגציה לפי שבועות
+//   let currentWeek = null;
+//   let weekData = [];
+
+//   for (const item of data) {
+//     const itemDate = new Date(item.date);
+//     const itemWeek = getWeekNumber(itemDate);
+//     // debugger
+
+//     if (currentWeek === null) {
+//       currentWeek = itemWeek;
+//     }
+
+//     if (itemWeek !== currentWeek) {
+//       // חישוב סטטיסטיקות והוספתן לתוצאה
+//       const weekAverage = calculateAverage(weekData);
+//       const weekServerRunning = calculateServerRunning(weekData);
+
+//       result.push({
+//         date: item.date,
+//         average: weekAverage,
+//         serverRunning: weekServerRunning,
+//         first: true,
+//       });
+
+//       // אתחול לשבוע הבא
+//       currentWeek = itemWeek;
+//       weekData = [];
+//     }
+
+//     weekData.push(item);
+//   }
+//   return result;
+// }
+
+// export function aggregateDataByDay(data) {
+//   if (!data || data.length === 0) return [];
+//   let result = [];
+
+//   // מיון המערך לפי התאריכים
+//   data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+//   // אתחול משתנים לצורך אגרגציה לפי ימים
+//   let currentDay = null;
+//   let dayData = [];
+
+//   for (const item of data) {
+//     const itemDay = new Date(item.date).toLocaleDateString();
+
+//     if (currentDay === null) {
+//       currentDay = itemDay;
+//     }
+
+//     if (itemDay !== currentDay) {
+//       // חישוב סטטיסטיקות והוספתן לתוצאה
+//       const dayAverage = calculateAverage(dayData);
+//       const dayServerRunning = calculateServerRunning(dayData);
+
+//       result.push({
+//         date: item.date,
+//         average: dayAverage,
+//         serverRunning: dayServerRunning,
+//         first: true,
+//       });
+
+//       // אתחול ליום הבא
+//       currentDay = itemDay;
+//       dayData = [];
+//     }
+
+//     dayData.push(item);
+//   }
+
+//   return result;
+// }
+
+// export function aggregateDataByHour(data) {
+//   let result = [];
+
+//   // סידור המערך לפי התאריכים
+//   data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+//   // קצאת המידע לשעה
+//   let currentHour = null;
+//   let hourData = [];
+
+//   for (const item of data) {
+//     const itemHour = new Date(item.date).getHours();
+
+//     if (currentHour === null) {
+//       currentHour = itemHour;
+//     }
+
+//     if (itemHour !== currentHour) {
+//       // חישוב סטטיסטיקות והוספתן לתוצאה
+//       const hourAverage = calculateAverage(hourData);
+//       const hourServerRunning = calculateServerRunning(hourData);
+
+//       result.push({
+//         date: item.date,
+//         average: hourAverage,
+//         serverRunning: hourServerRunning,
+//         first: true,
+//       });
+
+//       // אתחול לשעה הבאה
+//       currentHour = itemHour;
+//       hourData = [];
+//     }
+
+//     hourData.push(item);
+//   }
+//   return result;
+// }
+
+// export function aggregateDataByFiveMinutes(data) {
+//   let result = [];
+
+//   // סידור המערך לפי התאריכים
+//   data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+//   // קצאת המידע ליחידות של חמישה דקות
+//   let currentInterval = null;
+//   let intervalData = [];
+
+//   for (const item of data) {
+//     const itemTime = new Date(item.date);
+//     const itemMinutes = itemTime.getMinutes();
+//     const currentMinutes = itemMinutes - (itemMinutes % 5);
+
+//     if (currentInterval === null) {
+//       currentInterval = currentMinutes;
+//     }
+
+//     if (currentMinutes !== currentInterval) {
+//       // חישוב סטטיסטיקות והוספתן לתוצאה
+//       const intervalAverage = calculateAverage(intervalData);
+//       const intervalServerRunning = calculateServerRunning(intervalData);
+
+//       result.push({
+//         date: item.date,
+//         average: intervalAverage,
+//         serverRunning: intervalServerRunning,
+//         first: true,
+//       });
+
+//       // אתחול ליחידת הזמן הבאה
+//       currentInterval = currentMinutes;
+//       intervalData = [];
+//     }
+
+//     intervalData.push(item);
+//   }
+
+//   return result;
+// }
+
+const returnTimeString = (timestamp) => {
+  const date = new Date(timestamp).toLocaleString("en-GB", { timeZone: "UTC" });
+  return {
+    day: date.substring(0, 5),
+    hour: date.substring(12, 17),
+  };
+};
+
+function getWeekNumber(date) {
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const days = Math.floor((date - startOfYear) / (24 * 60 * 60 * 1000));
+  return Math.ceil((days + startOfYear.getDay() + 1) / 7);
+}
 
 const Fill = (props) => {
   debugger;
@@ -25,66 +213,17 @@ const Fill = (props) => {
   return "red";
 };
 
-// let data = data1.map((d) => {
-//   return {
-//     online: d.online ? 1 : 0,
-//     hours: d.date.substring(11, 16),
-//     days: `${d.date.substring(8, 10)}/${d.date.substring(5, 7)}`,
-//   };
-// });
-
-// let data2 = [...data, ...data, ...data, ...data, ...data, ...data];
-
-// data = data.map(d => {
-//   return {online: d.online, time: d.time.substring(11, 16)}
-// })
-
-// data = data.map((d) => {
-//   return {
-//     ...d,
-//     ...d.time,
-//     hours: `${d.time.hours}:${d.time.minutes}`,
-//     online: d.online ? 1 : 0,
-//   };
-// });
-
-// const sortedData = data?.sort((a, b) => new Date(a.time) - new Date(b.time));
-
-// const changeDates = [{ online: 2 }];
-
-// for (let i = 1; i < sortedData.length; i++) {
-//   if (sortedData[i].online !== sortedData[i - 1].online) {
-//     changeDates.push({
-//       time: `${sortedData[i].time.day} ב${sortedData[i].time.month}, ${sortedData[i].time.hours}:${sortedData[i].time.minutes}`,
-//       online: sortedData[i]?.online ? 1 : 0,
-//     //   hours
-//     });
-//   }
-// }
-
-// const roundToNearestThousand = (number) => {
-//   const remainder = number % 1000;
-//   if (remainder < 500) {
-//     return number - remainder; // עגל לתחתית אלפיים הקרובה יותר
-//   } else {
-//     return number + (1000 - remainder); // עגל לתקרה אלפיים הקרובה יותר
-//   }
-// };
-
-// const intervalByLength = (number) => {
-//   const len = roundToNearestThousand(number);
-//   if (number < 500) return 12;
-//   if (len === 1000) return 18;
-//   else if (len === 2000) return 20;
-//   else if (len === 3000) return 30;
-//   else if (len === 4000) return 40;
-//   // else if (len < 5000) return 60;
-//   // else if (len < 7000) return 80;
-//   // else if (len < 9000) return 80;
-//   else if (len < 10000) return 60;
-// };
-
-//////////////////////////////////////////////////////////////////////////////////////
+const add10milisec = (result) => {
+  const newResult = [];
+  for (let i = 0; i < result?.length; i++) {
+    newResult.push(result[i]);
+    let date = result[i].date + 10;
+    let obj = { ...result[i + 1], date, first: false };
+    // delete obj.average;
+    newResult.push(obj);
+  }
+  return newResult;
+};
 
 const CustomizedDot = (props) => {
   const { cx, cy, value, payload } = props;
@@ -137,7 +276,10 @@ const RepositoryCoverageTimelineGraphTooltip = (props) => {
       serverRunning,
     } = props.payload[0].payload;
     const classes = {};
-    const time = new Date(date).toISOString().substring(11, 16);
+    let time = new Date(date).toISOString();
+
+    time = `${time.substring(5, 10)}/${time.substring(11, 16)}`;
+
     return (
       <div
         style={{
@@ -239,550 +381,374 @@ const RepositoryCoverageTimelineGraphTooltip = (props) => {
 //   console.log(result);
 //   return result;
 // }
-function aggregateDataByHour(data) {
-  let result = [];
 
-  // סידור המערך לפי התאריכים
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // קצאת המידע לשעה
-  let currentHour = null;
-  let hourData = [];
-
-  for (const item of data) {
-    const itemHour = new Date(item.date).getHours();
-
-    if (currentHour === null) {
-      currentHour = itemHour;
-    }
-
-    if (itemHour !== currentHour) {
-      // חישוב סטטיסטיקות והוספתן לתוצאה
-      const hourAverage = calculateAverage(hourData);
-      const hourServerRunning = calculateServerRunning(hourData);
-
-      result.push({
-        date: item.date,
-        average: hourAverage,
-        serverRunning: hourServerRunning,
-        first: true,
-      });
-
-      // אתחול לשעה הבאה
-      currentHour = itemHour;
-      hourData = [];
-    }
-
-    hourData.push(item);
-  }
-
-  // טיפול בשעה האחרונה
-  // if (hourData.length > 0) {
-  //   const hourAverage = calculateAverage(hourData);
-  //   const hourServerRunning = calculateServerRunning(hourData);
-
-  //   result.push({
-  //     date: data[data.length - 1].date,
-  //     average: hourAverage,
-  //     serverRunning: hourServerRunning,
-  //   });
-  // }
-  const newResult = [];
-  for (let i = 0; i < result.length; i++) {
-    newResult.push(result[i]);
-    let date = result[i].date + 10;
-    let obj = { ...result[i + 1], date, first: false };
-    // delete obj.average;
-    newResult.push(obj);
-  }
-  console.log("newResult", newResult);
-  return newResult;
-}
-function calculateAverage(data) {
-  const trueCount = data.filter((obj) => obj.online === true).length;
-  const falseCount = data.filter((obj) => obj.online === false).length;
-  const total = trueCount + falseCount;
-
-  return total === 0 ? 0 : ((trueCount / total) * 100).toFixed(2);
-}
-
-function calculateServerRunning(data) {
-  const totalServer = data.length;
-  const filterdArr = data.filter((obj) => obj.isTheServerRunning);
-
-  return totalServer === 0
-    ? null
-    : Number(((filterdArr.length / totalServer) * 100).toFixed(2));
-}
-
-const getAllDates = (arr) => {
-  const arr1 = arr.map((obj) => {
-    let newDate = new Date(obj.date);
-    newDate.setSeconds(0);
-    newDate.setMilliseconds(0);
-    newDate.getTime();
-    return {
-      // date: obj,//: newDate,//.toISOString().substring(0, 16),
-      // online: obj.online ? true : false,
-      ...obj,
-      date: newDate,
-      isTheServerRunning: true,
-    };
-  });
-
-  let lastMinute = new Date(arr1[0].date).getTime();
-
-  const newArr = [
-    {
-      date: lastMinute,
-      isTheServerRunning: true,
-      online: arr1[0].online,
-    },
-  ];
-
-  const theLastInOriginalArr = new Date(arr1[arr1.length - 1].date).getTime();
-  let fromTheLastOneInTheOriginal = 0;
-  while (lastMinute <= theLastInOriginalArr) {
-    // console.log("lastMinute:", lastMinute);
-    // console.log("theLastInOriginalArr:", theLastInOriginalArr);
-    const next5Minute = lastMinute + 1000 * 60; //*5;
-
-    const foundItem = arr1.find(
-      (item) =>
-        new Date(item.date).toISOString().substring(0, 16) ===
-        new Date(next5Minute).toISOString().substring(0, 16)
-    );
-
-    let isTheServerRunning = foundItem ? true : false;
-    const online = foundItem ? foundItem.online : null;
-    fromTheLastOneInTheOriginal++;
-    if (isTheServerRunning) {
-      fromTheLastOneInTheOriginal = 0;
-    }
-    if (!isTheServerRunning && fromTheLastOneInTheOriginal < 5) {
-      isTheServerRunning = true;
-    }
-
-    // if (fromTheLastOneInTheOriginal <= 5 && !isTheServerRunning) {
-    //   isTheServerRunning = true;
-    //   // if (fromTheLastOneInTheOriginal === 5){
-
-    //   // }
-    // } else{
-    //   fromTheLastOneInTheOriginal = 0
-    // }
-
-    const obj = {
-      date: next5Minute,
-      isTheServerRunning,
-      online,
-    };
-    newArr.push(obj);
-
-    lastMinute = obj.date;
-  }
-
-  console.log("newArr", newArr);
-  return newArr;
-};
-
-// function getAllDates (arr1) {
-//   // debugger
-//   const dateStrings = arr1.map((obj) => {
+// const getAllDates = (arr) => {
+//   const arr1 = arr.map((obj) => {
 //     let newDate = new Date(obj.date);
-//     newDate.setMinutes(
-//       newDate.getMinutes() - newDate.getTimezoneOffset()
-//     );
-//     newDate.getDate()
-
+//     newDate.setSeconds(0);
+//     newDate.setMilliseconds(0);
+//     newDate.getTime();
 //     return {
-//       date:  newDate,//newDate.toISOString().substring(0, 16),
-//       online: obj.online ? true : false,
+//       // date: obj,//: newDate,//.toISOString().substring(0, 16),
+//       // online: obj.online ? true : false,
+//       ...obj,
+//       date: newDate,
 //       isTheServerRunning: true,
 //     };
 //   });
-// console.log("dateStrings[0].date:", dateStrings[0]?.date)
-//   let lastMinuteString = dateStrings[0]?.date;
+
+//   let lastMinute = new Date(arr1[0].date).getTime();
 
 //   const newArr = [
 //     {
-//       date: dateStrings[0]?.date,
+//       date: lastMinute,
 //       isTheServerRunning: true,
-//       online: dateStrings[0]?.online,
+//       online: arr1[0].online,
 //     },
 //   ];
 
-//   console.log("lastMinuteString", lastMinuteString);
-//   let lastNumber = new Date(dateStrings[dateStrings.length - 1]?.date)
+//   const theLastInOriginalArr = new Date(arr1[arr1.length - 1].date).getTime();
+//   let fromTheLastOneInTheOriginal = 0;
+//   while (lastMinute <= theLastInOriginalArr) {
+//     // console.log("lastMinute:", lastMinute);
+//     // console.log("theLastInOriginalArr:", theLastInOriginalArr);
+//     const next5Minute = lastMinute + 1000 * 60; //*5;
 
-//   lastNumber.setMinutes(
-//     lastNumber.getMinutes() - lastNumber.getTimezoneOffset()
-//   );
-//   lastNumber = lastNumber?.toISOString()?.substring(0, 16)
-//   console.log("lastNumber",lastNumber)
-// debugger
-//   while (lastMinuteString !== lastNumber) {
-//     // debugger
-//     const lastMinuteTime = new Date(lastMinuteString);
-
-//     lastMinuteTime.setMinutes(lastMinuteTime.getMinutes() + 1);
-//     lastMinuteTime.setMinutes(
-//       lastMinuteTime.getMinutes() - lastMinuteTime.getTimezoneOffset()
-//     );
-//     console.log("lastMinuteTime.toISOString().substring(0, 16):", lastMinuteTime.toISOString().substring(0, 16));
-//     const foundItem = dateStrings.find(
-//       (item) => item.date === lastMinuteTime.toISOString().substring(0, 16)
+//     const foundItem = arr1.find(
+//       (item) =>
+//         new Date(item.date).toISOString().substring(0, 16) ===
+//         new Date(next5Minute).toISOString().substring(0, 16)
 //     );
 
-//     let isTheServerRunning = foundItem ? true : null;
+//     let isTheServerRunning = foundItem ? true : false;
+//     const online = foundItem ? foundItem.online : null;
+//     fromTheLastOneInTheOriginal++;
+//     if (isTheServerRunning) {
+//       fromTheLastOneInTheOriginal = 0;
+//     }
+//     if (!isTheServerRunning && fromTheLastOneInTheOriginal < 5) {
+//       isTheServerRunning = true;
+//     }
 
-//     const newArrFilterd = dateStrings.filter((obj) => obj.isTheServerRunning);
-//     let lastSeen = newArrFilterd[newArrFilterd.length - 1].date;
-
-//     let newTimeTest = new Date(lastSeen);
-
-//     newTimeTest.setMinutes(newTimeTest.getMinutes() + 1);
-//     newTimeTest.setMinutes(
-//       newTimeTest.getMinutes() - newTimeTest.getTimezoneOffset()
-//     );
-
-//     // console.log("test1:", newTimeTest);
-//     // console.log("test2:", lastMinuteTime);
-
-//     const timeDifferenceInSeconds = Math.abs(
-//       (newTimeTest - lastMinuteTime) / 1000
-//     );
-//     // console.log("timeDifferenceInSeconds:", timeDifferenceInSeconds);
-//     // console.log("timeDifferenceInSeconds:", timeDifferenceInSeconds < 1000);
-//     // if (timeDifferenceInSeconds < 1000) {
+//     // if (fromTheLastOneInTheOriginal <= 5 && !isTheServerRunning) {
 //     //   isTheServerRunning = true;
-//     // }
+//     //   // if (fromTheLastOneInTheOriginal === 5){
 
-//     // if (one > tow.toISOString()) {
-//     //   isTheServerRunning = true;
+//     //   // }
+//     // } else{
+//     //   fromTheLastOneInTheOriginal = 0
 //     // }
 
 //     const obj = {
-//       date: lastMinuteTime.toISOString().substring(0, 16),
+//       date: next5Minute,
 //       isTheServerRunning,
-//       online: foundItem ? foundItem.online : false,
+//       online,
 //     };
 //     newArr.push(obj);
 
-//     // Update lastMinuteString for the next iteration
-//     lastMinuteString = obj.date;
+//     lastMinute = obj.date;
 //   }
 
+//   console.log("newArr", newArr);
 //   return newArr;
 // };
 
-const SinglePrinterGraph = ({ logs }) => {
-  const [scrollPosition, setScrollPosition] = useState(0);
-  // const mousePosition = useMousePosition();
-  // let data = logs.map((d) => {
-  //   return {
-  //     online: d.online ? 1 : 0,
-  //     hours: d.date.substring(11, 16),
-  //     days: `${d.date.substring(8, 10)}/${d.date.substring(5, 7)}`,
-  //   };
-  // });
+const defaultDaysDiff = (logs) => {
+  const one = new Date(logs[0].date).getTime();
+  const tow = new Date(logs[logs.length - 1].date).getTime();
+  const timeDiff = tow - one;
+  return Math.max(1, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
+};
 
-  // const handleMouseMove = (e) => {
-  //   const mouseX = e.nativeEvent.clientX;
-  //   const componentWidth = 200;
-  //   // e.target.offsetWidth;
-  //   const contentWidth = 200;
-  //   // e.target.firstChild.offsetWidth ;
+const Graph = ({ logs }) => {
+  const [state, setState] = useState({
+    startIndex: 0,
+    endIndex: 25,
+    timerId: 0,
+    left: 0,
+    right: 0,
+    typeOfTime: "day",
+    data: [],
+  });
+  const [data, setData] = useState([]);
 
-  //   const scrollableWidth = contentWidth - componentWidth;
+  const [intervalFormat, setIntervalFormat] = useState(null);
+  const daysDiff = defaultDaysDiff(logs);
+  console.log("logs in 1111:", logs);
 
-  //   if (mouseX > window.innerWidth - 20) {
-  //     // הזז ימינה אם העכבר בסמוך לצד הימני של החלון
-  //     if (scrollPosition < scrollableWidth) {
-  //       setScrollPosition(scrollPosition + 10);
-  //     }
-  //   } else if (mouseX < 20) {
-  //     // הזז שמאלה אם העכבר בסמוך לצד השמאלי של החלון
-  //     if (scrollPosition > 0) {
-  //       setScrollPosition(scrollPosition - 10);
-  //     }
+  console.log("daysDiff", daysDiff);
+  console.log("intervalFormat", intervalFormat);
+  useEffect(() => {
+    setIntervalFormat(getIntervalFormat());
+  }, [daysDiff]);
+
+  const updateBrush = (pos) => {
+    if (state.timerId !== 0) {
+      clearTimeout(state.timerId);
+    }
+    const timerId = setTimeout(() => {
+      setState((prevState) => ({
+        ...prevState,
+        startIndex: pos.startIndex,
+        endIndex: pos.endIndex,
+      }));
+    }, 500);
+    setState((prevState) => ({ ...prevState, timerId }));
+  };
+
+  function getIntervalFormat() {
+    if (daysDiff > 60) return "week";
+    if (daysDiff > 7 && daysDiff < 60) return "day";
+    if (daysDiff < 30) return "hour";
+    if (daysDiff <= 1) return "minutes";
+  }
+
+  const test = () => {
+    let data = [];
+    if (intervalFormat === "minutes") data = aggregateDataByFiveMinutes(logs);
+    else if (intervalFormat === "hour") data = aggregateDataByHour(logs);
+    else if (intervalFormat === "day") data = aggregateDataByDay(logs);
+    else if (intervalFormat === "week") data = aggregateDataByWeek(logs);
+    return add10milisec(data.map((o) =>{
+      return {...o, date: new Date(o.date).getTime()}
+    }));
+  };
+
+  // useEffect(() => {
+  //   const newData = test(); // קריאה לפונקציה החיצונית
+  //   setData(newData);
+  // }, [intervalFormat]);
+
+  // const test = () => {
+  //   const data = aggregateData(logs, getIntervalFormat());
+  //   return add10milisec(data);
+  // };
+
+  const tabs = [
+    { value: "minutes", disabled: daysDiff > 3 },
+    { value: "hour", disabled: daysDiff > 30 },
+    { value: "day", disabled: daysDiff < 7 },
+    { value: "week", disabled: daysDiff < 60 },
+  ];
+
+  // const times = logs.map(obj => obj.time);
+
+  // // יצירת רשימת אינטרוולים שווים
+  // const timeIntervals = Array.from({ length: 11 }, (_, index) => Math.floor(Math.min(...times) + (index / 10) * (Math.max(...times) - Math.min(...times))));
+
+  // const gradientOffset = () => {
+  //   const dataMax = Math.max(...state.data.map((i) => i.average));
+  //   const dataMin = Math.min(...state.data.map((i) => i.average));
+
+  //   if (dataMax <= 0) {
+  //     return 0;
+  //   } else if (dataMin >= 0) {
+  //     return 1;
+  //   } else {
+  //     return dataMax / (dataMax - dataMin);
   //   }
   // };
 
-  // const getArray = async () => {
-  //   let dates = await logs.map((obj) => {
-  //     return { date: obj.date, _id: obj._id };
-  //   });
-  //   let values = logs.map((obj) => {
-  //     return { online: obj.online ? 1 : 0, _id: obj._id };
-  //   });
-
-  //   const startDate = new Date(dates[0].date);
-
-  //   // תאריך הסיום
-  //   const endDate = new Date(dates[dates.length - 1].date);
-
-  //   // מספר המילי-שניות ביום
-  //   const millisecondsPerDay = 24 * 60 * 60 * 1000;
-
-  //   // חשב את הפרש הזמן במילי-שניות בין התאריכים
-  //   const timeDiff = endDate - startDate;
-
-  //   // חשב את הפרש הזמן בדקות
-  //   const minutesDiff = timeDiff / (1000 * 60);
-
-  //   // חלק את הפרש הזמן במספר המילי-שניות ביום כדי לקבל את מספר הימים
-  //   // const daysDiff = Math.floor(timeDiff / millisecondsPerDay);
-  //   const daysDiff = Math.floor(minutesDiff / (60 * 24));
-
-  //   console.log(`יש ${daysDiff} ימים בין התאריכים.`);
-  // };
-
-  // getArray();
-
-  // let d = logs.map((o) => {
-  //   let date = new Date(o.date);
-  //   date.getTime();
-  //   // debugger
-  //   return {
-  //     ...o,
-  //     date,
-  //   };
-  // });
-  // let datadata = getAllDates(logs);
-  // console.log("d:", d);
-  // console.log("datadata:", datadata);
-  // datadata = aggregateDataByHour(datadata);
-  
+  // const off = gradientOffset();
+  // if (intervalFormat === null) return
 
   return (
-    <>
-      {/* <div
+    <div
       style={{
-        // backgroundColor: "red",
-        // paddingBlockEnd: "150px",
-
+        width: "500px",
         height: "250px",
-        width: "80%", // אני ממליץ לשים את הרוחב כאן
-        overflow: "auto",
+        // overflow: "auto",
+
+        //  overflow: "auto",
+        // overflowY: false,
       }}
     >
-      {data.length}
+      {daysDiff}
       <div
         style={{
-          height: "200px",
-          width: "5000px", // כאן אתה מגדיר את הרוחב שאתה רוצה
-          // overflow: "auto",
-          // overflowX: "scroll", // זה מאפשר לגלול בציר X
-          // backgroundColor: "green",
+          marginLeft: "10px",
+          display: "flex",
+          flexDirection: "row",
         }}
       >
-        <ResponsiveContainer width="100%">
-          <LineChart data={data}>
-            <XAxis dataKey="hours" interval={intervalByLength(data.length)} />
-            <XAxis xAxisId="1" dataKey="days" interval={intervalByLength(data.length) * 1.5} />
-            <Line dot={false} type="step" dataKey="online" />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-    ************************************************* */}
-      {"הגבלה של  500 פיקסלים"}
-      <div
-        style={{
-          height: "200px",
-          width: "500px",
-          display: "inline",
-        }}
-      >
-        <ResponsiveContainer>
-          <AreaChart data={logs}>
-            {/* <CartesianGrid
-             
-            
-             vertical={false}
-             /> */}
-            <XAxis
-              dataKey="date"
-              // interval={0}
-              angle={-90}
-              height={50}
-              tickMargin={20}
-              // tickFormatter={(timestamp) => {
-              //   const time = new Date(timestamp).toISOString();
-              //   return `${time.substring(8, 10)}/${time.substring(
-              //     5,
-              //     7
-              //   )}-${time.substring(11, 16)}`;
-              // }}
-              tickFormatter={(timestamp) => {
-                const time = new Date(timestamp)
-                  .toISOString()
-                  .substring(5, 10);
-                return time;
-              }}
-              scale="time"
-              type="number"
-              domain={["dataMin", "dataMax"]}
-              //  padding={{left: "5%", right: "10px"}}
-              padding={{ left: 10, right: 10 }}
-
-              // tick="31"
-              // tickCount="31"
-              // ticks="30"
-              //tabIndex={1} dataKey="hours"
-            />
-            {/* <XAxis xAxisId="1" dataKey="days" /> */}
-            <YAxis type="number" domain={[0, 100]} />
-
-            <Area
-              dot={<CustomizedDot />}
-              type="step"
-              dataKey="average"
-              stroke="rgb(80, 39, 245)"
-              // fill={Fill()}
-              // fill="red"
-              fill="rgba(223, 13, 13,0)"
-              // dataKey="online"
-            />
-            {/* <Area
-              type="step"
-              stroke="#d8a18495"
-              fill="#d8a18463"
-              dot={false}
-              dataKey="serverRunning"
-           
-            /> */}
-<Brush />
-            <Tooltip content={<RepositoryCoverageTimelineGraphTooltip />} />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-      <div
-        style={{
-          height: "200px",
-          width: "500px",
-          marginTop: "50px",
-        }}
-      >
-        <ResponsiveContainer>
-          <LineChart data={logs}>
-            {/* <CartesianGrid
-             
-            
-             vertical={false}
-             /> */}
-            <XAxis
-              dataKey="date"
-              // interval={0}
-              angle={-90}
-              height={50}
-              tickMargin={20}
-              // tickFormatter={(timestamp) => {
-              //   const time = new Date(timestamp).toISOString();
-              //   return `${time.substring(8, 10)}/${time.substring(
-              //     5,
-              //     7
-              //   )}-${time.substring(11, 16)}`;
-              // }}
-              tickFormatter={(timestamp) => {
-                const time = new Date(timestamp)
-                  .toISOString()
-                  .substring(11, 16);
-                return time;
-              }}
-              scale="time"
-              type="number"
-              domain={["dataMin", "dataMax"]}
-              //  padding={{left: "5%", right: "10px"}}
-              padding={{ left: 10, right: 10 }}
-
-              // tick="31"
-              // tickCount="31"
-
-              //tabIndex={1} dataKey="hours"
-            />
-            {/* <XAxis xAxisId="1" dataKey="days" /> */}
-            <YAxis type="number" domain={[0, 100]} />
-
-            <Line
-              dot={false}
-              type="step"
-              dataKey="average"
-              stroke="rgb(80, 39, 245)"
-              fill="rgba(80, 39, 245, 0.544)"
-              // dataKey="online"
-            />
-            <Line
-              type="step"
-              stroke="#d8a18495"
-              fill="#d8a18463"
-              dot={false}
-              dataKey="serverRunning"
-            />
-
-            <Tooltip content={<RepositoryCoverageTimelineGraphTooltip />} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-      {/* <div
-        style={{
-          marginTop: "100px",
-          // backgroundColor: "red",
-          // paddingBlockEnd: "150px",
-
-          height: "250px",
-          width: "95%", // אני ממליץ לשים את הרוחב כאן
-          overflow: "auto",
-        }}
-        // onMouseMove={handleMouseMove}
-      >
-        {data.length} {"ללא הגבלה"}
-        <div
-          style={{
-            height: "200px",
-            minWidth: "100%",
-            width: `${
-              intervalByLength(data.length) * intervalByLength(data.length)
-            }%`, // כאן אתה מגדיר את הרוחב שאתה רוצה
-            // transform: `translateX(-${JSON.stringify(mousePosition.x + 10) }px)`,
-            // overflow: "auto",
-            // overflowX: "scroll", // זה מאפשר לגלול בציר X
-            // backgroundColor: "green",
+        <h4>הגדרת אינטרוול</h4>
+        <Tabs
+          indicatorColor="secondary"
+          textColor="secondary"
+          value={intervalFormat}
+          onChange={(e, newValue) => setIntervalFormat(newValue)}
+          sx={{
+            "& button": { color: "white" },
           }}
         >
-          <ResponsiveContainer width="100%">
-            <LineChart data={data}>
-              <XAxis
-                // tickSize={1}
-                tabIndex={1}
-                dataKey="hours"
-                // interval={1}
-                interval={intervalByLength(data.length)}
+          {tabs.map((tab) => {
+            return (
+              <Tab
+                key={tab.value}
+                value={tab.value}
+                label={tab.value}
+                disabled={tab.disabled}
+                defaultChecked={intervalFormat === tab.value}
               />
-              <XAxis
-                // tickSize={1}
-                xAxisId="1"
-                dataKey="days"
-                interval={intervalByLength(data.length) * 1.5}
-              />
-              <Line dot={false} type="step" dataKey="online" />
-              <Tooltip
-                content={<RepositoryCoverageTimelineGraphTooltip />}
+            );
+          })}
+        </Tabs>
+      </div>
 
-                //  payload={[{ name: '05-01', value: 12, unit: 'kg' }]}
+      {/* {intervalFormat !== null && ( */}
+      <ResponsiveContainer width={"100%"} height={"100%"}>
+        <LineChart
+          // width={1200}
+          height={300}
+          // data={data}
+          data={test()}
+          margin={{ top: 30, right: 30, left: 20 }}
+          dataKey="average"
+        >
+          <XAxis
+            dataKey="date"
+            scale="time"
+            type="number"
+            minTickGap={10}
+            // padding={{ left: state.left, right: state.right }}
+            domain={["dataMin", "dataMax"]}
+            tickFormatter={(timestamp) => {
+              const date = returnTimeString(timestamp);
 
-                //  labelStyle={{ color: "green" }} itemStyle={{ color: "cyan" }}
+              let time;
+              if (intervalFormat === "minutes" || intervalFormat === "hour")
+                time = date.hour;
+              else if (intervalFormat === "day" || intervalFormat === "week")
+                time = date.day;
+
+              return time;
+            }}
+            // tickCount={2570}
+          />
+          <YAxis type="number" domain={[0, 100]} />
+          <Line
+            // isAnimationActive={false}
+            dot={<CustomizedDot />}
+            type="step"
+            dataKey="average"
+          />
+
+          {/* <defs>
+            <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">
+              <stop offset={off} stopColor="green" stopOpacity={1} />
+              <stop offset={off} stopColor="red" stopOpacity={1} />
+            </linearGradient>
+          </defs> */}
+          <Tooltip content={<RepositoryCoverageTimelineGraphTooltip />} />
+
+          <Brush
+            dataKey="date"
+            height={80}
+            // style={{ overflow: "auto",}}
+            // width="850px"
+            // travellerWidth={15}
+            // stroke="#95d884"
+            fill="rgba(255,255,255,0)"
+            // onChange={(e) => updateBrush(e)}
+            // startIndex={state.startIndex}
+            startIndex={0}
+            // endIndex={state.endIndex}
+            endIndex={10}
+            // padding={{ left: state.left, right: state.right }}
+            tick={true}
+            // travellerOffset={10} // קבע את האופסט לתמונה הזזה
+            // travellerComp={(props) => {
+            //   const { x, width, ...restProps } = props;
+            //   return (
+            //     <rect x={x} width={width} fill="#666" {...restProps} />
+            //   );
+            // }}
+            // travelling={true}  // הפעל את אפשרות הגלילה
+            tickFormatter={(timestamp) => {
+              const date = returnTimeString(timestamp);
+              let time;
+              if (intervalFormat === "hour" || intervalFormat === "minutes") time = `${date.day},${date.hour}`;
+              else if (intervalFormat === "day" || intervalFormat === "week") time = date.day;
+
+              return time;
+            }}
+          >
+            <AreaChart
+              // data={data}
+              data={test()}
+            >
+              <Area type="number" dataKey="average" isAnimationActive={false} />
+              <XAxis
+                // minTickGap={30}
+                height={30}
+                dataKey="date"
+                tickFormatter={(timestamp) => {
+                  const date = new Date(timestamp);
+                  let time = returnTimeString(timestamp).day;
+
+                  if (intervalFormat === "week") time = getWeekNumber(date);
+
+                  //  }
+
+                  return time;
+                }}
               />
-            </LineChart>
-          </ResponsiveContainer>
-        </div> */}
-      {/* </div> */}
-      
-    </>
+            </AreaChart>
+          </Brush>
+        </LineChart>
+      </ResponsiveContainer>
+      {/* )} */}
+    </div>
   );
 };
+export default React.memo(Graph);
 
+//////////////////////////////////////////////////////////////////////////////////////
 
+// let data = data1.map((d) => {
+//   return {
+//     online: d.online ? 1 : 0,
+//     hours: d.date.substring(11, 16),
+//     days: `${d.date.substring(8, 10)}/${d.date.substring(5, 7)}`,
+//   };
+// });
 
-export default SinglePrinterGraph;
+// let data2 = [...data, ...data, ...data, ...data, ...data, ...data];
+
+// data = data.map(d => {
+//   return {online: d.online, time: d.time.substring(11, 16)}
+// })
+
+// data = data.map((d) => {
+//   return {
+//     ...d,
+//     ...d.time,
+//     hours: `${d.time.hours}:${d.time.minutes}`,
+//     online: d.online ? 1 : 0,
+//   };
+// });
+
+// const sortedData = data?.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+// const changeDates = [{ online: 2 }];
+
+// for (let i = 1; i < sortedData.length; i++) {
+//   if (sortedData[i].online !== sortedData[i - 1].online) {
+//     changeDates.push({
+//       time: `${sortedData[i].time.day} ב${sortedData[i].time.month}, ${sortedData[i].time.hours}:${sortedData[i].time.minutes}`,
+//       online: sortedData[i]?.online ? 1 : 0,
+//     //   hours
+//     });
+//   }
+// }
+
+// const roundToNearestThousand = (number) => {
+//   const remainder = number % 1000;
+//   if (remainder < 500) {
+//     return number - remainder; // עגל לתחתית אלפיים הקרובה יותר
+//   } else {
+//     return number + (1000 - remainder); // עגל לתקרה אלפיים הקרובה יותר
+//   }
+// };
+
+//////////////////////////////////////////////////////////////////////////////////////

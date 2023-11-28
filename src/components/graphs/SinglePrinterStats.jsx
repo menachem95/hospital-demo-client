@@ -1,5 +1,5 @@
 import { Box, Button } from "@mui/material";
-import SinglePrinterGraph from "../SinglePrinterGraph";
+
 import Header from "../Header";
 import Calendar from "@mui/icons-material/Event";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -15,7 +15,7 @@ import { pickersLayoutClasses } from "@mui/x-date-pickers/PickersLayout";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import StreamingDemo from "../111";
+import Graph from "../SinglePrinterGraph";
 import LinearDeterminate from "../UI/LinearDeterminate";
 import "dayjs/locale/en-gb";
 
@@ -485,7 +485,7 @@ const SinglePrinterStats = () => {
 
         {/* {logs.length > 0 &&<SinglePrinterGraph logs={logs.sort((a, b) => new Date(a.date) - new Date(b.date) )} />}  */}
         {logs.length > 0 && isLoading === false && (
-          <StreamingDemo logs={logs} />
+          <Graph logs={logs} />
         )}
       </Box>
     </Box>
