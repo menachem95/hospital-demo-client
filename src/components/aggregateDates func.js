@@ -63,8 +63,8 @@ export function aggregateDataByDay(data) {
 
     dayData.push(item);
   }
-  console.log("result day", result);
-
+  
+// debugger
   return result;
 }
 
@@ -98,6 +98,7 @@ export function aggregateDataByHour(data) {
 
     hourData.push(item);
   }
+  // debugger
   return result;
 }
 

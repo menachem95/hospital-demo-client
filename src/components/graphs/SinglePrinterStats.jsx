@@ -7,8 +7,8 @@ import { DesktopDateRangePicker } from "@mui/x-date-pickers-pro/DesktopDateRange
 import { StaticDateRangePicker } from "@mui/x-date-pickers-pro/StaticDateRangePicker";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
-import CircularProgress from '@mui/material/CircularProgress';
-import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from "@mui/material/CircularProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { pickersLayoutClasses } from "@mui/x-date-pickers/PickersLayout";
@@ -19,52 +19,103 @@ import StreamingDemo from "../111";
 import LinearDeterminate from "../UI/LinearDeterminate";
 import "dayjs/locale/en-gb";
 
+//  const end = new Date()
+//  let start = new Date(end);
+//  start.setMonth(start.getMonth() - 1);
 
- const end = new Date()
- let start = new Date(end);
- start.setMonth(start.getMonth() - 1);
+const today = dayjs();
 
+//***************************************************************************************************** */
+// const getAllDates = (arr) => {
+//   if (arr.length === 0) return [];
+//   const arr1 = arr.map((obj) => {
+//     let newDate = new Date(obj.date);
+//     newDate.setSeconds(0);
+//     newDate.setMilliseconds(0);
+//     newDate.getTime();
+//     return {
+//       ...obj,
+//       date: newDate,
+//       isTheServerRunning: true,
+//     };
+//   });
+
+//   let lastMinute = new Date(arr1[0].date).getTime();
+
+//   const newArr = [
+//     {
+//       date: lastMinute,
+//       isTheServerRunning: true,
+//       online: arr1[0].online,
+//     },
+//   ];
+
+//   const theLastInOriginalArr = new Date(arr1[arr1.length - 1].date).getTime();
+//   let fromTheLastOneInTheOriginal = 0;
+//   while (lastMinute <= theLastInOriginalArr) {
+//     // console.log("lastMinute:", lastMinute);
+//     // console.log("theLastInOriginalArr:", theLastInOriginalArr);
+//     const nextMinute = lastMinute + 1000 * 60; //*5;
+
+//     const foundItem = arr1.find(
+//       (item) =>
+//         new Date(item.date).toISOString().substring(0, 16) ===
+//         new Date(nextMinute).toISOString().substring(0, 16)
+//     );
+
+//     let isTheServerRunning = foundItem ? true : false;
+//     const online = foundItem ? foundItem.online : null;
+//     fromTheLastOneInTheOriginal++;
+//     if (isTheServerRunning) {
+//       fromTheLastOneInTheOriginal = 0;
+//     }
+//     if (!isTheServerRunning && fromTheLastOneInTheOriginal < 5) {
+//       isTheServerRunning = true;
+//     }
+//     const obj = {
+//       date: nextMinute,
+//       isTheServerRunning,
+//       online,
+//     };
+//     newArr.push(obj);
+
+//     lastMinute = obj.date;
+//   }
+
+//   console.log("newArr", newArr);
+//   return newArr;
+// };
+
+//***************************************************************************************************** */
 
 const getAllDates = (arr) => {
-  
   if (arr.length === 0) return [];
-  const arr1 = arr.map((obj) => {
+
+  const dateIndex = {};
+  arr.forEach((obj) => {
     let newDate = new Date(obj.date);
     newDate.setSeconds(0);
     newDate.setMilliseconds(0);
-    newDate.getTime();
-    return {
-      ...obj,
-      date: newDate,
+    const dateKey = newDate.toISOString().substring(0, 16);
+    dateIndex[dateKey] = {
       isTheServerRunning: true,
+      online: obj.online,
     };
   });
 
-  let lastMinute = new Date(arr1[0].date).getTime();
-
-  const newArr = [
-    {
-      date: lastMinute,
-      isTheServerRunning: true,
-      online: arr1[0].online,
-    },
-  ];
-
-  const theLastInOriginalArr = new Date(arr1[arr1.length - 1].date).getTime();
+  const newArr = [];
+  let lastMinute = new Date(arr[0].date).getTime();
   let fromTheLastOneInTheOriginal = 0;
-  while (lastMinute <= theLastInOriginalArr) {
-    // console.log("lastMinute:", lastMinute);
-    // console.log("theLastInOriginalArr:", theLastInOriginalArr);
-    const nextMinute = lastMinute + 1000 * 60; //*5;
 
-    const foundItem = arr1.find(
-      (item) =>
-        new Date(item.date).toISOString().substring(0, 16) ===
-        new Date(nextMinute).toISOString().substring(0, 16)
-    );
+  while (lastMinute <= new Date(arr[arr.length - 1].date).getTime()) {
+    const nextMinute = lastMinute + 1000 * 60;
+    const dateKey = new Date(nextMinute).toISOString().substring(0, 16);
+
+    const foundItem = dateIndex[dateKey];
 
     let isTheServerRunning = foundItem ? true : false;
     const online = foundItem ? foundItem.online : null;
+
     fromTheLastOneInTheOriginal++;
     if (isTheServerRunning) {
       fromTheLastOneInTheOriginal = 0;
@@ -72,6 +123,7 @@ const getAllDates = (arr) => {
     if (!isTheServerRunning && fromTheLastOneInTheOriginal < 5) {
       isTheServerRunning = true;
     }
+
     const obj = {
       date: nextMinute,
       isTheServerRunning,
@@ -86,18 +138,23 @@ const getAllDates = (arr) => {
   return newArr;
 };
 
+
+
+
+
+
 const SinglePrinterStats = () => {
   const [logs, setLogs] = useState([]);
   const [intervalFormat, setIntervalFormat] = useState("day");
   const [isLoading, setIsLoading] = useState(false);
   const [daysDiff, setDaysDiff] = useState();
   // const [datadata, setDatadata] = useState([]);
- const [dateState, setDateState] = useState([start,end])
+  const [dateState, setDateState] = useState([today.subtract(30, "day"), today]);
   const { printerId } = useParams();
 
-  useEffect(()=>{
-    console.log("dateState", dateState)
-  },[dateState])
+  useEffect(() => {
+    console.log("dateState", dateState);
+  }, [dateState]);
   // useEffect(() => {
   //   // returnDateString({ front: end, db: endDB }, setEndDete);
   //   // returnDateString({ front: start, db: startDB }, setStartDete);
@@ -160,18 +217,18 @@ const SinglePrinterStats = () => {
   const fetchLogs = async () => {
     setIsLoading(true);
     console.log(
-      `http://localhost:8080/logs/onePrinter/${printerId}/${dateState[0]}/${dateState[1]}`
+      `http://localhost:8080/logs/onePrinter/${printerId}/${dateState[0].startOf("day")}/${dateState[1].endOf("day")}`
     );
-   
+
     const res = await fetch(
-      `http://localhost:8080/logs/onePrinter/${printerId}/${dateState[0]}/${dateState[1]}`,
+      `http://localhost:8080/logs/onePrinter/${printerId}/${dateState[0].startOf("day")}/${dateState[1].endOf("day")}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }
     );
     const logs = await res.json();
-    console.log("logs:", logs);
+    console.log("logs:", logs[logs.length - 1]);
 
     // let d = logs.map((o) => {
     //   let date = new Date(o.date);
@@ -187,7 +244,19 @@ const SinglePrinterStats = () => {
     // setDaysDiff(timeDifference / (1000 * 60 * 60 * 24))
 
     let datadata =
-     getAllDates(logs);
+      // logs.map((obj) => {
+      //     let newDate = new Date(obj.date);
+      //     newDate.setSeconds(0);
+      //     newDate.setMilliseconds(0);
+      //     newDate.getTime();
+      //     return {
+      //       ...obj,
+      //       date: newDate,
+      //       isTheServerRunning: true,
+      //     };
+      //   });
+
+      getAllDates(logs);
     // getAllDates(
     // d//.sort((a, b) => new Date(a.date) - new Date(b.date))
     // );
@@ -236,7 +305,6 @@ const SinglePrinterStats = () => {
   // },[logs])
 
   return (
-    
     <Box m="20px">
       <Box
         display="flex"
@@ -245,8 +313,7 @@ const SinglePrinterStats = () => {
         position="sticky"
         top="80px"
       >
-        <Header title={"מדפסת"} subtitle={" "} />
-      
+        <Header title={"מדפסת"} />
       </Box>
       <Box
         display="grid"
@@ -261,7 +328,8 @@ const SinglePrinterStats = () => {
           overflowY: "scroll",
         }}
       >
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
+        <LocalizationProvider dateAdapter={AdapterDayjs}//</Box> adapterLocale="en-gb"
+        >
           <div style={{ display: "flex", flexDirection: "row" }}>
             <div
               style={{
@@ -269,13 +337,17 @@ const SinglePrinterStats = () => {
                 flexDirection: "column",
                 padding: "10px",
               }}
-            >הצגת נתונים בתאריכים
+            >
+              הצגת נתונים בתאריכים
               <DateRangePicker
-              calendars={1}
-                defaultValue={dateState.map(d => dayjs(d))}
-                onChange={(newValue) => setDateState(newValue.map(d => d.$d))}
+              format="DD/MM/YYYY"
+                calendars={1}
+                defaultValue={dateState.map((d) => dayjs(d))}
+                onChange={(newValue) => setDateState(newValue//.map((d) =>  newDated.$d)
+                )}
                 slots={{ field: SingleInputDateRangeField }}
-                slotProps={{
+              
+                slotProps={{field: { shouldRespectLeadingZeros: true },
                   shortcuts: {
                     items: shortcutsItems,
                   },
@@ -404,20 +476,17 @@ const SinglePrinterStats = () => {
             </div> */}
           </div>
         </LocalizationProvider>
-      {isLoading && 
-    //   <Box sx={{ width: '500px' }}>
-    //   <LinearProgress />
-    // </Box>
-      <CircularProgress color="inherit" />
-      
-      
-      }
-     
+        {isLoading && (
+          //   <Box sx={{ width: '500px' }}>
+          //   <LinearProgress />
+          // </Box>
+          <CircularProgress color="inherit" />
+        )}
+
         {/* {logs.length > 0 &&<SinglePrinterGraph logs={logs.sort((a, b) => new Date(a.date) - new Date(b.date) )} />}  */}
         {logs.length > 0 && isLoading === false && (
-          <StreamingDemo logs={logs}  />
+          <StreamingDemo logs={logs} />
         )}
-          
       </Box>
     </Box>
   );
@@ -429,14 +498,14 @@ const shortcutsItems = [
   {
     label: "This Week",
     getValue: () => {
-      const today = dayjs();
+      // const today = dayjs();
       return [today.startOf("week"), today.endOf("week")];
     },
   },
   {
     label: "Last Week",
     getValue: () => {
-      const today = dayjs();
+      // const today = dayjs();
       const prevWeek = today.subtract(7, "day");
       return [prevWeek.startOf("week"), prevWeek.endOf("week")];
     },
@@ -444,24 +513,31 @@ const shortcutsItems = [
   {
     label: "Last 7 Days",
     getValue: () => {
-      const today = dayjs();
+      // const today = dayjs();
       return [today.subtract(7, "day"), today];
+    },
+  },
+  {
+    label: "Last 30 Days",
+    getValue: () => {
+      // const today = dayjs();
+      return [today.subtract(30, "day"), today];
+    },
+  },
+  {
+    label: "Last 45 Days",
+    getValue: () => {
+      // const today = dayjs();
+      return [today.subtract(45, "day"), today];
     },
   },
   {
     label: "Current Month",
     getValue: () => {
-      const today = dayjs();
+      // const today = dayjs();
       return [today.startOf("month"), today.endOf("month")];
     },
   },
-  {
-    label: "Next Month",
-    getValue: () => {
-      const today = dayjs();
-      const startOfNextMonth = today.endOf("month").add(1, "day");
-      return [startOfNextMonth, startOfNextMonth.endOf("month")];
-    },
-  },
+ 
   { label: "Reset", getValue: () => [null, null] },
 ];

@@ -192,6 +192,14 @@ import { data1 } from "../data/data1.js";
 //   return result;
 // }
 
+const returnTimeString = (timestamp) => {
+  const date = new Date(timestamp).toLocaleString("en-GB", { timeZone: "UTC" });
+  return {
+    day: date.substring(0, 5),
+    hour: date.substring(12, 17),
+  };
+};
+
 function getWeekNumber(date) {
   const startOfYear = new Date(date.getFullYear(), 0, 1);
   const days = Math.floor((date - startOfYear) / (24 * 60 * 60 * 1000));
@@ -467,28 +475,12 @@ const Graph = ({ logs }) => {
   const [intervalFormat, setIntervalFormat] = useState(null);
   const daysDiff = defaultDaysDiff(logs);
   console.log("logs in 1111:", logs);
-  // useEffect(() => {
 
-  // }, []);
   console.log("daysDiff", daysDiff);
   console.log("intervalFormat", intervalFormat);
   useEffect(() => {
     setIntervalFormat(getIntervalFormat());
   }, [daysDiff]);
-
-  //  let d = logs.map((o) => {
-  //     let date = new Date(o.date);
-  //     date.getTime();
-  //     // debugger
-  //     return {
-  //       ...o,
-  //       date,
-  //     };
-  //   });
-  //   let datadata = getAllDates(logs);
-  //   console.log("d:", d);
-  //   console.log("datadata:", datadata);
-  //   datadata = aggregateDataByHour(datadata);
 
   const updateBrush = (pos) => {
     if (state.timerId !== 0) {
@@ -504,62 +496,22 @@ const Graph = ({ logs }) => {
     setState((prevState) => ({ ...prevState, timerId }));
   };
 
-  // useEffect(() => {
-  //   console.log(state);
-  //   const values = state.data.map((i) => i.average);
-  //   console.log(values);
-  // }, [state]);
-  // useEffect(() => {
-  //   const start = logs[0].date; //.getTime();
-  //   const end = logs[logs.length - 1].date; //.getTime();
-  //   const timeDiff = end - start;
-  //   const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-  //   let data = [];
-  //   let typeOfTime = "";
-  //   console.log("daysDiff", daysDiff)
-  //   if (daysDiff < 15) {
-  //     // debugger
-  //     typeOfTime = "hour";
-  //     data = aggregateDataByHour(logs);
-  //   } else if (daysDiff < 31) {
-  //     // debugger
-  //     typeOfTime = "day";
-  //     data = aggregateDataByDay(logs);
-  //   } else if (daysDiff > 31) {
-  //     // debugger
-  //     typeOfTime = "week";
-  //     data = aggregateDataByWeek(logs);
-  //   }
-  //   data = add10milisec(data)
-  //   setState((prevState) => ({
-  //     ...prevState,
-  //     data,
-  //     typeOfTime,
-  //   }));
-  // }, [logs]);
-
-  // useEffect(() =>{
-
-  //   console.log("data", data)
-  //   setState((prevState) => ({...prevState, data: logs}))
-  // }, []);
-
   function getIntervalFormat() {
     if (daysDiff > 60) return "week";
-    if (daysDiff > 11 && daysDiff < 60) return "day";
+    if (daysDiff > 7 && daysDiff < 60) return "day";
     if (daysDiff < 30) return "hour";
     if (daysDiff <= 1) return "minutes";
-    
   }
 
   const test = () => {
-    
     let data = [];
     if (intervalFormat === "minutes") data = aggregateDataByFiveMinutes(logs);
     else if (intervalFormat === "hour") data = aggregateDataByHour(logs);
     else if (intervalFormat === "day") data = aggregateDataByDay(logs);
     else if (intervalFormat === "week") data = aggregateDataByWeek(logs);
-    return add10milisec(data);
+    return add10milisec(data.map((o) =>{
+      return {...o, date: new Date(o.date).getTime()}
+    }));
   };
 
   // useEffect(() => {
@@ -575,8 +527,8 @@ const Graph = ({ logs }) => {
   const tabs = [
     { value: "minutes", disabled: daysDiff > 3 },
     { value: "hour", disabled: daysDiff > 30 },
-    { value: "day", disabled: daysDiff < 10 },
-    { value: "week", disabled: daysDiff < 60},
+    { value: "day", disabled: daysDiff < 7 },
+    { value: "week", disabled: daysDiff < 60 },
   ];
 
   // const times = logs.map(obj => obj.time);
@@ -584,21 +536,20 @@ const Graph = ({ logs }) => {
   // // יצירת רשימת אינטרוולים שווים
   // const timeIntervals = Array.from({ length: 11 }, (_, index) => Math.floor(Math.min(...times) + (index / 10) * (Math.max(...times) - Math.min(...times))));
 
+  // const gradientOffset = () => {
+  //   const dataMax = Math.max(...state.data.map((i) => i.average));
+  //   const dataMin = Math.min(...state.data.map((i) => i.average));
 
-  const gradientOffset = () => {
-    const dataMax = Math.max(...state.data.map((i) => i.average));
-    const dataMin = Math.min(...state.data.map((i) => i.average));
+  //   if (dataMax <= 0) {
+  //     return 0;
+  //   } else if (dataMin >= 0) {
+  //     return 1;
+  //   } else {
+  //     return dataMax / (dataMax - dataMin);
+  //   }
+  // };
 
-    if (dataMax <= 0) {
-      return 0;
-    } else if (dataMin >= 0) {
-      return 1;
-    } else {
-      return dataMax / (dataMax - dataMin);
-    }
-  };
-
-  const off = gradientOffset();
+  // const off = gradientOffset();
   // if (intervalFormat === null) return
 
   return (
@@ -631,14 +582,12 @@ const Graph = ({ logs }) => {
           }}
         >
           {tabs.map((tab) => {
-            
             return (
               <Tab
                 key={tab.value}
                 value={tab.value}
                 label={tab.value}
                 disabled={tab.disabled}
-               
                 defaultChecked={intervalFormat === tab.value}
               />
             );
@@ -651,26 +600,26 @@ const Graph = ({ logs }) => {
         <LineChart
           // width={1200}
           height={300}
-          // data={state.data}
+          // data={data}
           data={test()}
           margin={{ top: 30, right: 30, left: 20 }}
+          dataKey="average"
         >
           <XAxis
             dataKey="date"
             scale="time"
             type="number"
             minTickGap={10}
-            padding={{ left: state.left, right: state.right }}
+            // padding={{ left: state.left, right: state.right }}
             domain={["dataMin", "dataMax"]}
-            
             tickFormatter={(timestamp) => {
-              const date = new Date(timestamp).toISOString();
+              const date = returnTimeString(timestamp);
 
               let time;
-              if (intervalFormat === "minutes") time = date.substring(11, 16);
-              else if (intervalFormat === "hour") time = date.substring(11, 16);
+              if (intervalFormat === "minutes" || intervalFormat === "hour")
+                time = date.hour;
               else if (intervalFormat === "day" || intervalFormat === "week")
-                time = date.substring(5, 10);
+                time = date.day;
 
               return time;
             }}
@@ -684,12 +633,12 @@ const Graph = ({ logs }) => {
             dataKey="average"
           />
 
-          <defs>
+          {/* <defs>
             <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">
               <stop offset={off} stopColor="green" stopOpacity={1} />
               <stop offset={off} stopColor="red" stopOpacity={1} />
             </linearGradient>
-          </defs>
+          </defs> */}
           <Tooltip content={<RepositoryCoverageTimelineGraphTooltip />} />
 
           <Brush
@@ -705,7 +654,7 @@ const Graph = ({ logs }) => {
             startIndex={0}
             // endIndex={state.endIndex}
             endIndex={10}
-            padding={{ left: state.left, right: state.right }}
+            // padding={{ left: state.left, right: state.right }}
             tick={true}
             // travellerOffset={10} // קבע את האופסט לתמונה הזזה
             // travellerComp={(props) => {
@@ -716,16 +665,18 @@ const Graph = ({ logs }) => {
             // }}
             // travelling={true}  // הפעל את אפשרות הגלילה
             tickFormatter={(timestamp) => {
-              const date = new Date(timestamp).toISOString();
+              const date = returnTimeString(timestamp);
               let time;
-              if (intervalFormat === "hour")
-                time = `${date.substring(5, 10)}/${date.substring(11, 16)}`;
-              else if (intervalFormat === "day") time = date.substring(5, 10);
+              if (intervalFormat === "hour" || intervalFormat === "minutes") time = `${date.day},${date.hour}`;
+              else if (intervalFormat === "day" || intervalFormat === "week") time = date.day;
 
               return time;
             }}
           >
-            <AreaChart data={state.data}>
+            <AreaChart
+              // data={data}
+              data={test()}
+            >
               <Area type="number" dataKey="average" isAnimationActive={false} />
               <XAxis
                 // minTickGap={30}
@@ -733,7 +684,7 @@ const Graph = ({ logs }) => {
                 dataKey="date"
                 tickFormatter={(timestamp) => {
                   const date = new Date(timestamp);
-                  let time = date.toISOString().substring(5, 10);
+                  let time = returnTimeString(timestamp).day;
 
                   if (intervalFormat === "week") time = getWeekNumber(date);
 
@@ -750,7 +701,7 @@ const Graph = ({ logs }) => {
     </div>
   );
 };
-export default Graph;
+export default React.memo(Graph);
 
 //////////////////////////////////////////////////////////////////////////////////////
 
