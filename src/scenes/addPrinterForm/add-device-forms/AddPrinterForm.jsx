@@ -18,6 +18,7 @@ const printerInfo = {
 //   description: "תיאור כללי",
 // };
 
+
 //**************הגיע מPRINTERMODULE */
 // const printerKey = {
   address: "כתובת רשת",
