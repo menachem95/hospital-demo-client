@@ -14,7 +14,9 @@ import "dayjs/locale/en-gb";
 
 import Header from "../UI/Header";
 import Graph from "./SinglePrinterGraph";
+import SinglePrinterGraph from "./SinglePrinterGraph1";
 
+import { returnTimeString } from "../../func/func_for_graph";
 
 const today = dayjs();
 
@@ -145,12 +147,14 @@ const SinglePrinterStats = () => {
     console.log("dateState", dateState);
   }, [dateState]);
 
+  const queryParams = new URLSearchParams();
+  queryParams.append("start", dateState[0].startOf("day"));
+  queryParams.append("end", dateState[1].endOf("day"));
+
   const fetchLogs = async () => {
     setIsLoading(true);
     console.log(
-      `http://localhost:8080/logs/onePrinter/${printerId}/${dateState[0].startOf(
-        "day"
-      )}/${dateState[1].endOf("day")}`
+      `http://localhost:8080/logs/onePrinter/${printerId}/${queryParams}`
     );
 
     const res = await fetch(
@@ -175,6 +179,13 @@ const SinglePrinterStats = () => {
     setIsLoading(false);
   };
 
+  let subtitle = " ";
+  if (logs.length > 0) {
+    let start = returnTimeString(logs[0].date).day;
+    let end = returnTimeString(logs[logs.length - 1].date).day;
+    subtitle = `${start} - ${end}`;
+  }
+
   return (
     <Box m="20px">
       <Box
@@ -184,7 +195,12 @@ const SinglePrinterStats = () => {
         position="sticky"
         top="80px"
       >
-        <Header title={"מדפסת"} />
+        <Header
+          title={"היסטוריית מדפסת"}
+          subtitle={subtitle}
+          // subtitle={`${dateState[0].format('DD/MM/YY')} - ${dateState[1].format('DD/MM/YY')}`}
+        />
+        {/* {logs.length > 0 && <div>{new Date(logs[0].date)}</div>} */}
       </Box>
       <Box
         display="grid"
@@ -239,6 +255,7 @@ const SinglePrinterStats = () => {
             </div>
           </div>
         </LocalizationProvider>
+        {/* <SinglePrinterGraph data={logs} /> */}
         {isLoading && (
           //   <Box sx={{ width: '500px', height: "500px" }}>
           //   <LinearProgress />

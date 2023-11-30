@@ -19,36 +19,14 @@ import {
   aggregateDataByDay,
   aggregateDataByHour,
   aggregateDataByFiveMinutes,
-} from "../../func/aggregateDates func.js";
+  getWeekNumber,
+  add10milisec,
+  returnTimeString
+} from "../../func/func_for_graph.js";
 
 
 
-const returnTimeString = (timestamp) => {
-  const date = new Date(timestamp).toLocaleString("en-GB", { timeZone: "UTC" });
-  return {
-    day: date.substring(0, 5),
-    hour: date.substring(12, 17),
-  };
-};
 
-function getWeekNumber(date) {
-  const startOfYear = new Date(date.getFullYear(), 0, 1);
-  const days = Math.floor((date - startOfYear) / (24 * 60 * 60 * 1000));
-  return Math.ceil((days + startOfYear.getDay() + 1) / 7);
-}
-
-
-
-const add10milisec = (result) => {
-  const newResult = [];
-  for (let i = 0; i < result?.length; i++) {
-    newResult.push(result[i]);
-    let date = result[i].date + 10;
-    let obj = { ...result[i + 1], date, first: false };
-    newResult.push(obj);
-  }
-  return newResult;
-};
 
 const CustomizedDot = (props) => {
   const { cx, cy, payload } = props;
@@ -354,5 +332,8 @@ const Graph = ({ logs }) => {
   );
 };
 export default React.memo(Graph);
+
+
+
 
 

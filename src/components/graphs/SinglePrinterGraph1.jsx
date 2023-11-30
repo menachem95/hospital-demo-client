@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import * as React from "react";
-import useMousePosition from "../hooks/useMousePosition.js";
+// import useMousePosition from "../hooks/useMousePosition.js";
 // import { LineChart } from "@mui/x-charts/LineChart";
 import {
   ResponsiveContainer,
@@ -16,7 +16,7 @@ import {
   AreaChart,
 } from "recharts";
 
-import { data1 } from "../data/data1.js";
+// import { data1 } from "../data/data1.js";
 
 const Fill = (props) => {
   debugger;
@@ -62,27 +62,27 @@ const Fill = (props) => {
 //   }
 // }
 
-// const roundToNearestThousand = (number) => {
-//   const remainder = number % 1000;
-//   if (remainder < 500) {
-//     return number - remainder; // עגל לתחתית אלפיים הקרובה יותר
-//   } else {
-//     return number + (1000 - remainder); // עגל לתקרה אלפיים הקרובה יותר
-//   }
-// };
+const roundToNearestThousand = (number) => {
+  const remainder = number % 1000;
+  if (remainder < 500) {
+    return number - remainder; // עגל לתחתית אלפיים הקרובה יותר
+  } else {
+    return number + (1000 - remainder); // עגל לתקרה אלפיים הקרובה יותר
+  }
+};
 
-// const intervalByLength = (number) => {
-//   const len = roundToNearestThousand(number);
-//   if (number < 500) return 12;
-//   if (len === 1000) return 18;
-//   else if (len === 2000) return 20;
-//   else if (len === 3000) return 30;
-//   else if (len === 4000) return 40;
-//   // else if (len < 5000) return 60;
-//   // else if (len < 7000) return 80;
-//   // else if (len < 9000) return 80;
-//   else if (len < 10000) return 60;
-// };
+const intervalByLength = (number) => {
+  const len = roundToNearestThousand(number);
+  if (number < 500) return 12;
+  if (len === 1000) return 18;
+  else if (len === 2000) return 20;
+  else if (len === 3000) return 30;
+  else if (len === 4000) return 40;
+  // else if (len < 5000) return 60;
+  // else if (len < 7000) return 80;
+  // else if (len < 9000) return 80;
+  else if (len < 10000) return 60;
+};
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -476,7 +476,7 @@ const getAllDates = (arr) => {
 //   return newArr;
 // };
 
-const SinglePrinterGraph = ({ logs }) => {
+const SinglePrinterGraph = ({ data }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   // const mousePosition = useMousePosition();
   // let data = logs.map((d) => {
@@ -557,7 +557,7 @@ const SinglePrinterGraph = ({ logs }) => {
 
   return (
     <>
-      {/* <div
+       <div
       style={{
         // backgroundColor: "red",
         // paddingBlockEnd: "150px",
@@ -586,145 +586,8 @@ const SinglePrinterGraph = ({ logs }) => {
         </ResponsiveContainer>
       </div>
     </div>
-    ************************************************* */}
-      {"הגבלה של  500 פיקסלים"}
-      <div
-        style={{
-          height: "200px",
-          width: "500px",
-          display: "inline",
-        }}
-      >
-        <ResponsiveContainer>
-          <AreaChart data={logs}>
-            {/* <CartesianGrid
-             
-            
-             vertical={false}
-             /> */}
-            <XAxis
-              dataKey="date"
-              // interval={0}
-              angle={-90}
-              height={50}
-              tickMargin={20}
-              // tickFormatter={(timestamp) => {
-              //   const time = new Date(timestamp).toISOString();
-              //   return `${time.substring(8, 10)}/${time.substring(
-              //     5,
-              //     7
-              //   )}-${time.substring(11, 16)}`;
-              // }}
-              tickFormatter={(timestamp) => {
-                const time = new Date(timestamp)
-                  .toISOString()
-                  .substring(5, 10);
-                return time;
-              }}
-              scale="time"
-              type="number"
-              domain={["dataMin", "dataMax"]}
-              //  padding={{left: "5%", right: "10px"}}
-              padding={{ left: 10, right: 10 }}
-
-              // tick="31"
-              // tickCount="31"
-              // ticks="30"
-              //tabIndex={1} dataKey="hours"
-            />
-            {/* <XAxis xAxisId="1" dataKey="days" /> */}
-            <YAxis type="number" domain={[0, 100]} />
-
-            <Area
-              dot={<CustomizedDot />}
-              type="step"
-              dataKey="average"
-              stroke="rgb(80, 39, 245)"
-              // fill={Fill()}
-              // fill="red"
-              fill="rgba(223, 13, 13,0)"
-              // dataKey="online"
-            />
-            {/* <Area
-              type="step"
-              stroke="#d8a18495"
-              fill="#d8a18463"
-              dot={false}
-              dataKey="serverRunning"
-           
-            /> */}
-<Brush />
-            <Tooltip content={<RepositoryCoverageTimelineGraphTooltip />} />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-      <div
-        style={{
-          height: "200px",
-          width: "500px",
-          marginTop: "50px",
-        }}
-      >
-        <ResponsiveContainer>
-          <LineChart data={logs}>
-            {/* <CartesianGrid
-             
-            
-             vertical={false}
-             /> */}
-            <XAxis
-              dataKey="date"
-              // interval={0}
-              angle={-90}
-              height={50}
-              tickMargin={20}
-              // tickFormatter={(timestamp) => {
-              //   const time = new Date(timestamp).toISOString();
-              //   return `${time.substring(8, 10)}/${time.substring(
-              //     5,
-              //     7
-              //   )}-${time.substring(11, 16)}`;
-              // }}
-              tickFormatter={(timestamp) => {
-                const time = new Date(timestamp)
-                  .toISOString()
-                  .substring(11, 16);
-                return time;
-              }}
-              scale="time"
-              type="number"
-              domain={["dataMin", "dataMax"]}
-              //  padding={{left: "5%", right: "10px"}}
-              padding={{ left: 10, right: 10 }}
-
-              // tick="31"
-              // tickCount="31"
-
-              //tabIndex={1} dataKey="hours"
-            />
-            {/* <XAxis xAxisId="1" dataKey="days" /> */}
-            <YAxis type="number" domain={[0, 100]} />
-
-            <Line
-              dot={false}
-              type="step"
-              dataKey="average"
-              stroke="rgb(80, 39, 245)"
-              fill="rgba(80, 39, 245, 0.544)"
-              // dataKey="online"
-            />
-            <Line
-              type="step"
-              stroke="#d8a18495"
-              fill="#d8a18463"
-              dot={false}
-              dataKey="serverRunning"
-            />
-
-            <Tooltip content={<RepositoryCoverageTimelineGraphTooltip />} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+    
+    
       {/* <div
         style={{
           marginTop: "100px",
@@ -776,7 +639,7 @@ const SinglePrinterGraph = ({ logs }) => {
               />
             </LineChart>
           </ResponsiveContainer>
-        </div> */}
+        </div>  */}
       {/* </div> */}
       
     </>

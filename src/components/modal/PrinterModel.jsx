@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -28,11 +27,6 @@ import TimelineIcon from "@mui/icons-material/Timeline";
 import NetworkPingIcon from "@mui/icons-material/NetworkPing";
 
 import PrinterInfoItem from "../UI/PrinterInfoItem";
-
-
-
-
-
 
 const printerKey = {
   address: "כתובת רשת",
@@ -94,7 +88,6 @@ const PrinterModel = ({ socket }) => {
   const [editMode, setEditMode] = useState(false);
   const { printerModelState, printers } = useSelector((state) => state.display);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [editedPrinter, setEditedPrinter] = useState(printerModelState.printer);
 
@@ -116,7 +109,7 @@ const PrinterModel = ({ socket }) => {
 
   let img;
   try {
-    img = require(`../../images/printers${printerModel}.png`);
+    img = require(`../../images/printers/${printerModel}.png`);
   } catch {
     img = require(`../../images/printers/generic printer.png`);
   }

@@ -1,4 +1,4 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Box } from "@mui/material";
@@ -13,7 +13,6 @@ import PrintIcon from "@mui/icons-material/Print";
 import PlaceIcon from "@mui/icons-material/Place";
 import LanIcon from "@mui/icons-material/Lan";
 
-
 const printerKey = {
   address: "כתובת רשת",
   department: "מחלקה",
@@ -23,7 +22,6 @@ const printerKey = {
   line: "נקודה בקיר",
   pag: "PAG מספר",
 };
-
 
 const AddPrinter = ({ socket }) => {
   const [value, setValue] = useState("נתוני מדפסת");

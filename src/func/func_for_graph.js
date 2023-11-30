@@ -189,12 +189,6 @@ export function aggregateData(data, intervalFormat) {
 // };
 
 
-function getWeekNumber(date) {
-  const startOfYear = new Date(date.getFullYear(), 0, 1);
-  const days = Math.floor((date - startOfYear) / (24 * 60 * 60 * 1000));
-  return Math.ceil((days + startOfYear.getDay() + 1) / 7);
-}
-
 function calculateAverage(data) {
   const trueCount = data.filter((obj) => obj.online === true).length;
   const falseCount = data.filter((obj) => obj.online === false).length;
@@ -213,7 +207,37 @@ function calculateServerRunning(data) {
 }
 
 
+////
+export const returnTimeString = (timestamp) => {
+  const date = new Date(timestamp).toLocaleString("en-GB", { timeZone: "UTC" });
+  return {
+    day: date.substring(0, 5),
+    hour: date.substring(12, 17),
+  };
+};
 
+export function getWeekNumber(date) {
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const days = Math.floor((date - startOfYear) / (24 * 60 * 60 * 1000));
+  return Math.ceil((days + startOfYear.getDay() + 1) / 7);
+}
+
+
+
+export const add10milisec = (result) => {
+  const newResult = [];
+  for (let i = 0; i < result?.length; i++) {
+    newResult.push(result[i]);
+    let date = result[i].date + 10;
+    let obj = { ...result[i + 1], date, first: false };
+    newResult.push(obj);
+  }
+  return newResult;
+};
+
+
+
+////
 
 
 
