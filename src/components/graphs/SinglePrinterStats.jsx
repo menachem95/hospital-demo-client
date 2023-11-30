@@ -147,20 +147,19 @@ const SinglePrinterStats = () => {
     console.log("dateState", dateState);
   }, [dateState]);
 
-  const queryParams = new URLSearchParams();
-  queryParams.append("start", dateState[0].startOf("day"));
-  queryParams.append("end", dateState[1].endOf("day"));
 
   const fetchLogs = async () => {
     setIsLoading(true);
     console.log(
-      `http://localhost:8080/logs/onePrinter/${printerId}/${queryParams}`
+      `http://localhost:8080/logs/onePrinter/${printerId}/?start=${new Date(
+        dateState[0].startOf("day")
+      ).getTime()}&end=${new Date(dateState[1].endOf("day")).getTime()}`
     );
 
     const res = await fetch(
-      `http://localhost:8080/logs/onePrinter/${printerId}/${dateState[0].startOf(
-        "day"
-      )}/${dateState[1].endOf("day")}`,
+      `http://localhost:8080/logs/onePrinter/${printerId}/?start=${new Date(
+        dateState[0].startOf("day")
+      ).getTime()}&end=${new Date(dateState[1].endOf("day")).getTime()}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },

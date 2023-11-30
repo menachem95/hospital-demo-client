@@ -28,6 +28,10 @@ import NetworkPingIcon from "@mui/icons-material/NetworkPing";
 
 import PrinterInfoItem from "../UI/PrinterInfoItem";
 
+const SIMULATION_MODE = Boolean(process.env.REACT_APP_SIMULATION_MODE);
+console.log("SIMULATION_MODE", SIMULATION_MODE);
+const printerDemoUrl = "https://slint.dev/releases/1.3.1/demos/printerdemo/"
+
 const printerKey = {
   address: "כתובת רשת",
   department: "מחלקה",
@@ -93,6 +97,8 @@ const PrinterModel = ({ socket }) => {
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+
 
   const {
     _id,
@@ -219,7 +225,7 @@ const PrinterModel = ({ socket }) => {
               </IconButton>
               <IconButton title="מעבר לדפדפן" disabled={!online}>
                 <a
-                  href={`https://${address}`}
+                  href={SIMULATION_MODE ? printerDemoUrl : `https://${address}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
