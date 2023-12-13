@@ -1,6 +1,6 @@
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Box, IconButton, useTheme } from "@mui/material";
 import { ColorModeContext, tokens } from "../../theme";
@@ -37,12 +37,18 @@ export const useStyles = makeStyles(() =>
 
 const Topbar = ({ socket }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { printers } = useSelector((state) => state.display);
   const classes = useStyles();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+
+  useEffect(()=>{
+    setIsLoading(false);
+  }, [printers])
 
   return (
     <Box
@@ -81,11 +87,13 @@ const Topbar = ({ socket }) => {
           <IconButton
             onClick={() => {
               setIsLoading(true);
-              socket.emit("refresh", (printers, time) => {
-                dispatch(updatePrinters([...printers]));
-                dispatch(updateTime(time));
-                setIsLoading(false);
-              });
+              socket.emit("refresh",
+              //  (printers, time) => {
+              //   // dispatch(updatePrinters([...printers]));
+              //   // dispatch(updateTime(time));
+              //   setIsLoading(false);
+              // }
+              );
             }}
           >
             <RefreshIcon />
