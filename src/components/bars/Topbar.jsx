@@ -87,6 +87,7 @@ const Topbar = ({ socket }) => {
           <IconButton
             onClick={() => {
               setIsLoading(true);
+              // const time = setTimeout(())
               socket.emit("refresh",
               //  (printers, time) => {
               //   // dispatch(updatePrinters([...printers]));
