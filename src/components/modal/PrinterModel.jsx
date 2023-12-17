@@ -30,7 +30,7 @@ import PrinterInfoItem from "../UI/PrinterInfoItem";
 
 const SIMULATION_MODE = Boolean(process.env.REACT_APP_SIMULATION_MODE);
 console.log("SIMULATION_MODE", SIMULATION_MODE);
-const printerDemoUrl = "https://slint.dev/releases/1.3.1/demos/printerdemo/"
+const printerDemoUrl = "https://slint.dev/releases/1.3.1/demos/printerdemo/";
 
 const printerKey = {
   address: "כתובת רשת",
@@ -97,8 +97,6 @@ const PrinterModel = ({ socket }) => {
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-
 
   const {
     _id,
@@ -240,7 +238,12 @@ const PrinterModel = ({ socket }) => {
               >
                 <NetworkPingIcon />
               </IconButton>
-              <IconButton title="גרף">
+              <IconButton
+                onClick={() => {
+                  dispatch(updatePrinterModelState({ isOpen: false }));
+                }}
+                title="גרף"
+              >
                 <Link to={`/printer-history/${_id}`}>
                   <TimelineIcon />
                 </Link>
