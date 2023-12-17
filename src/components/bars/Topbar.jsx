@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -7,8 +7,6 @@ import { ColorModeContext, tokens } from "../../theme";
 import { createStyles, makeStyles } from "@material-ui/core";
 
 import {
-  updatePrinters,
-  updateTime,
   updateSearch,
 } from "../../store/displayPrintersSlice";
 
@@ -37,7 +35,6 @@ export const useStyles = makeStyles(() =>
 
 const Topbar = ({ socket }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { printers } = useSelector((state) => state.display);
   const classes = useStyles();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -45,10 +42,13 @@ const Topbar = ({ socket }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
-  useEffect(()=>{
-    setIsLoading(false);
-  }, [printers])
+  const handleRefresh = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    socket.emit("refresh");
+  };
 
   return (
     <Box
@@ -84,19 +84,7 @@ const Topbar = ({ socket }) => {
             <RefreshIcon className={classes.rotateIcon} />
           </IconButton>
         ) : (
-          <IconButton
-            onClick={() => {
-              setIsLoading(true);
-              // const time = setTimeout(())
-              socket.emit("refresh",
-              //  (printers, time) => {
-              //   // dispatch(updatePrinters([...printers]));
-              //   // dispatch(updateTime(time));
-              //   setIsLoading(false);
-              // }
-              );
-            }}
-          >
+          <IconButton onClick={handleRefresh}>
             <RefreshIcon />
           </IconButton>
         )}
