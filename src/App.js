@@ -18,7 +18,6 @@ import SingleDepartment from "./components/Displays/SingleDepartment";
 import ErrorServer from "./components/Displays/ErrorServer";
 import SearchResult from "./components/Displays/SearchResult";
 
-
 const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL);
 const socket = io.connect(REACT_APP_BACKEND_URL);
@@ -93,10 +92,7 @@ function App() {
                     path="/favoritePrinters"
                     element={<SearchResult favorite={true} socket={socket} />}
                   />
-                  <Route
-                    path="/printers"
-                    element={<DashboardPrinters  />}
-                  />
+                  <Route path="/printers" element={<DashboardPrinters />} />
                   <Route
                     path="/printers/departments/:departmentId"
                     element={<SingleDepartment socket={socket} />}

@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+
 
 import { updatePrinterModelState } from "../../store/displayPrintersSlice";
 
@@ -14,6 +15,7 @@ const SingleDepartment = ({ socket }) => {
   const { printers, printerModelState } = useSelector((state) => state.display);
   const { departmentId, deviceId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -21,6 +23,10 @@ const SingleDepartment = ({ socket }) => {
   let department = printers.filter(
     (printer) => printer.department === departmentId
   );
+
+  if (department.length === 0) {
+    navigate("/");
+  }
 
   const onlineDevices = department.filter((device) => device.online).length;
 
