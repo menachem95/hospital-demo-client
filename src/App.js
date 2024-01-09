@@ -19,7 +19,7 @@ import ErrorServer from "./components/Displays/ErrorServer";
 import SearchResult from "./components/Displays/SearchResult";
 
 const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL);
+// console.log("REACT_APP_BACKEND_URL:", REACT_APP_BACKEND_URL);
 const socket = io.connect(REACT_APP_BACKEND_URL);
 
 let error;
@@ -79,7 +79,7 @@ function App() {
                     element={<Navigate to="/printers" replace />}
                   />{" "}
                   {/* <Route path="/test" element={<Test />} /> */}
-                  <Route path="/server-setting" element={<ServerSeting />} />
+                  {/* <Route path="/server-setting" element={<ServerSeting />} /> */}
                   <Route
                     path="/printer-history/:printerId"
                     element={<SinglePrinterStats />}

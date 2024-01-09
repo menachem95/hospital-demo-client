@@ -20,6 +20,8 @@ import { returnTimeString } from "../../func/func_for_graph";
 
 const today = dayjs();
 
+const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 //***************************************************************************************************** */
 // const getAllDates = (arr) => {
 //   if (arr.length === 0) return [];
@@ -151,13 +153,13 @@ const SinglePrinterStats = () => {
   const fetchLogs = async () => {
     setIsLoading(true);
     console.log(
-      `http://localhost:8080/logs/onePrinter/${printerId}/?start=${new Date(
+      `${REACT_APP_BACKEND_URL}/logs/onePrinter/${printerId}/?start=${new Date(
         dateState[0].startOf("day")
       ).getTime()}&end=${new Date(dateState[1].endOf("day")).getTime()}`
     );
 
     const res = await fetch(
-      `http://localhost:8080/logs/onePrinter/${printerId}/?start=${new Date(
+      `${REACT_APP_BACKEND_URL}/logs/onePrinter/${printerId}/?start=${new Date(
         dateState[0].startOf("day")
       ).getTime()}&end=${new Date(dateState[1].endOf("day")).getTime()}`,
       {

@@ -95,7 +95,7 @@ const Topbar = ({ socket }) => {
             <LightModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton onClick={() => navigate("/server-setting")}>
+        <IconButton disabled onClick={() => navigate("/server-setting")}>
           <SettingsIcon />
         </IconButton>
       </Box>
